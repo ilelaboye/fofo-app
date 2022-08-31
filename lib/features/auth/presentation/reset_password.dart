@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
@@ -10,6 +11,11 @@ import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/login.dart';
 import 'package:fofo_app/features/auth/presentation/otp.dart';
+import 'package:fofo_app/service/auth_service/auth_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../models/user_model/reset_password.dart';
 
 class StartResetPasswordPage extends StatefulWidget {
   const StartResetPasswordPage({Key? key}) : super(key: key);
@@ -19,14 +25,18 @@ class StartResetPasswordPage extends StatefulWidget {
 }
 
 class _StartResetPasswordPageState extends State<StartResetPasswordPage> {
+  final formKey = GlobalKey<FormState>();
+  late String email;
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: const Appbar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Insets.lg),
           child: Form(
+            key: formKey,
             child: Column(
               children: [
                 const AuthHeading(
@@ -35,7 +45,8 @@ class _StartResetPasswordPageState extends State<StartResetPasswordPage> {
                 ),
                 Gap.lg,
                 TextInputField(
-                  labelText: "Registered Email Address",
+                  onSaved: (value) => email = value!,
+                  labelText: "Email Address",
                   hintText: "E.g Rachelchoo@gmail.com",
                 ),
                 const Gap(25),
@@ -58,9 +69,15 @@ class _StartResetPasswordPageState extends State<StartResetPasswordPage> {
                 Button(
                   'Check Email',
                   onTap: () {
-                    context.push(const OtpPage(
-                      otpState: OtpState.resetPassword,
-                    ));
+                    final form = formKey.currentState!;
+                    if (form.validate()) {
+                      form.save();
+                      auth.resetPassword(email);
+                      context.push(OtpPage(
+                        otpState: OtpState.resetPassword,
+                        email: email,
+                      ));
+                    }
                   },
                 ),
                 const Gap(50),
@@ -81,14 +98,20 @@ class EndResetPasswordPage extends StatefulWidget {
 }
 
 class _EndResetPasswordPageState extends State<EndResetPasswordPage> {
+  String? errorConfirmPassword;
+  final formKey = new GlobalKey<FormState>();
+  late String password, confirmPassword;
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    final user = Provider.of<AuthProvider>(context).authUser;
     return Scaffold(
       appBar: const Appbar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Insets.lg),
           child: Form(
+            key: formKey,
             child: Column(
               children: [
                 const AuthHeading(
@@ -98,10 +121,29 @@ class _EndResetPasswordPageState extends State<EndResetPasswordPage> {
                 Gap.lg,
                 TextInputField(
                   labelText: "Password",
+                  onSaved: (value) => password = value!,
+                  validator: (value) {
+                    password = value!;
+                    if (value.isNotEmpty) {
+                      return null;
+                    } else {
+                      return "Please Input Password";
+                    }
+                  },
                 ),
                 const Gap(25),
                 TextInputField(
                   labelText: "Confirm Password",
+                  onSaved: (value) => confirmPassword = value!,
+                  validator: (value) {
+                    setState(() {
+                      if (password != value && value!.isEmpty) {
+                        errorConfirmPassword = 'Password mismatch';
+                      } else {
+                        errorConfirmPassword = null;
+                      }
+                    });
+                  },
                 ),
                 const Gap(25),
                 Text.rich(
@@ -123,7 +165,15 @@ class _EndResetPasswordPageState extends State<EndResetPasswordPage> {
                 Button(
                   'Reset Password',
                   onTap: () {
-                    context.pushOff(const LoginPage());
+                    final form = formKey.currentState!;
+                    if (form.validate()) {
+                      form.save();
+                      if (user?.userId != null) {
+                        auth.updatePassword(
+                            password, confirmPassword, user!.userId!);
+                        context.pushOff(const LoginPage());
+                      }
+                    }
                   },
                 ),
                 const Gap(50),

@@ -13,9 +13,7 @@ class CreatePostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Appbar(
-        title: "Create Post"
-      ),
+      appBar: const Appbar(title: "Create Post"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Insets.md),

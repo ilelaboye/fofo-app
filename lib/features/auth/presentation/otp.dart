@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
+import 'package:fofo_app/core/utils/constants/constants.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
@@ -10,26 +11,37 @@ import 'package:fofo_app/core/widgets/pinput.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/profile_picture_upload.dart';
 import 'package:fofo_app/features/auth/presentation/reset_password.dart';
+import 'package:fofo_app/service/auth_service/auth_service.dart';
+import 'package:provider/provider.dart';
+
+import '../../../core/presentation/app/app_scaffold.dart';
+import '../../../service/auth_service/auth_provider.dart';
 
 enum OtpState { auth, resetPassword }
 
 class OtpPage extends StatefulWidget {
   final OtpState otpState;
-  const OtpPage({this.otpState = OtpState.auth, Key? key}) : super(key: key);
-
+  const OtpPage({this.otpState = OtpState.auth, Key? key, required this.email})
+      : super(key: key);
+  final String email;
   @override
   _OtpPageState createState() => _OtpPageState();
 }
 
 class _OtpPageState extends State<OtpPage> {
+  final formKey = GlobalKey<FormState>();
+  late String otp;
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    final user = Provider.of<AuthProvider>(context).authUser;
     final otpState = widget.otpState;
     return Scaffold(
       appBar: const Appbar(),
       body: Padding(
         padding: const EdgeInsets.all(Insets.lg),
         child: Form(
+          key: formKey,
           child: Column(
             children: [
               if (otpState == OtpState.auth)
@@ -44,7 +56,9 @@ class _OtpPageState extends State<OtpPage> {
                 ),
               Gap.lg,
               // pinput
-              const PinInput(),
+              PinInput(
+                onChange: (value) => otp = value,
+              ),
               const Gap(25),
               Text.rich(
                 TextSpan(
@@ -55,7 +69,10 @@ class _OtpPageState extends State<OtpPage> {
                       style: context.textTheme.caption!
                           .changeColor(AppColors.primary),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.pop(),
+                        ..onTap = () {
+                          auth.resetPassword(widget.email);
+                          context.pop();
+                        },
                     ),
                   ],
                 ),
@@ -66,11 +83,21 @@ class _OtpPageState extends State<OtpPage> {
               Button(
                 "Verify OTP Code Now",
                 onTap: () {
-                  if (otpState == OtpState.resetPassword) {
-                    context.push(const EndResetPasswordPage());
-                  }
-                  if (otpState == OtpState.auth) {
-                    context.push(const ProfilePictureUploadPage());
+                  final form = formKey.currentState!;
+                  if (form.validate()) {
+                    form.save();
+                    if (otpState == OtpState.resetPassword) {
+                      if (user?.accessToken != null) {
+                        auth.verifyOtp(otp, user!.accessToken!);
+                        context.push(const EndResetPasswordPage());
+                      }
+                    }
+                    if (otpState == OtpState.auth) {
+                      if (user?.accessToken != null) {
+                        auth.verifyOtp(otp, user!.accessToken!);
+                        context.push(const ProfilePictureUploadPage());
+                      }
+                    }
                   }
                 },
               ),
@@ -82,4 +109,3 @@ class _OtpPageState extends State<OtpPage> {
     );
   }
 }
-

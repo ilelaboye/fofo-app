@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
@@ -14,6 +13,8 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/podcast/presentation/podcast_episode_list.dart';
 import 'package:fofo_app/features/podcast/presentation/podcast_item.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import '../../../models/library/my_library/category.dart';
 
 class PodcastPage extends StatelessWidget {
   const PodcastPage({Key? key}) : super(key: key);
@@ -94,8 +95,8 @@ class PodcastPage extends StatelessWidget {
                   CategorySection(
                     showTitle: false,
                     categories: [
-                      CategoryItem(title: "Career"),
-                      CategoryItem(title: "Black Women")
+                      Category(title: "Career"),
+                      Category(title: "Black Women")
                     ],
                   ),
                   Gap.lg,

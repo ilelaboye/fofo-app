@@ -33,7 +33,8 @@ class CoursesPage extends StatelessWidget {
                 ),
                 Gap.lg,
                 CategorySection(
-                  categories: categoryItems(),
+                  categories: [],
+                  // categories: categoryItems(),
                 ),
                 Gap.lg,
                 const SectionHeader("All courses"),

@@ -11,13 +11,18 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/library/presentation/book.dart';
 import 'package:fofo_app/features/library/presentation/single_author_list.dart';
+import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../service/auth_service/auth_provider.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final libraryProvider = Provider.of<LibraryProvider>(context);
     return Scaffold(
       appBar: const Appbar(
         title: "Library",
@@ -36,7 +41,7 @@ class LibraryPage extends StatelessWidget {
                   ),
                   Gap.lg,
                   CategorySection(
-                    categories: categoryItems(),
+                    categories: libraryProvider.myLibrary?.categories ?? [],
                   ),
                   Gap.lg,
                   const SectionHeader("Continue Reading"),

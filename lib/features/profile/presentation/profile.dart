@@ -12,6 +12,9 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/chat/presentation/chats.dart';
 import 'package:fofo_app/features/profile/presentation/edit_profile.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../service/auth_service/auth_provider.dart';
 
 class ProfilePage extends StatelessWidget {
   final bool isCurrentUser;
@@ -19,6 +22,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    final profile = authProvider.userProfile!;
     return Scaffold(
       appBar: const Appbar(title: "Profile"),
       floatingActionButton: FloatingActionButton(
@@ -47,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Rachel Choo",
+                           profile.fullname ?? "",
                           style: context.textTheme.bodyMedium.size(17).bold,
                         ),
                         Gap.xs,
@@ -86,7 +92,7 @@ class ProfilePage extends StatelessWidget {
                       TextSpan(children: [
                         const TextSpan(text: "Followers\n"),
                         TextSpan(
-                          text: "10k",
+                          text: profile.followers.toString(),
                           style: context.textTheme.bodyMedium.size(15).bold,
                         ),
                       ]),
@@ -96,7 +102,7 @@ class ProfilePage extends StatelessWidget {
                       TextSpan(children: [
                         const TextSpan(text: "Following\n"),
                         TextSpan(
-                          text: "2,500",
+                          text: profile.following.toString(),
                           style: context.textTheme.bodyMedium.size(15).bold,
                         ),
                       ]),

@@ -7,6 +7,7 @@ import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
+
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -169,7 +170,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Gap.lg,
               Button(
                 'Proceed to Payment',
-                onTap: () => context.pushOff(const AppScaffoldPage()),
+                onTap: () {},
+                // context.pushOff(const AppScaffoldPage()),
               ),
               Gap.md,
               Row(

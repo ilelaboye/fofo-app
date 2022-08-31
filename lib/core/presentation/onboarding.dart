@@ -9,7 +9,10 @@ import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 
+import '../../features/auth/presentation/profile_picture_upload.dart';
+
 class OnboardingPage extends StatefulWidget {
+  static const String route = "/onboarding";
   const OnboardingPage({Key? key}) : super(key: key);
 
   @override
@@ -76,11 +79,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               ),
                             ),
                             Gap.lg,
-                            Button(
-                              "Get Started",
-                              width: context.width / 2,
-                              onTap: () => context.push(const SignupPage()),
-                            ),
+                            Button("Get Started", width: context.width / 2,
+                                onTap: () {
+                              // context.push(const ProfilePictureUploadPage());
+                              context.push(const SignupPage());
+                            }),
                             Gap.md,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,

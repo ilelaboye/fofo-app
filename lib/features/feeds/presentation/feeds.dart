@@ -11,17 +11,27 @@ import 'package:fofo_app/core/widgets/image.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/core/widgets/create_post.dart';
 import 'package:fofo_app/core/widgets/post_card.dart';
+import 'package:fofo_app/models/profile/user_profile/user_profile.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../service/auth_service/auth_provider.dart';
+import '../../../service/profile_service/profile_provider.dart';
 
 class FeedsPage extends StatelessWidget {
   const FeedsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+    final profile = authProvider.userProfile;
     return Scaffold(
       appBar: Appbar(
-        leading: Avatar(AppColors.error)
-            .onTap(() => AppScaffoldPage.of(context).openDrawer()),
+        leading: Avatar(AppColors.error,
+            data: CircleAvatar(
+              backgroundColor: Colors.red,
+              // backgroundImage: NetworkImage(profile?.profileImage ?? "")
+            )).onTap(() => AppScaffoldPage.of(context).openDrawer()),
         actions: [
           Center(
             child: Padding(

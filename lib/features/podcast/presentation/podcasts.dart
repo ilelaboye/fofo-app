@@ -86,7 +86,8 @@ class PodcastsPage extends StatelessWidget {
                   ),
                   Gap.lg,
                   CategorySection(
-                    categories: categoryItems(),
+                    categories: [],
+                    // categories: categoryItems(),
                   ),
                   Gap.lg,
                   const SectionHeader("Recently Played", seeAll: true),

@@ -91,21 +91,22 @@ class TextInputField extends BaseTextField {
     Widget? suffixIcon,
     Widget? prefix,
     String? labelText,
+    TextEditingController? controller,
     String? hintText = "",
     String? Function(String?)? validator = defaultValidator,
     TextInputType? keyboardType = TextInputType.text,
     Key? key,
   }) : super(
-          key: key,
-          labelText: labelText,
-          hintText: hintText,
-          onSaved: onSaved,
-          initialValue: initialValue,
-          suffixIcon: suffixIcon,
-          prefix: prefix,
-          keyboardType: keyboardType,
-          validator: validator,
-        );
+            key: key,
+            labelText: labelText,
+            hintText: hintText,
+            onSaved: onSaved,
+            initialValue: initialValue,
+            suffixIcon: suffixIcon,
+            prefix: prefix,
+            keyboardType: keyboardType,
+            validator: validator,
+            controller: controller);
 
   @override
   Widget build(BuildContext context) {

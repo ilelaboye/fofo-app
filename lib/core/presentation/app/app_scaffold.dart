@@ -7,9 +7,10 @@ import 'package:fofo_app/features/notifications/presentation/notifications.dart'
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../service/library/my_library_provider.dart';
+
 class AppScaffoldPage extends StatefulWidget {
   const AppScaffoldPage({Key? key}) : super(key: key);
-
   static _AppScaffoldPageState of(BuildContext context) =>
       context.read<_AppScaffoldPageState>();
   @override
@@ -31,10 +32,20 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   void openDrawer() => scaffoldKey.currentState!.openDrawer();
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(
+        const Duration(seconds: 1),
+        () => Provider.of<LibraryProvider>(context, listen: false)
+            .getLibrary(context));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(),
       body: Provider.value(
         value: this,
         child: IndexedStack(
