@@ -45,7 +45,7 @@ class _FofoAppState extends State<FofoApp> {
       title: AppStrings.kTitle,
       theme: AppTheme.defaultTheme,
        home: 
-      //widget.token != null ? AppScaffoldPage() :
+      // widget.token != "" ? AppScaffoldPage() :
  OnboardingPage(),
       debugShowCheckedModeBanner: false,
     );

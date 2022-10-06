@@ -178,6 +178,7 @@ class _SignupPageState extends State<SignupPage> {
                                       selectedItem.toString(), password)
                                   .then((response) {
                                 if (response['status']) {
+
                                   UserModel user = response['data'];
                                   Provider.of<UserProvider>(context,
                                           listen: false)

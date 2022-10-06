@@ -162,9 +162,10 @@ class AuthProvider with ChangeNotifier {
     _registeredInStatus = Status.Registering;
     notifyListeners();
     Response response;
+    print('about to register');
     response = await Dio().post(api, data: registrationData);
     final body = response.data;
-
+    print(body);
     if (response.statusCode != 200) {
       return {'status': false, 'message': 'Registration failed', 'data': body};
     }
