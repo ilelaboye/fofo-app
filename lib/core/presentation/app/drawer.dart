@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
@@ -11,14 +10,11 @@ import 'package:fofo_app/features/library/presentation/library.dart';
 import 'package:fofo_app/features/podcast/presentation/podcasts.dart';
 import 'package:fofo_app/features/profile/presentation/profile.dart';
 import 'package:fofo_app/features/shop/presentation/shop.dart';
-import 'package:fofo_app/models/profile/user_profile/user_profile.dart';
-import 'package:fofo_app/service/profile_service/profile_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/auth/presentation/login.dart';
 import '../../../service/auth_service/auth_provider.dart';
-import '../../../service/profile_service/profile_provider.dart';
 
 class AppDrawer extends StatefulWidget {
   AppDrawer({Key? key}) : super(key: key);
@@ -32,7 +28,7 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
-    final profile = authProvider.userProfile!;
+    final profile = authProvider.userProfile;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -51,7 +47,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   )),
               Gap.sm,
               Text(
-                profile.fullname ?? "",
+                profile?.fullname ?? "",
                 style: context.textTheme.bodyMedium.size(15).bold,
               ),
               Gap.md,
@@ -60,7 +56,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                        text: profile.following.toString(),
+                        text: profile?.following.toString(),
                         style: context.textTheme.bodyMedium.size(15).bold,
                       ),
                       const TextSpan(text: " Following"),
@@ -70,7 +66,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                        text: profile.followers.toString(),
+                        text: profile?.followers.toString(),
                         style: context.textTheme.bodyMedium.size(15).bold,
                       ),
                       const TextSpan(text: " Followers"),

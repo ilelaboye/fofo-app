@@ -2,9 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
-import 'package:fofo_app/core/presentation/app/app_scaffold.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
-import 'package:fofo_app/core/utils/validator.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
@@ -12,15 +10,12 @@ import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/reset_password.dart';
 import 'package:fofo_app/features/auth/presentation/signup.dart';
-import 'package:fofo_app/models/user_model/user_model.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/utils/constants/constants.dart';
+import '../../../core/presentation/app/app_scaffold.dart';
+import '../../../core/widgets/notification.dart';
 import '../../../service/auth_service/auth_provider.dart';
-import '../../../service/auth_service/auth_service.dart';
-import '../../../service/user_provider/user_provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const String route = "/login";
@@ -38,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     AuthProvider auth = Provider.of<AuthProvider>(context);
     var loading = Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: const <Widget>[
         CircularProgressIndicator(),
         Text(" Authenticating ... Please wait")
       ],
@@ -72,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                         value!.isEmpty ? "Please enter password" : null,
                     onSaved: (value) => password = value!,
                     labelText: "Password",
+                    obscureText: true,
                     suffixIcon: Icon(
                       PhosphorIcons.eyeSlashFill,
                       color: AppColors.primary,
@@ -101,10 +97,26 @@ class _LoginPageState extends State<LoginPage> {
                           final form = formKey.currentState!;
                           if (form.validate()) {
                             form.save();
-
-                            await auth.login(context, email, password);
+                            await auth
+                                .login(context, email, password)
+                                .then((response) => {
+                                      if (response['status'])
+                                        {
+                                          Navigator.of(context).pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const AppScaffoldPage()),
+                                              (route) => false)
+                                        }
+                                      else
+                                        {
+                                          showNotification(context, false,
+                                              response['message'])
+                                        }
+                                    });
                           } else {
-                            print("form is invalid");
+                            showNotification(
+                                context, false, "Invalid form input");
                           }
                         }),
                   const Gap(25),

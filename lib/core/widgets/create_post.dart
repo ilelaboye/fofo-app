@@ -37,9 +37,11 @@ class CreatePostPage extends StatelessWidget {
                 ),
               ),
               Gap.sm,
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: Insets.sm),
-                child: Icon(PhosphorIcons.paperPlaneTiltFill),
+                child: GestureDetector(
+                    child: const Icon(PhosphorIcons.paperPlaneTiltFill),
+                    onTap: () => print('Save post')),
               )
             ],
           ),

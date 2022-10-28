@@ -35,7 +35,8 @@ class MyLibrary {
             .toList(),
         myLibrary: data['myLibrary'] as List<dynamic>?,
         topAuthors: (data['topAuthors'] as List<dynamic>?)
-            ?.map((e) => TopAuthor.fromMap(e as Map<String, dynamic>))
+            ?.map(
+                (e) => TopAuthor.fromMap(e['details'] as Map<String, dynamic>))
             .toList(),
         paginationData: data['paginationData'] == null
             ? null

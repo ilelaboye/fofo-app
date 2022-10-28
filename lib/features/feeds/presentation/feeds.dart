@@ -1,135 +1,156 @@
 import 'package:flutter/material.dart';
-import 'package:fofo_app/config/constants.dart';
-import 'package:fofo_app/config/theme.dart';
-import 'package:fofo_app/core/presentation/app/app_scaffold.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
-import 'package:fofo_app/core/widgets/appbar.dart';
-import 'package:fofo_app/core/widgets/avatar_group.dart';
-import 'package:fofo_app/core/widgets/blog_card.dart';
-import 'package:fofo_app/core/widgets/gap.dart';
-import 'package:fofo_app/core/widgets/image.dart';
-import 'package:fofo_app/core/widgets/section_header.dart';
-import 'package:fofo_app/core/widgets/create_post.dart';
-import 'package:fofo_app/core/widgets/post_card.dart';
-import 'package:fofo_app/models/profile/user_profile/user_profile.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:fofo_app/core/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
-import '../../../service/auth_service/auth_provider.dart';
-import '../../../service/profile_service/profile_provider.dart';
+import '../../../config/constants.dart';
+import '../../../config/theme.dart';
+import '../../../core/presentation/app/app_scaffold.dart';
+import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/avatar_group.dart';
+import '../../../core/widgets/blog_card.dart';
+import '../../../core/widgets/gap.dart';
+import '../../../core/widgets/image.dart';
+import '../../../core/widgets/post.dart';
+import '../../../core/widgets/section_header.dart';
+import '../../../models/feed/feed.dart';
+import '../../../service/feed/feed.dart';
+import '../../blog/presentation/blogs.dart';
 
-class FeedsPage extends StatelessWidget {
+class FeedsPage extends StatefulWidget {
   const FeedsPage({Key? key}) : super(key: key);
 
   @override
+  State<FeedsPage> createState() => _FeedsPageState();
+}
+
+class _FeedsPageState extends State<FeedsPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<FeedsProvider>(context, listen: false).getFeeds(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: true);
-    final profile = authProvider.userProfile;
-    return Scaffold(
-      appBar: Appbar(
-        leading: Avatar(AppColors.error,
-            data: CircleAvatar(
-              backgroundColor: Colors.red,
-              // backgroundImage: NetworkImage(profile?.profileImage ?? "")
-            )).onTap(() => AppScaffoldPage.of(context).openDrawer()),
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: Insets.md),
-              child: LocalImage(
-                "logo".png,
-                height: 37,
+    return FutureBuilder(
+        future: Provider.of<FeedsProvider>(context, listen: false)
+            .getFeeds(context),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return Container(child: Loader());
+          } else {
+            List<Feed> feeds = snapshot.data.blogs.toList();
+            return Scaffold(
+              appBar: Appbar(
+                leading: Avatar(AppColors.error,
+                    data: CircleAvatar(
+                      backgroundColor: Colors.red,
+                      // backgroundImage: NetworkImage(profile?.profileImage ?? "")
+                    )).onTap(() => AppScaffoldPage.of(context).openDrawer()),
+                actions: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: Insets.md),
+                      child: LocalImage(
+                        "logo".png,
+                        height: 37,
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () => context.push(const CreatePostPage()),
-        heroTag: ValueKey(DateTime.now()), // for dev
-        child: const Icon(
-          PhosphorIcons.plus,
-          color: Colors.white,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Gap.md,
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.md, vertical: Insets.xs),
-              child: PostCard(),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.md, vertical: Insets.xs),
-              child: PostCard(
-                hasImage: true,
-              ),
-            ),
-            Gap.md,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.md),
-              child: SectionHeader(
-                "Just Joined",
-                seeAll: true,
-              ),
-            ),
-            Gap.md,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                  6,
-                  (index) => Avatar(AppColors.colorList()[index]),
+              // floatingActionButton: FloatingActionButton(
+              //   backgroundColor: AppColors.primary,
+              //   onPressed: () => context.push(const CreatePostPage()),
+              //   heroTag: ValueKey(DateTime.now()), // for dev
+              //   child: const Icon(
+              //     PhosphorIcons.plus,
+              //     color: Colors.white,
+              //   ),
+              // ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // feeds.map((e) => null)
+                    ...feeds.take(2).map(
+                          (item) => Container(
+                            margin:
+                                const EdgeInsets.symmetric(vertical: Insets.md),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Insets.md, vertical: Insets.xs),
+                              child: PostCard(
+                                feed: item,
+                              ),
+                            ),
+                          ),
+                        ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Insets.md),
+                      child: SectionHeader(
+                        "Just Joined",
+                        seeAll: true,
+                      ),
+                    ),
+                    Gap.md,
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Insets.lg),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(
+                          6,
+                          (index) => Avatar(AppColors.colorList()[index]),
+                        ),
+                      ),
+                    ),
+                    Gap.md,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Insets.md),
+                      child: SectionHeader(
+                        "Blog",
+                        seeAll: true,
+                        onClickSeeAll: () => context.push(const BlogsPage()),
+                      ),
+                    ),
+                    Gap.md,
+                    SizedBox(
+                      height: 160,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? Insets.md : Insets.sm,
+                            // use index == blog.length -1
+                            right: index == feeds.length - 1 ? Insets.md : 0,
+                          ),
+                          child: BlogCard(feed: feeds[index]),
+                        ),
+                        itemCount: feeds.length,
+                      ),
+                    ),
+                    Gap.md,
+                    ...feeds.skip(2).map(
+                          (item) => Container(
+                            margin:
+                                const EdgeInsets.symmetric(vertical: Insets.md),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Insets.md, vertical: Insets.xs),
+                              child: PostCard(
+                                feed: item,
+                              ),
+                            ),
+                          ),
+                        ),
+                    const Gap(80),
+                  ],
                 ),
               ),
-            ),
-            Gap.md,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.md),
-              child: SectionHeader(
-                "Blog",
-                seeAll: true,
-              ),
-            ),
-            Gap.md,
-            SizedBox(
-              height: 160,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? Insets.md : Insets.sm,
-                    // use index == blog.length -1
-                    right: index == 2 ? Insets.md : 0,
-                  ),
-                  child: const BlogCard(),
-                ),
-                itemCount: 3,
-              ),
-            ),
-            Gap.md,
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.md, vertical: Insets.xs),
-              child: PostCard(
-                hasReplies: true,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.md, vertical: Insets.xs),
-              child: PostCard(),
-            ),
-            const Gap(80),
-          ],
-        ),
-      ),
-    );
+            );
+          }
+        });
   }
 }

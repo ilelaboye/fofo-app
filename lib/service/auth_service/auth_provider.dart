@@ -6,15 +6,13 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:fofo_app/core/presentation/app/app_scaffold.dart';
 import 'package:fofo_app/models/user_model/otp_model.dart';
 import 'package:fofo_app/models/user_model/user_model.dart';
-import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../config/api.dart';
 import '../../models/profile/user_profile/user_profile.dart';
 import '../../models/user_model/reset_password.dart';
-import '../user_provider/user_preference.dart';
 
 enum Status {
   NotLoggedIn,
@@ -22,13 +20,14 @@ enum Status {
   LoggedIn,
   Registered,
   Authenticating,
-  Registering,
+  Loading,
+  NotLoading,
   LoggedOut
 }
 
 const _STORE_ACCESS_TOKEN_KEY = "_store_access_token_key";
-const _STORE_REFRESH_TOKEN_KEY = "_sotore_acccess_refresh_token_key";
-const _STORE_USER_KEY = "_sotore_user_key";
+const _STORE_REFRESH_TOKEN_KEY = "_store_access_refresh_token_key";
+const _STORE_USER_KEY = "_store_user_key";
 
 class AuthProvider with ChangeNotifier {
   Status _loggedInStatus = Status.NotLoggedIn;
@@ -41,12 +40,15 @@ class AuthProvider with ChangeNotifier {
   String? token;
 
   late SharedPreferences _preferences;
+  late DioClient dioClient;
 
   Future<void> init() async {
+    dioClient = DioClient(Dio());
     _preferences = await SharedPreferences.getInstance();
     token = getToken();
     userProfile = getUser();
     getRefreshToken();
+    // print('logged');
   }
 
   void logOut() async {
@@ -78,73 +80,60 @@ class AuthProvider with ChangeNotifier {
     return user == null ? null : UserProfile.fromJson(jsonDecode(user));
   }
 
-  Future<UserProfile?> getUserProfile(String _token) async {
-    const api = "https://fofoapp.herokuapp.com/api/profile";
-
-    final response = await Dio().get(api,
-        options: Options(
-            responseType: ResponseType.json,
-            headers: {"Authorization": "Bearer $_token"}));
-    if (response.statusCode != 200) {
+  Future<UserProfile?> getUserProfile(
+      BuildContext context, String _token) async {
+    try {
+      Response response = await dioClient.get(context, "profile");
+      return UserProfile.fromMap(response.data[0]);
+    } catch (err) {
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
       return null;
     }
-    return UserProfile.fromMap(response.data[0]);
   }
 
-  Future<void> login(
+  Future<Map<String, dynamic>> login(
       BuildContext context, String email, String password) async {
     try {
       _loggedInStatus = Status.Authenticating;
       notifyListeners();
-
-      const api = "https://fofoapp.herokuapp.com/api/auth/login";
-
-      Response response =
-          await Dio().post(api, data: {'email': email, 'password': password});
-
-      final isLoginSuccessful = response.statusCode == 200;
-
-      _loggedInStatus =
-          isLoginSuccessful ? Status.LoggedIn : Status.NotLoggedIn;
-
-      if (isLoginSuccessful == false) {
-        _loggedInStatus = Status.NotLoggedIn;
-        notifyListeners();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Failed Login")));
-        debugPrint(response.data);
-        return;
-      }
-
-      userProfile = await getUserProfile(response.data['accessToken']);
+      Response response = await dioClient.post(context, "auth/login",
+          data: {'email': email, 'password': password});
+      _loggedInStatus = Status.LoggedIn;
+      // print(response.data['accessToken']);
       token = response.data['accessToken'];
+      setToken(response.data['accessToken']);
+      setRefreshToken(response.data['refreshToken']);
+      userProfile = await getUserProfile(context, response.data['accessToken']);
+      // print(userProfile?.fullname);
+      // ;
       if (userProfile == null) {
         _loggedInStatus = Status.NotLoggedIn;
         notifyListeners();
-        return;
+        return {
+          'status': false,
+          'message': "Invalid token, try logging in again"
+        };
       }
-      ;
-
+      _loggedInStatus = Status.LoggedIn;
       setUser(userProfile!);
-      setToken(response.data['accessToken']);
-      setRefreshToken(response.data['refreshToken']);
-
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const AppScaffoldPage()),
-          (route) => false);
 
       notifyListeners();
+
+      return {'status': true, 'message': "Login successful"};
     } catch (err) {
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
+      return {'status': false, 'message': err};
     }
   }
 
   // Future<Map<String, dynamic>>logOut()async{
-  //   await 
+  //   await
   // }
 
   Future<Map<String, dynamic>> register(
+    BuildContext context,
     String fullname,
     String email,
     String phonenumber,
@@ -158,57 +147,72 @@ class AuthProvider with ChangeNotifier {
       "field": field,
       "password": password
     };
-    const api = "https://fofoapp.herokuapp.com/api/auth/register";
-    _registeredInStatus = Status.Registering;
+    _registeredInStatus = Status.Loading;
     notifyListeners();
     Response response;
-    print('about to register');
-    response = await Dio().post(api, data: registrationData);
-    final body = response.data;
-    print(body);
-    if (response.statusCode != 200) {
-      return {'status': false, 'message': 'Registration failed', 'data': body};
-    }
+    try {
+      response = await dioClient.post(context, "auth/register",
+          data: registrationData);
+      print(response.data);
+      final body = response.data;
 
-    authUser = UserModel.fromMap(body);
-    authUser = authUser!.copyWith(
-        fullname: fullname,
-        email: email,
-        phonenumber: phonenumber,
-        field: field,
-        password: password);
-    // UserPreferences().saveUser(authUser!);
-    notifyListeners();
-    // print(UserPreferences().saveUser(authUser!));
-    return {
-      'status': true,
-      'message': 'Successfully registered',
-      'data': authUser
-    };
+      authUser = UserModel.fromMap(body);
+      authUser = authUser!.copyWith(
+          fullname: fullname,
+          email: email,
+          phonenumber: phonenumber,
+          field: field,
+          password: password);
+      _registeredInStatus = Status.NotLoading;
+      notifyListeners();
+      return {
+        'status': true,
+        'message': 'Successfully registered',
+        'data': authUser
+      };
+    } catch (e) {
+      _registeredInStatus = Status.NotLoading;
+      notifyListeners();
+      return {'status': false, 'message': e};
+    }
   }
 
-  Future<Map<String, dynamic>> verifyOtp(String otp, String token) async {
-    var result;
-    const api = "https://fofoapp.herokuapp.com/api/auth/verifyotp";
+  Future<Map<String, dynamic>> verifyOtp(
+      BuildContext context, String otp, String token) async {
+    // var result;
+    // const api = "https://fofoapp.herokuapp.com/api/auth/verifyotp";
     final bearerToken = token;
     final Map<String, dynamic> otpData = {"otp": otp};
     notifyListeners();
     Response response;
-    response = await Dio().post(api,
-        data: otpData,
-        options: Options(
-            responseType: ResponseType.json,
-            headers: {"Authorization": "Bearer $bearerToken"}));
-    if (response.statusCode == 200) {
+
+    try {
+      response = await dioClient.post(context, "auth/verifyotp", data: otpData);
+
       final body = response.data;
       OtpModel otpCode = OtpModel.fromMap(body);
       notifyListeners();
-      result = {'status': true, 'message': 'Successful', 'user': otpCode};
-    } else {
+      return {'status': true, 'message': 'Successful', 'user': otpCode};
+    } catch (e) {
+      _registeredInStatus = Status.NotLoading;
       notifyListeners();
-      result = {'status': false, 'message': response.data['error']};
+      return {'status': false, 'message': e};
     }
-    return result;
+    // response = await Dio().post(api,
+    //     data: otpData,
+    //     options: Options(
+    //         responseType: ResponseType.json,
+    //         headers: {"Authorization": "Bearer $bearerToken"}));
+    // if (response.statusCode == 200) {
+    //   final body = response.data;
+    //   OtpModel otpCode = OtpModel.fromMap(body);
+    //   notifyListeners();
+    //   result = {'status': true, 'message': 'Successful', 'user': otpCode};
+    // } else {
+    //   notifyListeners();
+    //   result = {'status': false, 'message': response.data['error']};
+    // }
+    // return result;
   }
 
   Future<Map<String, dynamic>?> uploadToServer(
@@ -228,7 +232,6 @@ class AuthProvider with ChangeNotifier {
               responseType: ResponseType.json,
               headers: {"Authorization": "Bearer $bearerToken"}));
       if (response.data != null) {
-        print(response.data);
         final body = response.data;
       }
       return response.data;

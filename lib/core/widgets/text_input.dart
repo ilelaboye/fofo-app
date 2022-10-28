@@ -95,6 +95,7 @@ class TextInputField extends BaseTextField {
     String? hintText = "",
     String? Function(String?)? validator = defaultValidator,
     TextInputType? keyboardType = TextInputType.text,
+    bool obscureText = false,
     Key? key,
   }) : super(
             key: key,
@@ -105,6 +106,7 @@ class TextInputField extends BaseTextField {
             suffixIcon: suffixIcon,
             prefix: prefix,
             keyboardType: keyboardType,
+            obscureText: obscureText,
             validator: validator,
             controller: controller);
 

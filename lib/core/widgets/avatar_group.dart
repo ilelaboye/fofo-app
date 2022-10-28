@@ -24,7 +24,7 @@ class AvatarGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final avatarGroup = List.generate(
-      showCount,
+      showCount < 9 ? showCount : 8,
       (index) => Positioned(
         left: index * leftPadding,
         child: Avatar(
@@ -34,8 +34,8 @@ class AvatarGroup extends StatelessWidget {
       ),
     );
 
-    if (colors.length > showCount) {
-      final hiddenCount = colors.length - showCount;
+    if (showCount > 8) {
+      final hiddenCount = showCount - 8;
       avatarGroup.add(Positioned(
         left: leftPadding * (showCount),
         child: Avatar(
@@ -43,7 +43,7 @@ class AvatarGroup extends StatelessWidget {
           radius: groupRadius,
           data: Center(
             child: Text(
-              "+$hiddenCount",
+              hiddenCount.toString(),
               style: textStyle ??
                   context.textTheme.bodyMedium
                       .changeColor(AppColors.primary)

@@ -3,13 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
-
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../features/library/presentation/category_view.dart';
 import '../../models/library/my_library/category.dart';
 
 // class CategoryItem {
@@ -112,7 +110,7 @@ List<CategoryItem> categoryItems() => [
     ];
 
 List<Category> categoryItemsNoIcons() => [
-      // CategoryItem(title: "Career", icon: ""),
+      Category(title: "Career", iconName: null),
       // CategoryItem(title: "Black Woman", icon: ""),
       // CategoryItem(title: "Growth", icon: ""),
       // CategoryItem(title: "Investment", icon: ""),

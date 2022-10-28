@@ -9,18 +9,18 @@ import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
+import 'package:fofo_app/core/widgets/notification.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/login.dart';
-import 'package:fofo_app/features/auth/presentation/otp.dart';
-import 'package:fofo_app/models/user_model/user_model.dart';
 import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../models/user_model/user_model.dart';
 import '../../../service/auth_service/auth_provider.dart';
 import '../../../service/user_provider/user_provider.dart';
+import 'otp.dart';
 
 String? selectedItem;
 typedef OnSelectItem = Function(String? selectedItem);
@@ -52,6 +52,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   late String fullname, email, phonenumber, password;
+
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
@@ -64,6 +65,7 @@ class _SignupPageState extends State<SignupPage> {
     );
 
     final ISignUp _signupService = SignUpService();
+    // final notify = Notification();
     return Scaffold(
       appBar: const Appbar(),
       body: SingleChildScrollView(
@@ -135,6 +137,7 @@ class _SignupPageState extends State<SignupPage> {
                           }),
                   const Gap(25),
                   TextInputField(
+                      obscureText: true,
                       labelText: "Password",
                       suffixIcon: Icon(
                         PhosphorIcons.eyeSlashFill,
@@ -142,11 +145,14 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       onSaved: (value) => password = value!,
                       validator: (value) {
-                        if (value!.isNotEmpty && value.length > 7) {
-                          return null;
-                        } else {
+                        if (value!.isEmpty) {
                           return "Please Input Password";
                         }
+                        if (value.length < 7) {
+                          return "Minimum of 7 characters is required";
+                        }
+
+                        return null;
                       }),
                   const Gap(25),
                   Text.rich(
@@ -165,7 +171,7 @@ class _SignupPageState extends State<SignupPage> {
                     style: context.textTheme.caption,
                   ),
                   Gap.lg,
-                  auth.registeredInStatus == Status.Registering
+                  auth.registeredInStatus == Status.Loading
                       ? loading
                       : Button(
                           'Create Your Account',
@@ -174,29 +180,31 @@ class _SignupPageState extends State<SignupPage> {
                             if (form.validate()) {
                               form.save();
                               auth
-                                  .register(fullname, email, phonenumber,
-                                      selectedItem.toString(), password)
+                                  .register(
+                                      context,
+                                      fullname,
+                                      email,
+                                      phonenumber,
+                                      selectedItem.toString(),
+                                      password)
                                   .then((response) {
+                                print(response);
                                 if (response['status']) {
-
                                   UserModel user = response['data'];
                                   Provider.of<UserProvider>(context,
                                           listen: false)
                                       .setUser(user);
                                   context.push(OtpPage(
-                                    otpState: OtpState.auth,
-                                    email: email,
-                                  ));
+                                      otpState: OtpState.auth,
+                                      email: email,
+                                      phone: phonenumber));
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text("Registration Failed")));
+                                  showNotification(
+                                      context, false, response['message']);
                                 }
                               });
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Invalid form")));
+                              showNotification(context, false, "Invalid form");
                             }
                           },
                         ),

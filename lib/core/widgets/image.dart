@@ -18,3 +18,34 @@ class LocalImage extends StatelessWidget {
     );
   }
 }
+
+class NetworkImg extends StatelessWidget {
+  final String url;
+  final double? height, width;
+  final BoxFit? fit;
+  const NetworkImg(this.url,
+      {this.height, this.width, this.fit = BoxFit.cover, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      url,
+      height: height,
+      width: width,
+      fit: fit,
+      loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+    );
+  }
+}

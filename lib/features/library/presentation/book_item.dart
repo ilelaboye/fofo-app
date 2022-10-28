@@ -8,7 +8,10 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BookItem extends StatelessWidget {
   final String imgUrl;
-  const BookItem(this.imgUrl, {Key? key}) : super(key: key);
+  final String name;
+  final String? author;
+  const BookItem(this.imgUrl, this.name, this.author, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,9 @@ class BookItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "Don’t make me think: A common sense approach to money",
+                        name,
                       ),
                     ),
                     Gap.sm,
@@ -50,7 +53,7 @@ class BookItem extends StatelessWidget {
                   ],
                 ),
                 Gap.sm,
-                Text("Sarah Jacobs", style: context.textTheme.caption),
+                Text(author.toString(), style: context.textTheme.caption),
                 Gap.sm,
                 Row(
                   children: List.generate(

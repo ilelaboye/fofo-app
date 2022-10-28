@@ -34,15 +34,17 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   @override
   void initState() {
     super.initState();
-
+    // Provider.of<FeedsProvider>(context, listen: false).getFeeds(context);
     Future.delayed(
-        const Duration(seconds: 1),
+        const Duration(seconds: 10),
         () => Provider.of<LibraryProvider>(context, listen: false)
             .getLibrary(context));
   }
 
   @override
   Widget build(BuildContext context) {
+    // AuthProvider user = Provider.of<AuthProvider>(context);
+    // print(user.getUser());
     return Scaffold(
       key: scaffoldKey,
       drawer: AppDrawer(),
