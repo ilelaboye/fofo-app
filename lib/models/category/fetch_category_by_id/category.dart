@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 @immutable
 class Category {
   final List<dynamic>? books;
-  final String? title;
+  final String? name;
   final dynamic iconName;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -14,7 +14,7 @@ class Category {
 
   const Category({
     this.books,
-    this.title,
+    this.name,
     this.iconName,
     this.createdAt,
     this.updatedAt,
@@ -23,12 +23,12 @@ class Category {
 
   @override
   String toString() {
-    return 'Category(books: $books, title: $title, iconName: $iconName, createdAt: $createdAt, updatedAt: $updatedAt, id: $id)';
+    return 'Category(books: $books, name: $name, iconName: $iconName, createdAt: $createdAt, updatedAt: $updatedAt, id: $id)';
   }
 
   factory Category.fromMap(Map<String, dynamic> data) => Category(
         books: data['books'] as List<dynamic>?,
-        title: data['title'] as String?,
+        name: data['name'] as String?,
         iconName: data['iconName'] as dynamic,
         createdAt: data['createdAt'] == null
             ? null
@@ -41,7 +41,7 @@ class Category {
 
   Map<String, dynamic> toMap() => {
         'books': books,
-        'title': title,
+        'name': name,
         'iconName': iconName,
         'createdAt': createdAt?.toIso8601String(),
         'updatedAt': updatedAt?.toIso8601String(),
@@ -62,7 +62,7 @@ class Category {
 
   Category copyWith({
     List<dynamic>? books,
-    String? title,
+    String? name,
     dynamic iconName,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -70,7 +70,7 @@ class Category {
   }) {
     return Category(
       books: books ?? this.books,
-      title: title ?? this.title,
+      name: name ?? this.name,
       iconName: iconName ?? this.iconName,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -89,7 +89,7 @@ class Category {
   @override
   int get hashCode =>
       books.hashCode ^
-      title.hashCode ^
+      name.hashCode ^
       iconName.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^

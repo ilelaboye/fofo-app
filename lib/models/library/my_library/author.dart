@@ -7,27 +7,27 @@ class Author {
   final String? id;
   final String? fullname;
   final String? email;
-  final String? profileImage;
+  final String? image_url;
 
-  const Author({this.id, this.fullname, this.email, this.profileImage});
+  const Author({this.id, this.fullname, this.email, this.image_url});
 
   @override
   String toString() {
-    return 'Author(id: $id, fullname: $fullname, email: $email, profileImage: $profileImage)';
+    return 'Author(id: $id, fullname: $fullname, email: $email, image_url: $image_url)';
   }
 
   factory Author.fromMap(Map<String, dynamic> data) => Author(
         id: data['id'] as String?,
         fullname: data['fullname'] as String?,
         email: data['email'] as String?,
-        profileImage: data['profileImage'] as String?,
+        image_url: data['image_url'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
         'id': id,
         'fullname': fullname,
         'email': email,
-        'profileImage': profileImage,
+        'image_url': image_url,
       };
 
   /// `dart:convert`
@@ -46,17 +46,17 @@ class Author {
     String? id,
     String? fullname,
     String? email,
-    String? profileImage,
+    String? image_url,
   }) {
     return Author(
       id: id ?? this.id,
       fullname: fullname ?? this.fullname,
       email: email ?? this.email,
-      profileImage: profileImage ?? this.profileImage,
+      image_url: image_url ?? this.image_url,
     );
   }
 
   @override
   int get hashCode =>
-      id.hashCode ^ fullname.hashCode ^ email.hashCode ^ profileImage.hashCode;
+      id.hashCode ^ fullname.hashCode ^ email.hashCode ^ image_url.hashCode;
 }

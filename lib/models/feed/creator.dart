@@ -8,19 +8,22 @@ class Creator {
   final String? fullname;
   final String? email;
   final String? profileImage;
+  final String? createdAt;
 
-  const Creator({this.id, this.fullname, this.email, this.profileImage});
+  const Creator(
+      {this.id, this.fullname, this.email, this.profileImage, this.createdAt});
 
   @override
   String toString() {
-    return 'Creator(id: $id, fullname: $fullname, email: $email, profileImage: $profileImage)';
+    return 'Creator(id: $id, fullname: $fullname, email: $email, profileImage: $profileImage, createdAt: $createdAt)';
   }
 
   factory Creator.fromMap(Map<String, dynamic> data) => Creator(
-        id: data['_id'] as String?,
+        id: data['id'] as String?,
         fullname: data['fullname'] as String?,
         email: data['email'] as String?,
         profileImage: data['profileImage'] as String?,
+        createdAt: data['createdAt'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
@@ -28,6 +31,7 @@ class Creator {
         'fullname': fullname,
         'email': email,
         'profileImage': profileImage,
+        'createdAt': createdAt,
       };
 
   /// `dart:convert`
@@ -47,16 +51,22 @@ class Creator {
     String? fullname,
     String? email,
     String? profileImage,
+    String? createdAt,
   }) {
     return Creator(
       id: id ?? this.id,
       fullname: fullname ?? this.fullname,
       email: email ?? this.email,
       profileImage: profileImage ?? this.profileImage,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
   int get hashCode =>
-      id.hashCode ^ fullname.hashCode ^ email.hashCode ^ profileImage.hashCode;
+      id.hashCode ^
+      fullname.hashCode ^
+      email.hashCode ^
+      createdAt.hashCode ^
+      profileImage.hashCode;
 }

@@ -58,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                         value!.isEmpty ? "Please enter email" : null,
                     // validator: validateEmail,
                     onSaved: (value) => email = value!,
+                    initialValue: "mnattrass1@netscape.com",
                     labelText: "Email Address",
                     hintText: "E.g Rachelchoo@gmail.com",
                   ),
@@ -66,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     validator: (value) =>
                         value!.isEmpty ? "Please enter password" : null,
                     onSaved: (value) => password = value!,
+                    initialValue: "password100",
                     labelText: "Password",
                     obscureText: true,
                     suffixIcon: Icon(

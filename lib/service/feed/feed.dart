@@ -14,7 +14,8 @@ class FeedsProvider extends ChangeNotifier {
   Future getFeeds(BuildContext context) async {
     try {
       Response response = await dioClient.get(context, "blog/lists");
-
+      print('get feeds data');
+      // print(response.data);
       feeds = Feeds.fromMap(response.data);
       notifyListeners();
       return feeds;

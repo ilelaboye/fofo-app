@@ -5,23 +5,23 @@ import 'package:flutter/material.dart';
 
 @immutable
 class BookCategory {
-  final String? title;
+  final String? name;
   final String? id;
 
-  const BookCategory({this.title, this.id});
+  const BookCategory({this.name, this.id});
 
   @override
   String toString() {
-    return 'BookCategory(title: $title, id: $id)';
+    return 'BookCategory(name: $name, id: $id)';
   }
 
   factory BookCategory.fromMap(Map<String, dynamic> data) => BookCategory(
-        title: data['title'] as String?,
+        name: data['name'] as String?,
         id: data['id'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
-        'title': title,
+        'name': name,
         'id': id,
       };
 
@@ -38,11 +38,11 @@ class BookCategory {
   String toJson() => json.encode(toMap());
 
   BookCategory copyWith({
-    String? title,
+    String? name,
     String? id,
   }) {
     return BookCategory(
-      title: title ?? this.title,
+      name: name ?? this.name,
       id: id ?? this.id,
     );
   }
@@ -56,5 +56,5 @@ class BookCategory {
   }
 
   @override
-  int get hashCode => title.hashCode ^ id.hashCode;
+  int get hashCode => name.hashCode ^ id.hashCode;
 }

@@ -20,14 +20,18 @@ class LibraryProvider extends ChangeNotifier {
   Future getLibrary(BuildContext context) async {
     try {
       Response response = await dioClient.get(context, "library");
+
+      print('get library');
       print(response.data);
       myLibrary = MyLibrary.fromMap(response.data);
       print('lll');
       print(myLibrary);
       notifyListeners();
-      return MyLibrary.fromMap(response.data);
+      return myLibrary;
     } catch (err) {
-      showNotification(context, false, err);
+      print('library error');
+      print(err);
+      // showNotification(context, false, err);
       notifyListeners();
     }
   }

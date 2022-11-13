@@ -58,14 +58,16 @@ class PostCard extends StatelessWidget {
                 Avatar(
                   AppColors.error,
                   radius: 18,
-                  data: NetworkImg(feed.creator!.profileImage.toString()),
+                  data: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          feed.createdBy!.profileImage.toString())),
                 ),
                 Gap.sm,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      feed.creator!.fullname.toString(),
+                      feed.createdBy!.fullname.toString(),
                       style: context.textTheme.bodyMedium.size(14),
                     ),
                     Gap.xs,
@@ -78,7 +80,7 @@ class PostCard extends StatelessWidget {
                               .changeColor(AppColors.palette[700]!),
                         ),
                         TextSpan(
-                          text: feed.title.toString(),
+                          text: feed.name.toString(),
                         ),
                       ]),
                       style: context.textTheme.bodyMedium.size(10),
@@ -98,11 +100,11 @@ class PostCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (feed.blogImagePath != null) ...[
+            if (feed.blogImage != null) ...[
               ClipRRect(
                 borderRadius: Corners.smBorder,
                 child: NetworkImg(
-                  feed.blogImagePath.toString(),
+                  feed.blogImage.toString(),
                   width: context.width,
                   height: 200,
                 ),
@@ -120,7 +122,7 @@ class PostCard extends StatelessWidget {
                       size: 17,
                     ),
                     Gap.xs,
-                    Text(feed.likes_count.toString())
+                    Text(feed.blogLikes.toString())
                   ],
                 ),
                 Row(

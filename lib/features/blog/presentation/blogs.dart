@@ -61,54 +61,93 @@ class _BlogsPageState extends State<BlogsPage> {
                   Gap.lg,
                   const SectionHeader("Hot"),
                   Gap.sm,
-                  Column(children: [
-                    ...blogs.blogs.map(
-                      (item) => Container(
-                        padding:
-                            const EdgeInsets.symmetric(vertical: Insets.sm),
-                        child: Row(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (blogs.hot?.blogImage != null)
+                        ClipRRect(
+                          borderRadius: Corners.smBorder,
+                          child: NetworkImg(
+                            blogs.hot!.blogImage.toString(),
+                            width: 100,
+                            height: 100,
+                          ),
+                        ),
+                      Gap.sm,
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (item.blogImagePath != null)
-                              ClipRRect(
-                                borderRadius: Corners.smBorder,
-                                child: NetworkImg(
-                                  item.blogImagePath.toString(),
-                                  width: 100,
-                                  height: 100,
-                                ),
-                              ),
-                            Gap.sm,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.category_details!.name
-                                        .toString()
-                                        .titleCaseSingle(),
-                                    style: context.textTheme.caption.size(12),
-                                  ),
-                                  Gap.xs,
-                                  Text(
-                                    item.title.toString().titleCaseSingle(),
-                                    style:
-                                        context.textTheme.bodyMedium.size(16),
-                                    maxLines: 2,
-                                  ),
-                                  Gap.md,
-                                  Text(
-                                    "By " + item.creator!.fullname.toString(),
-                                    style: context.textTheme.caption.size(12),
-                                  )
-                                ],
-                              ),
+                            Text(
+                              blogs.hot!.blogCategory!.name
+                                  .toString()
+                                  .titleCaseSingle(),
+                              style: context.textTheme.caption.size(12),
+                            ),
+                            Gap.xs,
+                            Text(
+                              blogs.hot!.name.toString().titleCaseSingle(),
+                              style: context.textTheme.bodyMedium.size(16),
+                              maxLines: 2,
+                            ),
+                            Gap.md,
+                            Text(
+                              "By " + blogs.hot!.createdBy!.fullname.toString(),
+                              style: context.textTheme.caption.size(12),
                             )
                           ],
                         ),
-                      ),
-                    ),
-                  ])
+                      )
+                    ],
+                  ),
+                  // Column(children: [
+                  //   ...blogs.blogs.map(
+                  //     (item) => Container(
+                  //       padding:
+                  //           const EdgeInsets.symmetric(vertical: Insets.sm),
+                  //       child: Row(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           if (item.blogImage != null)
+                  //             ClipRRect(
+                  //               borderRadius: Corners.smBorder,
+                  //               child: NetworkImg(
+                  //                 item.blogImage.toString(),
+                  //                 width: 100,
+                  //                 height: 100,
+                  //               ),
+                  //             ),
+                  //           Gap.sm,
+                  //           Expanded(
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Text(
+                  //                   item.blogCategory!.name
+                  //                       .toString()
+                  //                       .titleCaseSingle(),
+                  //                   style: context.textTheme.caption.size(12),
+                  //                 ),
+                  //                 Gap.xs,
+                  //                 Text(
+                  //                   item.title.toString().titleCaseSingle(),
+                  //                   style:
+                  //                       context.textTheme.bodyMedium.size(16),
+                  //                   maxLines: 2,
+                  //                 ),
+                  //                 Gap.md,
+                  //                 Text(
+                  //                   "By " + item.createdBy!.fullname.toString(),
+                  //                   style: context.textTheme.caption.size(12),
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ])
                 ],
               ),
             ),
@@ -126,11 +165,11 @@ class _BlogsPageState extends State<BlogsPage> {
                   padding: EdgeInsets.only(
                     left: index == 0 ? Insets.lg : Insets.sm,
                     // use index == blog.length -1
-                    right: index == blogs.blogs.length - 1 ? Insets.lg : 0,
+                    right: index == blogs.recent!.length - 1 ? Insets.lg : 0,
                   ),
-                  child: BlogCard(feed: blogs.blogs[index]),
+                  child: BlogCard(feed: blogs.recent![index]),
                 ),
-                itemCount: blogs.blogs.length,
+                itemCount: blogs.recent!.length,
               ),
             ),
             Gap.lg,
@@ -148,10 +187,10 @@ class _BlogsPageState extends State<BlogsPage> {
                     padding: EdgeInsets.only(
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == blog.length -1
-                      right: index == blogs.blogs.length - 1 ? Insets.lg : 0,
+                      right: index == blogs.popular!.length - 1 ? Insets.lg : 0,
                     ),
-                    child: BlogCard(feed: blogs.blogs[index])),
-                itemCount: blogs.blogs.length,
+                    child: BlogCard(feed: blogs.popular![index])),
+                itemCount: blogs.popular!.length,
               ),
             ),
             const Gap(50)

@@ -6,40 +6,40 @@ import 'package:flutter/material.dart';
 @immutable
 class TopAuthor {
   final String? id;
-  final String? author;
+  final String? fullname;
   final String? price;
   final String? title;
-  final String? bookImage;
+  final String? image_url;
   final int? totalBooksWritten;
 
   const TopAuthor(
       {this.id,
-      this.author,
+      this.fullname,
       this.title,
       this.price,
-      this.bookImage,
+      this.image_url,
       this.totalBooksWritten});
 
   @override
   String toString() {
-    return 'TopAuthor(id: $id, author: $author, title: $title,price:$price,bookImage:$bookImage, totalBooksWritten: $totalBooksWritten)';
+    return 'TopAuthor(id: $id, fullname: $fullname, title: $title,price:$price,image_url:$image_url, totalBooksWritten: $totalBooksWritten)';
   }
 
   factory TopAuthor.fromMap(Map<String, dynamic> data) => TopAuthor(
         id: data['id'] as String?,
-        author: data['author'] as String?,
+        fullname: data['fullname'] as String?,
         price: data['price'] as String?,
         title: data['title'] as String?,
-        bookImage: data['bookImage'] as String?,
+        image_url: data['image_url'] as String?,
         totalBooksWritten: data['totalBooksWritten'] as int?,
       );
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'author': author,
+        'fullname': fullname,
         'price': price,
         'title': title,
-        'bookImage': bookImage,
+        'image_url': image_url,
         'totalBooksWritten': totalBooksWritten,
       };
 
@@ -57,18 +57,18 @@ class TopAuthor {
 
   TopAuthor copyWith({
     String? id,
-    String? author,
+    String? fullname,
     String? title,
     String? price,
-    String? bookImage,
+    String? image_url,
     int? totalBooksWritten,
   }) {
     return TopAuthor(
       id: id ?? this.id,
-      author: author ?? this.author,
+      fullname: fullname ?? this.fullname,
       title: title ?? this.title,
       price: price ?? this.price,
-      bookImage: bookImage ?? this.bookImage,
+      image_url: image_url ?? this.image_url,
       totalBooksWritten: totalBooksWritten ?? this.totalBooksWritten,
     );
   }
@@ -84,9 +84,9 @@ class TopAuthor {
   @override
   int get hashCode =>
       id.hashCode ^
-      author.hashCode ^
+      fullname.hashCode ^
       title.hashCode ^
       price.hashCode ^
-      bookImage.hashCode ^
+      image_url.hashCode ^
       totalBooksWritten.hashCode;
 }

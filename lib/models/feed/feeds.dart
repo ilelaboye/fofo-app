@@ -2,38 +2,44 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fofo_app/models/feed/category.dart';
 
-import 'feed.dart';
-import 'pagination.dart';
+import './feed.dart';
 
 @immutable
 class Feeds {
-  final List<Feed> blogs;
-  final PaginationData? paginationData;
+  final List<Category>? categories;
+  final Feed? hot;
+  final List<Feed>? recent;
+  final List<Feed>? popular;
 
-  const Feeds({
-    required this.blogs,
-    this.paginationData,
-  });
+  const Feeds({this.categories, this.hot, this.recent, this.popular});
 
   @override
   String toString() {
-    return 'Feeds(blogs: $blogs paginationData: $paginationData)';
+    return 'Feeds(categories: $categories, hot: $hot, recent: $recent, popular: $popular)';
   }
 
   factory Feeds.fromMap(Map<String, dynamic> data) => Feeds(
-        blogs: (data['blogs'] as List<dynamic>)
+        categories: (data['categories']['docs'] as List<dynamic>)
+            .map((e) => Category.fromMap(e as Map<String, dynamic>))
+            .toList(),
+        hot: data['hot'] == null
+            ? null
+            : Feed.fromMap(data['hot'] as Map<String, dynamic>),
+        recent: (data['recent']['docs'] as List<dynamic>)
             .map((e) => Feed.fromMap(e as Map<String, dynamic>))
             .toList(),
-        paginationData: data['paginationData'] == null
-            ? null
-            : PaginationData.fromMap(
-                data['paginationData'] as Map<String, dynamic>),
+        popular: (data['popular']['docs'] as List<dynamic>)
+            .map((e) => Feed.fromMap(e as Map<String, dynamic>))
+            .toList(),
       );
 
   Map<String, dynamic> toMap() => {
-        'blogs': blogs.map((e) => e.toMap()).toList(),
-        'pagination': paginationData?.toMap(),
+        'categories': categories?.map((e) => e.toMap()).toList(),
+        'hot': hot?.toMap(),
+        'recent': recent?.map((e) => e.toMap()).toList(),
+        'popular': popular?.map((e) => e.toMap()).toList(),
       };
 
   /// `dart:convert`
@@ -48,13 +54,16 @@ class Feeds {
   /// Converts [Feeds] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Feeds copyWith({
-    List<Feed>? blogs,
-    PaginationData? paginationData,
-  }) {
+  Feeds copyWith(
+      {List<Category>? categories,
+      Feed? hot,
+      List<Feed>? recent,
+      List<Feed>? popular}) {
     return Feeds(
-      blogs: blogs ?? this.blogs,
-      paginationData: paginationData ?? this.paginationData,
+      categories: categories ?? this.categories,
+      hot: hot ?? this.hot,
+      recent: recent ?? this.recent,
+      popular: popular ?? this.popular,
     );
   }
 
@@ -67,5 +76,6 @@ class Feeds {
   }
 
   @override
-  int get hashCode => blogs.hashCode ^ paginationData.hashCode;
+  int get hashCode =>
+      categories.hashCode ^ hot.hashCode ^ popular.hashCode ^ recent.hashCode;
 }

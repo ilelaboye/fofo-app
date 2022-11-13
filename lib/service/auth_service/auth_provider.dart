@@ -53,6 +53,7 @@ class AuthProvider with ChangeNotifier {
 
   void logOut() async {
     await _preferences.clear();
+    setToken("null");
   }
 
   void setToken(String token) {

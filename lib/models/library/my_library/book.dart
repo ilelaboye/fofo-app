@@ -9,42 +9,39 @@ import 'book_category.dart';
 @immutable
 class Book {
   final String? id;
-  final String? title;
-  final String? author;
+  final String? name;
   final String? price;
-  final String? ratings;
+  final int? ratings;
   final String? store;
   final String? bookImage;
-  Author? createdBy;
+  final Author? author;
   BookCategory? bookCategoryId;
 
   Book(
       {this.id,
-      this.title,
+      this.name,
       this.author,
       this.price,
       this.ratings,
       this.store,
       this.bookImage,
-      this.createdBy,
       this.bookCategoryId});
 
   @override
   String toString() {
-    return 'Book( id: $id, title: $title, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage,createdBy:$createdBy, bookCategoryId: $bookCategoryId)';
+    return 'Book( id: $id, name: $name, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage, bookCategoryId: $bookCategoryId)';
   }
 
   factory Book.fromMap(Map<String, dynamic> data) => Book(
-      id: data['id'] as String,
-      title: data['title'] as String,
-      author: data['author'] as String,
-      price: data['price'] as String,
-      ratings: data['ratings'] as String,
-      store: data['store'] as String,
-      bookImage: data['bookImage'] as String,
-      createdBy: data['createdBy'] == null
+      id: data['id'] as String?,
+      name: data['name'] as String?,
+      price: data['price'] as String?,
+      ratings: data['ratings'] as int?,
+      store: data['store'] as String?,
+      bookImage: data['bookImage'] as String?,
+      author: data['author'] == null
           ? null
-          : Author.fromMap(data['createdBy'] as Map<String, dynamic>),
+          : Author.fromMap(data['author'] as Map<String, dynamic>),
       bookCategoryId: data['bookCategoryId'] == null
           ? null
           : BookCategory.fromMap(
@@ -52,13 +49,12 @@ class Book {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'title': title,
-        'author': author,
+        'name': name,
         'price': price,
         'ratings': ratings,
         'store': store,
         'bookImage': bookImage,
-        'createdBy': createdBy,
+        'author': author,
         'bookCategoryId': bookCategoryId,
       };
 
@@ -76,24 +72,22 @@ class Book {
 
   Book copyWith({
     String? id,
-    String? title,
-    String? author,
+    String? name,
     String? price,
-    String? ratings,
+    int? ratings,
     String? store,
     String? bookImage,
-    Author? createdBy,
+    Author? author,
     BookCategory? bookCategoryId,
   }) {
     return Book(
       id: id ?? this.id,
-      title: title ?? this.title,
-      author: author ?? this.author,
+      name: name ?? this.name,
       price: price ?? this.price,
       ratings: ratings ?? this.ratings,
       store: store ?? this.store,
       bookImage: bookImage ?? this.bookImage,
-      createdBy: createdBy ?? this.createdBy,
+      author: author ?? this.author,
       bookCategoryId: bookCategoryId ?? this.bookCategoryId,
     );
   }
@@ -109,12 +103,12 @@ class Book {
   @override
   int get hashCode =>
       id.hashCode ^
-      title.hashCode ^
+      name.hashCode ^
       author.hashCode ^
       price.hashCode ^
       ratings.hashCode ^
       store.hashCode ^
       bookImage.hashCode ^
-      createdBy.hashCode ^
+      author.hashCode ^
       bookCategoryId.hashCode;
 }

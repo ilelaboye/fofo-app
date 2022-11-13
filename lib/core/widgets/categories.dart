@@ -56,7 +56,7 @@ class CategoryItem extends StatelessWidget {
             ),
             Gap.sm,
             Text(
-              category.title ?? '',
+              category.name ?? '',
               style: context.textTheme.bodyMedium.size(12),
             )
           ],
@@ -101,7 +101,7 @@ class CategorySection extends StatelessWidget {
 }
 
 List<CategoryItem> categoryItems() => [
-      CategoryItem(category: Category(title: "School")),
+      CategoryItem(category: Category(name: "School")),
       // CategoryItem(title: "Growth", icon: "growth"),
       // CategoryItem(title: "Health", icon: "med"),
       // CategoryItem(title: "Investment", icon: "growth"),
@@ -110,7 +110,7 @@ List<CategoryItem> categoryItems() => [
     ];
 
 List<Category> categoryItemsNoIcons() => [
-      Category(title: "Career", iconName: null),
+      Category(name: "Career", iconName: null),
       // CategoryItem(title: "Black Woman", icon: ""),
       // CategoryItem(title: "Growth", icon: ""),
       // CategoryItem(title: "Investment", icon: ""),

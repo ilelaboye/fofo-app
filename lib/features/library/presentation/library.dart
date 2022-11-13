@@ -12,6 +12,7 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/library/presentation/book.dart';
 import 'package:fofo_app/features/library/presentation/single_author_list.dart';
+import 'package:fofo_app/models/library/my_library/book.dart';
 import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -26,22 +27,33 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   // late final List<Book> books;
   late final books;
-  bool isLoaded = false;
+  bool isLoaded = true;
   @override
   void initState() {
     super.initState();
-    getBooks();
+    // getBooks();
+    // getLibrary();
   }
 
-  getBooks() async {
-    books = await Provider.of<LibraryProvider>(context, listen: false)
-        .getBooks(context);
-    print('pbookd');
-    print(books);
-    setState(() {
-      isLoaded = true;
-    });
-  }
+  // getBooks() async {
+  //   books = await Provider.of<LibraryProvider>(context, listen: false)
+  //       .getBooks(context);
+  //   print('pbookd');
+  //   print(books);
+  //   setState(() {
+  //     isLoaded = true;
+  //   });
+  // }
+
+  // getLibrary() async {
+  //   books = await Provider.of<LibraryProvider>(context, listen: false)
+  //       .getBooks(context);
+  //   print('pbookd');
+  //   print(books);
+  //   setState(() {
+  //     isLoaded = true;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +97,9 @@ class _LibraryPageState extends State<LibraryPage> {
                         children: [
                           ClipRRect(
                             child: NetworkImg(
-                              books['books'][0]['bookImage'],
+                              libraryProvider
+                                  .myLibrary!.continue_reading!.bookImage
+                                  .toString(),
                               height: 150,
                               width: 110,
                             ),
@@ -96,12 +110,16 @@ class _LibraryPageState extends State<LibraryPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  books['books'][0]['title'].toString(),
+                                  libraryProvider
+                                      .myLibrary!.continue_reading!.name
+                                      .toString(),
                                 ),
                                 Gap.md,
                                 Text(
                                   "by " +
-                                      books['books'][0]['author'].toString(),
+                                      libraryProvider.myLibrary!
+                                          .continue_reading!.author!.fullname
+                                          .toString(),
                                   style: context.textTheme.caption.size(13),
                                 )
                               ],
@@ -128,12 +146,20 @@ class _LibraryPageState extends State<LibraryPage> {
                     padding: EdgeInsets.only(
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == books.length -1
-                      right: index == books['books'].length - 1 ? Insets.lg : 0,
+                      right: index ==
+                              libraryProvider
+                                      .myLibrary!.books_in_library!.length -
+                                  1
+                          ? Insets.lg
+                          : 0,
                     ),
-                    child: LibraryItem(books['books'][index]).onTap(() =>
-                        context.push(BookPage(id: books['books'][index].id))),
+                    child: LibraryItem(
+                            libraryProvider.myLibrary!.books_in_library![index])
+                        .onTap(() => context
+                            .push(BookPage(id: books['books'][index].id))),
                   ),
-                  itemCount: books['books'].length,
+                  itemCount:
+                      libraryProvider.myLibrary?.books_in_library!.length,
                 ),
               ),
               Gap.lg,
@@ -152,13 +178,21 @@ class _LibraryPageState extends State<LibraryPage> {
                     padding: EdgeInsets.only(
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == books.length -1
-                      right: index == books['books'].length - 1 ? Insets.lg : 0,
+                      right: index ==
+                              libraryProvider
+                                      .myLibrary!.trending_books!.length -
+                                  1
+                          ? Insets.lg
+                          : 0,
                     ),
-                    child: LibraryItem(books['books'][index]).onTap(() =>
-                        context
-                            .push(BookPage(id: books['books'][index]['id']))),
+                    child: LibraryItem(
+                            libraryProvider.myLibrary!.trending_books![index])
+                        .onTap(() => context.push(BookPage(
+                            id: libraryProvider
+                                .myLibrary!.trending_books![index].id
+                                .toString()))),
                   ),
-                  itemCount: books['books'].length,
+                  itemCount: libraryProvider.myLibrary!.trending_books!.length,
                 ),
               ),
               Gap.lg,
@@ -177,7 +211,7 @@ class _LibraryPageState extends State<LibraryPage> {
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == authors.length -1
                       right: index ==
-                              libraryProvider.myLibrary!.topAuthors!.length - 1
+                              libraryProvider.myLibrary!.top_authors!.length - 1
                           ? Insets.lg
                           : 0,
                     ),
@@ -190,7 +224,7 @@ class _LibraryPageState extends State<LibraryPage> {
                           data: CircleAvatar(
                             backgroundImage: NetworkImage(
                               libraryProvider
-                                  .myLibrary!.topAuthors![index].bookImage
+                                  .myLibrary!.top_authors![index].image_url
                                   .toString(),
                             ),
                           ),
@@ -198,18 +232,19 @@ class _LibraryPageState extends State<LibraryPage> {
                           () => context.push(
                             SingleAuthorBooksPage(
                                 author: libraryProvider
-                                    .myLibrary!.topAuthors![index]),
+                                    .myLibrary!.top_authors![index]),
                           ),
                         ),
                         Text(
-                          libraryProvider.myLibrary!.topAuthors![index].author
+                          libraryProvider
+                              .myLibrary!.top_authors![index].fullname
                               .toString(),
                           style: TextStyle(fontSize: 12),
                         )
                       ],
                     ),
                   ),
-                  itemCount: libraryProvider.myLibrary!.topAuthors!.length,
+                  itemCount: libraryProvider.myLibrary!.top_authors!.length,
                 ),
               ),
               const Gap(50)
@@ -222,7 +257,7 @@ class _LibraryPageState extends State<LibraryPage> {
 }
 
 class LibraryItem extends StatelessWidget {
-  final Map<String, dynamic> book;
+  final Book book;
   const LibraryItem(this.book, {Key? key}) : super(key: key);
 
   @override
@@ -232,7 +267,7 @@ class LibraryItem extends StatelessWidget {
         ClipRRect(
           borderRadius: Corners.smBorder,
           child: NetworkImg(
-            book['bookImage'].toString(),
+            book.bookImage.toString(),
             height: 150,
             width: 110,
           ),
@@ -241,7 +276,7 @@ class LibraryItem extends StatelessWidget {
         SizedBox(
             width: 120,
             child: Text(
-              book['title'].toString(),
+              book.name.toString(),
               maxLines: 1,
             ))
       ],

@@ -187,10 +187,15 @@ class _AppDrawerState extends State<AppDrawer> {
                   style: context.textTheme.bodyMedium.size(17),
                 ),
               ),
-              const Divider(height: 27),
+              const Divider(height: 10),
               GestureDetector(
                 onTap: () {
-                  context.push(const LoginPage());
+                  Provider.of<AuthProvider>(context, listen: false).logOut();
+                  // context.push(const LoginPage());
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                      (route) => false);
                 },
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,

@@ -95,8 +95,8 @@ class PodcastPage extends StatelessWidget {
                   CategorySection(
                     showTitle: false,
                     categories: [
-                      Category(title: "Career"),
-                      Category(title: "Black Women")
+                      Category(name: "Career"),
+                      Category(name: "Black Women")
                     ],
                   ),
                   Gap.lg,

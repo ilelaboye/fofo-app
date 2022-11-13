@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fofo_app/core/utils/router.dart';
+import 'package:intl/intl.dart';
 
 extension StringExtension on String {
   String get png => "assets/images/$this.png";
@@ -17,6 +18,16 @@ extension StringExtension on String {
   String titleCaseSingle() {
     if (isEmpty) return "";
     return '${this[0].toUpperCase()}${substring(1)}';
+  }
+
+  String formatDateFromDatetime() {
+    if (isEmpty) return "";
+    return DateFormat.yMMMEd().format(DateTime.parse(this)).toString();
+  }
+
+  String formatTimeFromDatetime() {
+    if (isEmpty) return "";
+    return DateFormat('HH:mm a').format(DateTime.parse(this)).toString();
   }
 }
 

@@ -53,7 +53,7 @@ class DioClient extends ChangeNotifier {
 
   Future<void> logout(context) async {
     EasyLoading.dismiss();
-    await auth.init();
+    // await auth.init();
     auth.logOut();
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -195,13 +195,13 @@ class DioExceptions implements Exception {
     EasyLoading.dismiss();
     switch (dioError.type) {
       case DioErrorType.cancel:
-        message = "Request to API server was cancelled";
+        message = "Request to server was cancelled";
         break;
       case DioErrorType.connectTimeout:
-        message = "Connection timeout with API server";
+        message = "Connection timeout with server";
         break;
       case DioErrorType.receiveTimeout:
-        message = "Receive timeout in connection with API server";
+        message = "Receive timeout in connection with server";
         break;
       case DioErrorType.response:
         message = _handleError(
@@ -210,7 +210,7 @@ class DioExceptions implements Exception {
         );
         break;
       case DioErrorType.sendTimeout:
-        message = "Send timeout in connection with API server";
+        message = "Send timeout in connection with server";
         break;
       case DioErrorType.other:
         if (dioError.message.contains("SocketException")) {
