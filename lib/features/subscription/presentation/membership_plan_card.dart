@@ -10,7 +10,7 @@ class MembershipPlanCard extends StatelessWidget {
   // replace with membershipEntity
   final Color? color, textColor;
   final int fee;
-  final String title, desc;
+  final String title, desc, benefit;
   final bool isPopular;
   final List<String> perks;
   const MembershipPlanCard(
@@ -18,6 +18,7 @@ class MembershipPlanCard extends StatelessWidget {
       this.textColor,
       this.fee = 0,
       this.desc = "",
+      this.benefit = "",
       this.title = "Access",
       this.isPopular = false,
       this.perks = const [],
@@ -112,7 +113,8 @@ class MembershipPlanCard extends StatelessWidget {
               ),
               Button(
                 "Learn More",
-                onTap: () => context.push(MembershipPlanPage(perks)),
+                onTap: () => context.push(MembershipPlanPage(perks,
+                    fee: fee, title: title, desc: desc, benefit: benefit)),
                 color: color == AppColors.palette[100] ? color : Colors.white,
                 textColor: AppColors.palette[900],
               )

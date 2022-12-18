@@ -10,16 +10,25 @@ import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/avatar_group.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
-import 'package:fofo_app/core/widgets/review.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
-import 'package:fofo_app/features/subscription/presentation/checkout.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+// import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
 import '../../../core/presentation/app/app_scaffold.dart';
+import '../../../core/widgets/notification.dart';
 
 class MembershipPlanPage extends StatefulWidget {
   final List<String> perks;
-  MembershipPlanPage(this.perks, {Key? key}) : super(key: key);
+  final int fee;
+  final String title, desc, benefit;
+  MembershipPlanPage(this.perks,
+      {Key? key,
+      this.fee = 0,
+      this.title = "Access",
+      this.desc = "",
+      this.benefit = ''})
+      : super(key: key);
 
   @override
   State<MembershipPlanPage> createState() => _MembershipPlanPageState();
@@ -39,50 +48,62 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
           Gap.md,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "\$250",
-                  style: context.textTheme.headlineLarge
-                      .changeColor(AppColors.primary),
-                ),
-                Gap.sm,
-                Text(
-                  "/ Year",
-                  style: context.textTheme.bodyMedium
-                      .changeColor(AppColors.primary),
-                ),
-                const Spacer(),
-                CupertinoSwitch(
-                  activeColor: AppColors.primary,
-                  value: true,
-                  onChanged: (value) {},
-                )
-              ],
-            ),
+            child: widget.fee != 0
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "\$250",
+                        style: context.textTheme.headlineLarge
+                            .changeColor(AppColors.primary),
+                      ),
+                      Gap.sm,
+                      Text(
+                        "/ Year",
+                        style: context.textTheme.bodyMedium
+                            .changeColor(AppColors.primary),
+                      ),
+                      const Spacer(),
+                      // CupertinoSwitch(
+                      //   activeColor: AppColors.primary,
+                      //   value: true,
+                      //   onChanged: (value) {},
+                      // )
+                    ],
+                  )
+                : Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Free",
+                      style: context.textTheme.headlineLarge!
+                          .changeColor(AppColors.primary)
+                          .bold,
+                    ),
+                  ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Insets.lg, vertical: Insets.xs),
-            child: Row(
-              children: [
-                Icon(
-                  PhosphorIcons.infoFill,
-                  size: 18,
-                  color: AppColors.palette[500],
-                ),
-                const Gap(4),
-                Expanded(
-                  child: Text(
-                    "You save \$50 & you get 2 months subscription free",
-                    style: context.textTheme.caption!
-                        .changeColor(const Color(0xff40BF95)),
+          widget.fee != 0
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Insets.lg, vertical: Insets.xs),
+                  child: Row(
+                    children: [
+                      Icon(
+                        PhosphorIcons.infoFill,
+                        size: 18,
+                        color: AppColors.palette[500],
+                      ),
+                      const Gap(4),
+                      Expanded(
+                        child: Text(
+                          "You save \$50 & you get 2 months subscription free",
+                          style: context.textTheme.caption!
+                              .changeColor(const Color(0xff40BF95)),
+                        ),
+                      )
+                    ],
                   ),
                 )
-              ],
-            ),
-          ),
+              : const SizedBox(),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: Insets.lg,
@@ -92,7 +113,7 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Gold Access",
+                  widget.title,
                   style: context.textTheme.headlineMedium
                       .changeColor(AppColors.primary)
                       .size(24)
@@ -100,7 +121,7 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                 ),
                 Gap.sm,
                 Text(
-                  "Starting a career can sometimes be daunting. We’ll help you clarify your purpose, overcome impostor syndrome, boost your confidence, and accelerate success. We’ll help you and clarify your purpose, overcome impostor syndr see more...",
+                  widget.desc,
                   style: context.textTheme.bodyMedium
                       .changeColor(AppColors.palette[700]!)
                       .size(12)
@@ -110,7 +131,7 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                 const SectionHeader("Benefits"),
                 Gap.sm,
                 Text(
-                  "Starting a career can sometimes be daunting. We’ll help you clarify your purpose, overcome impostor syndrome, boost your confidence, and accelerate success. We’ll help you and clarify your purpose, overcome impostor syndr see more...",
+                  widget.benefit,
                   style: context.textTheme.bodyMedium
                       .changeColor(AppColors.palette[700]!)
                       .size(12)
@@ -145,28 +166,33 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                 ),
                 const SectionHeader(
                   "Members",
-                  seeAll: true,
+                  seeAll: false,
                 ),
                 Gap.sm,
                 AvatarGroup(AppColors.colorList()),
                 Gap.md,
-                const SectionHeader("Reviews"),
-                Gap.sm,
+                // const SectionHeader("Reviews"),
+                // Gap.sm,
               ],
             ),
           ),
-          const ReviewList(),
+          // const ReviewList(),
           Padding(
             padding: const EdgeInsets.all(Insets.lg),
             child: Button("Choose This Plan", onTap: () async {
-              await makePayment(amount: '2', currency: 'USD');
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const AppScaffoldPage(),
-                ),
-                (route) => false,
-              );
+              if (widget.fee > 0) {
+                await makePayment(
+                    amount: widget.fee.toString(), currency: 'USD');
+              } else {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const AppScaffoldPage(),
+                  ),
+                  (route) => false,
+                );
+              }
+
               //  context.pushOff(const AppScaffoldPage());
             }
                 // context.push(const CheckoutPage()),
@@ -182,6 +208,8 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
       {required String amount, required String currency}) async {
     try {
       paymentIntentData = await createPaymentIntent(amount, currency);
+      print('paym int');
+      print(paymentIntentData);
       if (paymentIntentData != null) {
         await Stripe.instance.initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
@@ -203,21 +231,27 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
 
   displayPaymentSheet() async {
     try {
+      print('before pps');
       await Stripe.instance.presentPaymentSheet();
-
-      // Get.snackbar('Payment', 'Payment Successful',
-      //     snackPosition: SnackPosition.BOTTOM,
-      //     backgroundColor: Colors.green,
-      //     colorText: Colors.white,
-      //     margin: const EdgeInsets.all(10),
-      //     duration: const Duration(seconds: 2));
+      showNotification(context, true, "Payment successful");
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const AppScaffoldPage(),
+        ),
+        (route) => false,
+      );
     } on Exception catch (e) {
       if (e is StripeException) {
+        showNotification(
+            context, false, "Error from Stripe: ${e.error.localizedMessage}");
         print("Error from Stripe: ${e.error.localizedMessage}");
       } else {
+        showNotification(context, false, "Unforeseen error: ${e}");
         print("Unforeseen error: ${e}");
       }
     } catch (e) {
+      showNotification(context, false, "exception:$e");
       print("exception:$e");
     }
   }
@@ -240,6 +274,8 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
           });
       return jsonDecode(response.body);
     } catch (err) {
+      showNotification(
+          context, false, 'Error charging user: ${err.toString()}');
       print('err charging user: ${err.toString()}');
     }
   }

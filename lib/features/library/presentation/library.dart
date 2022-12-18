@@ -17,6 +17,8 @@ import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/library/my_library/books.dart';
+
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
 
@@ -26,34 +28,23 @@ class LibraryPage extends StatefulWidget {
 
 class _LibraryPageState extends State<LibraryPage> {
   // late final List<Book> books;
-  late final books;
-  bool isLoaded = true;
+  Books? books;
+  bool isLoaded = false;
   @override
   void initState() {
     super.initState();
-    // getBooks();
-    // getLibrary();
+    getBooks();
   }
 
-  // getBooks() async {
-  //   books = await Provider.of<LibraryProvider>(context, listen: false)
-  //       .getBooks(context);
-  //   print('pbookd');
-  //   print(books);
-  //   setState(() {
-  //     isLoaded = true;
-  //   });
-  // }
-
-  // getLibrary() async {
-  //   books = await Provider.of<LibraryProvider>(context, listen: false)
-  //       .getBooks(context);
-  //   print('pbookd');
-  //   print(books);
-  //   setState(() {
-  //     isLoaded = true;
-  //   });
-  // }
+  getBooks() async {
+    books = await Provider.of<LibraryProvider>(context, listen: false)
+        .getBooks(context);
+    print('pbookd');
+    print(books);
+    setState(() {
+      isLoaded = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +118,9 @@ class _LibraryPageState extends State<LibraryPage> {
                           )
                         ],
                       ),
-                    )
+                    ).onTap(() => context.push(BookPage(
+                        id: libraryProvider.myLibrary!.continue_reading!.id
+                            .toString()))),
                   ],
                 ),
               ),
@@ -155,8 +148,10 @@ class _LibraryPageState extends State<LibraryPage> {
                     ),
                     child: LibraryItem(
                             libraryProvider.myLibrary!.books_in_library![index])
-                        .onTap(() => context
-                            .push(BookPage(id: books['books'][index].id))),
+                        .onTap(() => context.push(BookPage(
+                            id: libraryProvider
+                                .myLibrary!.books_in_library![index].id
+                                .toString()))),
                   ),
                   itemCount:
                       libraryProvider.myLibrary?.books_in_library!.length,
@@ -165,7 +160,7 @@ class _LibraryPageState extends State<LibraryPage> {
               Gap.lg,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-                child: SectionHeader("Trending Books", seeAll: true),
+                child: SectionHeader("Trending Books"),
               ),
               Gap.sm,
               SizedBox(

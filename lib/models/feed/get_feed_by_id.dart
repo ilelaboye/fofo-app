@@ -8,31 +8,35 @@ import 'feed.dart';
 
 @immutable
 class GetFeedById {
-  final List<Feed> blog;
-  final List<Comment>? blog_comments;
+  final Feed blog;
+  final List<Feed>? popular;
+  final List<Comment>? blogComments;
 
   const GetFeedById({
     required this.blog,
-    this.blog_comments,
+    this.popular,
+    this.blogComments,
   });
 
   @override
   String toString() {
-    return 'GetFeedById(blog: $blog, blog_comments: $blog_comments)';
+    return 'GetFeedById(blog: $blog, popular:$popular, blogComments: $blogComments)';
   }
 
   factory GetFeedById.fromMap(Map<String, dynamic> data) => GetFeedById(
-        blog: (data['blog'] as List<dynamic>)
+        blog: Feed.fromMap(data['blog'] as Map<String, dynamic>),
+        popular: (data['popular'] as List<dynamic>)
             .map((e) => Feed.fromMap(e as Map<String, dynamic>))
             .toList(),
-        blog_comments: (data['blog_comments'] as List<dynamic>)
+        blogComments: (data['blogComments']['docs'] as List<dynamic>)
             .map((e) => Comment.fromMap(e as Map<String, dynamic>))
             .toList(),
       );
 
   Map<String, dynamic> toMap() => {
-        'blog': blog.map((e) => e.toMap()).toList(),
-        'blog_comments': blog_comments?.map((e) => e.toMap()).toList(),
+        'blog': blog.toMap(),
+        'popular': popular?.map((e) => e.toMap()).toList(),
+        'blogComments': blogComments?.map((e) => e.toMap()).toList(),
       };
 
   /// `dart:convert`
@@ -48,12 +52,14 @@ class GetFeedById {
   String toJson() => json.encode(toMap());
 
   GetFeedById copyWith({
-    List<Feed>? blog,
-    List<Comment>? blog_comments,
+    Feed? blog,
+    List<Feed>? popular,
+    List<Comment>? blogComments,
   }) {
     return GetFeedById(
       blog: blog ?? this.blog,
-      blog_comments: blog_comments ?? this.blog_comments,
+      popular: popular ?? this.popular,
+      blogComments: blogComments ?? this.blogComments,
     );
   }
 
@@ -66,5 +72,5 @@ class GetFeedById {
   }
 
   @override
-  int get hashCode => blog.hashCode ^ blog_comments.hashCode;
+  int get hashCode => blog.hashCode ^ popular.hashCode ^ blogComments.hashCode;
 }

@@ -5,8 +5,6 @@ import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
-import 'package:fofo_app/service/library/my_library_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../../models/library/my_library/category.dart';
 
@@ -25,7 +23,7 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    LibraryProvider libraryProvider = Provider.of<LibraryProvider>(context);
+    // LibraryProvider libraryProvider = Provider.of<LibraryProvider>(context);
     return GestureDetector(
       // onTap: ()async{
       //   await libraryProvider.fetchCategoryById(context, category.id.toString());

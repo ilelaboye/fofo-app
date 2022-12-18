@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
@@ -13,9 +12,6 @@ import 'package:fofo_app/features/auth/presentation/login.dart';
 import 'package:fofo_app/features/auth/presentation/otp.dart';
 import 'package:fofo_app/service/auth_service/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../models/user_model/reset_password.dart';
 
 class StartResetPasswordPage extends StatefulWidget {
   const StartResetPasswordPage({Key? key}) : super(key: key);
@@ -72,7 +68,7 @@ class _StartResetPasswordPageState extends State<StartResetPasswordPage> {
                     final form = formKey.currentState!;
                     if (form.validate()) {
                       form.save();
-                      auth.resetPassword(email);
+                      auth.resetPassword(context, email);
                       context.push(OtpPage(
                         otpState: OtpState.resetPassword,
                         email: email,
@@ -170,7 +166,7 @@ class _EndResetPasswordPageState extends State<EndResetPasswordPage> {
                       form.save();
                       if (user?.userId != null) {
                         auth.updatePassword(
-                            password, confirmPassword, user!.userId!);
+                            context, password, confirmPassword, user!.userId!);
                         context.pushOff(const LoginPage());
                       }
                     }

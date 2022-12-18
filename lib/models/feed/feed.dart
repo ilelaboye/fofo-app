@@ -13,7 +13,7 @@ class Feed {
   final String? description;
   final String? blogImage;
   final String createdAt;
-  final int? comments_count;
+  final int? blogComments;
   final int? blogLikes;
   final int? blogviews;
   final Creator? createdBy;
@@ -25,7 +25,7 @@ class Feed {
     this.description,
     this.blogImage,
     required this.createdAt,
-    this.comments_count,
+    this.blogComments,
     this.blogLikes,
     this.blogviews,
     this.createdBy,
@@ -34,7 +34,7 @@ class Feed {
 
   @override
   String toString() {
-    return 'Feed(id: $id, name: $name, description: $description, blogImage: $blogImage, createdAt: $createdAt, comments_count: $comments_count, blogLikes: $blogLikes, blogviews: $blogviews, createdBy: $createdBy, blogCategory: $blogCategory)';
+    return 'Feed(id: $id, name: $name, description: $description, blogImage: $blogImage, createdAt: $createdAt, blogComments: $blogComments, blogLikes: $blogLikes, blogviews: $blogviews, createdBy: $createdBy, blogCategory: $blogCategory)';
   }
 
   factory Feed.fromMap(Map<String, dynamic> data) => Feed(
@@ -43,19 +43,19 @@ class Feed {
       description: data['description'] as String?,
       blogImage: data['blogImage'] as String?,
       createdAt: data['createdAt'] as String,
-      comments_count: data['comments_count'] as int?,
+      blogComments: data['blogComments'] as int?,
       blogLikes: data['blogLikes'] as int?,
       blogviews: data['blogviews'] as int?,
-      createdBy: Creator.fromMap(const {
-        'id': "63610ccb81258a248e490130",
-        'fullname': "Fullname String",
-        'createdAt': "2022-11-01T12:10:52.026Z",
-        'profileImage':
-            "https://res.cloudinary.com/trailblazerfemme-app/image/upload/v1667938404/fcjlfybrxhhkoh9zezju.jpg",
-      }),
-      // createdBy: data['createdBy'] == null
-      //     ? null
-      //     : Creator.fromMap(data['createdBy'] as Map<String, dynamic>),
+      // createdBy: Creator.fromMap(const {
+      //   'id': "63610ccb81258a248e490130",
+      //   'fullname': "Fullname String",
+      //   'createdAt': "2022-11-01T12:10:52.026Z",
+      //   'profileImage':
+      //       "https://res.cloudinary.com/trailblazerfemme-app/image/upload/v1667938404/fcjlfybrxhhkoh9zezju.jpg",
+      // }),
+      createdBy: data['createdBy'] == null
+          ? null
+          : Creator.fromMap(data['createdBy'] as Map<String, dynamic>),
       blogCategory: data['blogCategory'] == null
           ? null
           : Category.fromMap(data['blogCategory'] as Map<String, dynamic>));
@@ -69,7 +69,7 @@ class Feed {
         'blogCategory': blogCategory,
         'blogviews': blogviews,
         'createdBy': createdBy,
-        'comments_count': comments_count,
+        'blogComments': blogComments,
         'blogLikes': blogLikes,
       };
 
@@ -93,7 +93,7 @@ class Feed {
     String? createdAt,
     Category? blogCategory,
     Creator? createdBy,
-    int? comments_count,
+    int? blogComments,
     int? blogLikes,
     int? blogviews,
   }) {
@@ -106,7 +106,7 @@ class Feed {
       blogCategory: blogCategory ?? this.blogCategory,
       blogviews: blogviews ?? this.blogviews,
       createdBy: createdBy ?? this.createdBy,
-      comments_count: comments_count ?? this.comments_count,
+      blogComments: blogComments ?? this.blogComments,
       blogLikes: blogLikes ?? this.blogLikes,
     );
   }
@@ -129,6 +129,6 @@ class Feed {
       blogCategory.hashCode ^
       blogviews.hashCode ^
       createdBy.hashCode ^
-      comments_count.hashCode ^
+      blogComments.hashCode ^
       blogLikes.hashCode;
 }

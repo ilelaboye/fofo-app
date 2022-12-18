@@ -1,13 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fofo_app/models/feed/comment.dart';
 
 import '../../config/api.dart';
 import '../../core/widgets/notification.dart';
 import '../../models/category/fetch_category_by_id/fetch_category_by_id.dart';
 import '../../models/feed/feeds.dart';
+import '../../models/feed/get_feed_by_id.dart';
 
 class FeedsProvider extends ChangeNotifier {
   Feeds? feeds;
+  GetFeedById? feed;
+  Comment? comment;
   late Map blogs;
 
   DioClient dioClient = DioClient(Dio());
@@ -15,7 +19,7 @@ class FeedsProvider extends ChangeNotifier {
     try {
       Response response = await dioClient.get(context, "blog/lists");
       print('get feeds data');
-      // print(response.data);
+      print(response.data);
       feeds = Feeds.fromMap(response.data);
       notifyListeners();
       return feeds;
@@ -40,8 +44,13 @@ class FeedsProvider extends ChangeNotifier {
   Future getBlog(BuildContext context, String id) async {
     try {
       Response response = await dioClient.get(context, "blog/" + id + "/show");
+
+      // print('single blog');
+
+      feed = GetFeedById.fromMap(response.data);
+      // print(feed);
       notifyListeners();
-      return response.data[0];
+      return feed;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();
@@ -50,13 +59,12 @@ class FeedsProvider extends ChangeNotifier {
 
   Future postComment(BuildContext context, String id, String text) async {
     try {
-      Response response = await dioClient
-          .post(context, "blog/" + id + "/comment", data: {"comment": text});
-      print('post comment');
-      print(response.data);
+      Response response = await dioClient.post(
+          context, "blog/" + id + "/comment/create",
+          data: {"comment": text});
+      comment = Comment.fromMap(response.data['blog_comment']);
       notifyListeners();
-      // return Feed.fromMap(response.data[0]);
-      return response.data[0];
+      return comment;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();

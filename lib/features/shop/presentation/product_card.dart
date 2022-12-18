@@ -6,9 +6,12 @@ import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../../models/shop/product.dart';
+
 class ShopCard extends StatelessWidget {
+  final Product? product;
   final double? imgHeight;
-  const ShopCard({this.imgHeight, Key? key}) : super(key: key);
+  const ShopCard({this.imgHeight, this.product, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +21,8 @@ class ShopCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: Corners.xsBorder,
-            child: LocalImage(
-              "shop".png,
+            child: NetworkImg(
+              product!.product_images![0].secure_url.toString(),
               height: imgHeight,
             ),
           ),
@@ -28,7 +31,8 @@ class ShopCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "\$100",
+                "\$" + product!.product_variation![0].price.toString(),
+                // "\$100",
                 style: context.textTheme.bodyMedium
                     .changeColor(AppColors.primary)
                     .size(18)
@@ -41,10 +45,13 @@ class ShopCard extends StatelessWidget {
             ],
           ),
           Gap.sm,
-          Text(
-            "Plain black medium sized tote bag",
-            style: context.textTheme.bodyMedium,
-            maxLines: 2,
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              product!.name.toString(),
+              style: context.textTheme.bodyMedium,
+              maxLines: 2,
+            ),
           )
         ],
       ),

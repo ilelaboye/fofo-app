@@ -4,7 +4,6 @@ import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/avatar_group.dart';
-import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
 import 'package:fofo_app/core/widgets/loader.dart';
@@ -13,7 +12,9 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/widgets/button.dart';
 import '../../../core/widgets/notification.dart';
+import '../../../models/library/my_library/get_book_by_id.dart';
 import '../../../service/library/my_library_provider.dart';
 import 'library.dart';
 
@@ -28,9 +29,7 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   bool isLoaded = false;
   bool isLoading = false;
-  late Map book;
-  late Map books;
-  // late Book book;
+  GetBookById? book;
 
   @override
   void initState() {
@@ -52,7 +51,6 @@ class _BookPageState extends State<BookPage> {
     if (!isLoaded) {
       return Loader();
     } else {
-      books = Provider.of<LibraryProvider>(context).books;
       return Scaffold(
         appBar: const Appbar(
           title: "Book",
@@ -68,13 +66,13 @@ class _BookPageState extends State<BookPage> {
                     ClipRRect(
                       borderRadius: Corners.xsBorder,
                       child: NetworkImg(
-                        book['bookImage'],
+                        book!.book.bookImage.toString(),
                         height: 250,
                       ),
                     ),
                     Gap.md,
                     Text(
-                      book['title'],
+                      book!.book.name.toString(),
                       style: context.textTheme.headlineMedium.bold
                           .size(24)
                           .changeColor(AppColors.primary),
@@ -88,7 +86,9 @@ class _BookPageState extends State<BookPage> {
                             Padding(
                               padding: const EdgeInsets.only(left: Insets.xs),
                               child: Text(
-                                "by " + book['author'] + " • ",
+                                "by " +
+                                    book!.book.author!.fullname.toString() +
+                                    " • ",
                                 style: context.textTheme.caption.size(12),
                               ),
                             ),
@@ -96,20 +96,20 @@ class _BookPageState extends State<BookPage> {
                               5,
                               (index) => Padding(
                                   padding: EdgeInsets.only(right: 2),
-                                  child: index < book['ratings']
-                                      ? Icon(
+                                  child: index < book!.book.ratings!.toInt()
+                                      ? const Icon(
                                           PhosphorIcons.starFill,
                                           size: 14,
                                           color: Colors.yellow,
                                         )
-                                      : Icon(
+                                      : const Icon(
                                           PhosphorIcons.star,
                                           size: 14,
                                           color: Colors.yellow,
                                         )),
                             ),
                             Text(
-                              "(${book['ratings']}/5)",
+                              "(${book!.book.ratings}/5)",
                               style: context.textTheme.caption
                                   .size(12)
                                   .changeColor(AppColors.primary),
@@ -138,7 +138,7 @@ class _BookPageState extends State<BookPage> {
                 padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
                 child: AvatarGroup(
                   AppColors.colorList(),
-                  showCount: book['readers'].length,
+                  showCount: book!.people_who_read!.length,
                 ),
               ),
               Gap.lg,
@@ -167,13 +167,15 @@ class _BookPageState extends State<BookPage> {
                     padding: EdgeInsets.only(
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == books.length -1
-                      right: index == books['books'].length - 1 ? Insets.lg : 0,
+                      right: index == book!.similar_books!.length - 1
+                          ? Insets.lg
+                          : 0,
                     ),
-                    child: LibraryItem(books['books'][index]).onTap(() =>
-                        context
-                            .push(BookPage(id: books['books'][index]['id']))),
+                    child: LibraryItem(book!.similar_books![index]).onTap(() =>
+                        context.push(BookPage(
+                            id: book!.similar_books![index].id.toString()))),
                   ),
-                  itemCount: books['books'].length,
+                  itemCount: book!.similar_books!.length,
                 ),
               ),
               Gap.lg,

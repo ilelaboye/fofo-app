@@ -72,7 +72,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   isPopular: true,
                   title: "Gold Access",
                   desc:
-                      "For most lorem ipsum Take Your Career To The Next Level",
+                      "Take your Tfemme experience to the next level with exclusive features and front row access to growth spurring resources.",
+                  benefit:
+                      "Accelerate your growth with access to discounts on trainings and books. Network with thought leaders and high flyers in your industry.",
                   perks: const [
                     "Can access silver membership plus",
                     "Downloadable templates to feel more confident, empowered and organized.",
@@ -87,7 +89,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   textColor: AppColors.primary,
                   title: "Silver Access",
                   desc:
-                      "For most lorem ipsum Take Your Career To The Next Level",
+                      "Become a member of the TFemme community. Get insights to help you grow as a professional.",
+                  benefit:
+                      "Increase you productivity and get the tools you need to overcome self doubt and imposter syndrome. Manage your time and energy with actionable plans. Get access to free, industry relevant opportunities",
                   perks: const [
                     "Home page",
                     "Blog page, Podcast, YouTube, Shop, etc.",

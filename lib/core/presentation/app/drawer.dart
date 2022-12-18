@@ -41,10 +41,10 @@ class _AppDrawerState extends State<AppDrawer> {
               Avatar(AppColors.error,
                   radius: 30,
                   data: CircleAvatar(
-                    backgroundColor: Colors.red,
-                    // backgroundImage:
-                    //     NetworkImage(profile.profileImage ?? "")
-                  )),
+                      backgroundColor: Colors.red,
+                      backgroundImage: profile?.profileImage == null
+                          ? AssetImage("user".png) as ImageProvider
+                          : NetworkImage(profile?.profileImage ?? ""))),
               Gap.sm,
               Text(
                 profile?.fullname ?? "",

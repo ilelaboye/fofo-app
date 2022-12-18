@@ -16,15 +16,29 @@ import 'package:provider/provider.dart';
 
 import '../../../service/auth_service/auth_provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   final bool isCurrentUser;
   const ProfilePage({this.isCurrentUser = false, Key? key}) : super(key: key);
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
     final profile = authProvider.userProfile!;
+    print('get profile');
+    print(profile);
+
+    void getProfile() {
+      print('get profile api');
+      final getP = authProvider.getUserProfile(context, '');
+      print(getP);
+    }
+
     return Scaffold(
       appBar: const Appbar(title: "Profile"),
       floatingActionButton: FloatingActionButton(
@@ -53,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                           profile.fullname ?? "",
+                          profile.fullname ?? "",
                           style: context.textTheme.bodyMedium.size(17).bold,
                         ),
                         Gap.xs,
@@ -110,7 +124,7 @@ class ProfilePage extends StatelessWidget {
                     )
                   ],
                 ),
-                if (isCurrentUser) ...[
+                if (widget.isCurrentUser) ...[
                   Gap.md,
                   Button(
                     "Edit Profile",
@@ -151,7 +165,7 @@ class ProfilePage extends StatelessWidget {
                       context.textTheme.caption.size(13).copyWith(height: 1.4),
                 ),
                 Gap.md,
-                if (!isCurrentUser)
+                if (!widget.isCurrentUser)
                   SizedBox(
                     height: 40,
                     child: Row(
@@ -184,7 +198,7 @@ class ProfilePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  isCurrentUser ? "My Communities" : "Communities",
+                  widget.isCurrentUser ? "My Communities" : "Communities",
                   style: context.textTheme.headlineMedium
                       .changeColor(AppColors.primary)
                       .size(18)
@@ -261,7 +275,7 @@ class ProfilePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Insets.md),
             child: SectionHeader(
-                isCurrentUser ? "My Recent posts" : "Recent posts"),
+                widget.isCurrentUser ? "My Recent posts" : "Recent posts"),
           ),
           Gap.md,
           const Padding(

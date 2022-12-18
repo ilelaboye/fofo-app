@@ -11,7 +11,6 @@ import 'package:fofo_app/core/widgets/image.dart';
 import 'package:fofo_app/core/widgets/review.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/podcast/presentation/podcast_episode_list.dart';
-import 'package:fofo_app/features/podcast/presentation/podcast_item.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../models/library/my_library/category.dart';
@@ -107,14 +106,14 @@ class PodcastPage extends StatelessWidget {
                         context.push(const PodcastEpisodesListPage()),
                   ),
                   Gap.sm,
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) =>
-                        const PodcastPlayableItem(canPlay: true),
-                    itemCount: 3,
-                  ),
+                  // ListView.builder(
+                  //   padding: EdgeInsets.zero,
+                  //   shrinkWrap: true,
+                  //   physics: const NeverScrollableScrollPhysics(),
+                  //   itemBuilder: (context, index) =>
+                  //       const PodcastPlayableItem(canPlay: true),
+                  //   itemCount: 3,
+                  // ),
                 ],
               ),
             ),
@@ -176,7 +175,7 @@ class PodcastPage extends StatelessWidget {
                     left: index == 0 ? Insets.lg : Insets.sm,
                     right: index == 2 ? Insets.lg : 0,
                   ),
-                  child: const PodcastListItem(),
+                  // child: const PodcastListItem(),
                 ),
                 itemCount: 3,
               ),

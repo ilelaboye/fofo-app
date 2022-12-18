@@ -1,37 +1,32 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fofo_app/models/library/my_library/books.dart';
 
 import '../../config/api.dart';
 import '../../core/widgets/notification.dart';
 import '../../models/category/fetch_category_by_id/fetch_category_by_id.dart';
-import '../../models/library/my_library/book.dart';
 import '../../models/library/my_library/category.dart';
+import '../../models/library/my_library/get_book_by_id.dart';
 import '../../models/library/my_library/my_library.dart';
 
 class LibraryProvider extends ChangeNotifier {
   MyLibrary? myLibrary;
   Category? category;
   // late Books books;
-  late Map books;
-  late Book book;
+  Books? books;
+  GetBookById? book;
 
   FetchCategoryById? fetchingCategoryById;
   DioClient dioClient = DioClient(Dio());
   Future getLibrary(BuildContext context) async {
     try {
       Response response = await dioClient.get(context, "library");
-
-      print('get library');
-      print(response.data);
       myLibrary = MyLibrary.fromMap(response.data);
-      print('lll');
-      print(myLibrary);
       notifyListeners();
       return myLibrary;
     } catch (err) {
       print('library error');
-      print(err);
-      // showNotification(context, false, err);
+      showNotification(context, false, err);
       notifyListeners();
     }
   }
@@ -39,13 +34,12 @@ class LibraryProvider extends ChangeNotifier {
   Future getBooks(BuildContext context) async {
     try {
       Response response = await dioClient.get(context, "library/books");
-
-      books = response.data;
-      // print(response.data['books'][0]['title']);
-      // print(books);
-      // print(Book.fromMap(response.data['books'][0]));
+      print('books api');
+      print(response.data);
+      books = Books.fromMap(response.data);
+      print('after book pass tru model');
       notifyListeners();
-      return response.data;
+      return books;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();
@@ -60,6 +54,7 @@ class LibraryProvider extends ChangeNotifier {
 
       notifyListeners();
       print(response.data);
+      showNotification(context, true, "Book added successfully");
       return {"status": true, "message": "Book added successfully"};
     } catch (err) {
       notifyListeners();
@@ -74,8 +69,11 @@ class LibraryProvider extends ChangeNotifier {
       Response response =
           await dioClient.get(context, "library/book/" + id + "/get");
       print('mine');
-      print(response);
-      return response.data;
+      print(response.data);
+      book = GetBookById.fromMap(response.data);
+      print('sfrr');
+      print(book);
+      return book;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();

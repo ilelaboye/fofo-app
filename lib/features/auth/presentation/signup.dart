@@ -13,6 +13,7 @@ import 'package:fofo_app/core/widgets/notification.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/login.dart';
+import 'package:fofo_app/features/auth/presentation/profile_picture_upload.dart';
 import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -107,12 +108,12 @@ class _SignupPageState extends State<SignupPage> {
                   const Gap(25),
                   TextInputField(
                     labelText: "Phone Number",
-                    hintText: "E.g 1234567890",
+                    hintText: "(country code) 1234567890",
                     onSaved: (value) => phonenumber = value!,
                     validator: (value) {
                       if (value!.isNotEmpty && value.length > 12) {
                         return null;
-                      } else if (value.length < 13 && value.isNotEmpty) {
+                      } else if (value.length < 5 && value.isNotEmpty) {
                         return "Invalid phone Number";
                       } else {
                         return "Please Input Phone Number";
@@ -188,16 +189,22 @@ class _SignupPageState extends State<SignupPage> {
                                       selectedItem.toString(),
                                       password)
                                   .then((response) {
+                                print('signup response');
                                 print(response);
                                 if (response['status']) {
                                   UserModel user = response['data'];
                                   Provider.of<UserProvider>(context,
                                           listen: false)
                                       .setUser(user);
-                                  context.push(OtpPage(
-                                      otpState: OtpState.auth,
-                                      email: email,
-                                      phone: phonenumber));
+                                  if (user.stage == 1) {
+                                    context.push(OtpPage(
+                                        otpState: OtpState.auth,
+                                        email: email,
+                                        phone: phonenumber));
+                                  } else if (user.stage == 2) {
+                                    context
+                                        .push(const ProfilePictureUploadPage());
+                                  }
                                 } else {
                                   showNotification(
                                       context, false, response['message']);

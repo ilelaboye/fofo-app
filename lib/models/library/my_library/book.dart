@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'author.dart';
-import 'book_category.dart';
 
 @immutable
 class Book {
@@ -14,8 +13,10 @@ class Book {
   final int? ratings;
   final String? store;
   final String? bookImage;
+  final String? description;
   final Author? author;
-  BookCategory? bookCategoryId;
+  final String? bookCategoryId;
+  // BookCategory? bookCategoryId;
 
   Book(
       {this.id,
@@ -25,11 +26,12 @@ class Book {
       this.ratings,
       this.store,
       this.bookImage,
+      this.description,
       this.bookCategoryId});
 
   @override
   String toString() {
-    return 'Book( id: $id, name: $name, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage, bookCategoryId: $bookCategoryId)';
+    return 'Book( id: $id, name: $name, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage,description:$description, bookCategoryId: $bookCategoryId)';
   }
 
   factory Book.fromMap(Map<String, dynamic> data) => Book(
@@ -39,13 +41,15 @@ class Book {
       ratings: data['ratings'] as int?,
       store: data['store'] as String?,
       bookImage: data['bookImage'] as String?,
+      description:
+          data.containsKey('description') ? data['description'] as String? : "",
       author: data['author'] == null
           ? null
           : Author.fromMap(data['author'] as Map<String, dynamic>),
-      bookCategoryId: data['bookCategoryId'] == null
-          ? null
-          : BookCategory.fromMap(
-              data['bookCategoryId'] as Map<String, dynamic>));
+      bookCategoryId:
+          data['bookCategoryId'] == null ? null : data['bookCategoryId']);
+  // : BookCategory.fromMap(
+  //     data['bookCategoryId'] as Map<String, dynamic>));
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -78,7 +82,8 @@ class Book {
     String? store,
     String? bookImage,
     Author? author,
-    BookCategory? bookCategoryId,
+    // BookCategory? bookCategoryId,
+    String? bookCategoryId,
   }) {
     return Book(
       id: id ?? this.id,

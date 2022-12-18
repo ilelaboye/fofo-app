@@ -11,6 +11,7 @@ class UserProfile {
   final int? followers;
   final int? following;
   final String? id;
+  final String? profileImage;
   final String? roles;
 
   const UserProfile({
@@ -20,23 +21,25 @@ class UserProfile {
     this.followers,
     this.following,
     this.id,
+    this.profileImage,
     this.roles,
   });
 
   @override
   String toString() {
-    return 'UserProfile(fullname: $fullname, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id, roles: $roles)';
+    return 'UserProfile(fullname: $fullname, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles)';
   }
 
   factory UserProfile.fromMap(Map<String, dynamic> data) => UserProfile(
-        fullname: data['fullname'] as String?,
-        about: data['about'] as dynamic,
-        booksRead: data['booksRead'] as int?,
-        followers: data['followers'] as int?,
-        following: data['following'] as int?,
-        id: data['id'] as String?,
-        roles: data['roles'] as String?,
-      );
+      fullname: data['fullname'] as String?,
+      about: data['about'] as dynamic,
+      booksRead: data['booksRead'] as int?,
+      followers: data['followers'] as int?,
+      following: data['following'] as int?,
+      id: data['id'] as String?,
+      roles: data['roles'] as String?,
+      profileImage:
+          data.containsKey('profileImage') ? data['profileImage'] : null);
 
   Map<String, dynamic> toMap() => {
         'fullname': fullname,
@@ -45,6 +48,7 @@ class UserProfile {
         'followers': followers,
         'following': following,
         'id': id,
+        'profileImage': profileImage,
         'roles': roles,
       };
 
@@ -67,6 +71,7 @@ class UserProfile {
     int? followers,
     int? following,
     String? id,
+    String? profileImage,
     String? roles,
   }) {
     return UserProfile(
@@ -76,6 +81,7 @@ class UserProfile {
       followers: followers ?? this.followers,
       following: following ?? this.following,
       id: id ?? this.id,
+      profileImage: profileImage ?? this.profileImage,
       roles: roles ?? this.roles,
     );
   }
@@ -96,5 +102,6 @@ class UserProfile {
       followers.hashCode ^
       following.hashCode ^
       id.hashCode ^
+      profileImage.hashCode ^
       roles.hashCode;
 }

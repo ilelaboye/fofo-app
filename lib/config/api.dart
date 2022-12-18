@@ -58,7 +58,6 @@ class DioClient extends ChangeNotifier {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false);
-    EasyLoading.dismiss();
   }
 
   Future<Response> post(
@@ -85,6 +84,7 @@ class DioClient extends ChangeNotifier {
       EasyLoading.dismiss();
       return response;
     } on DioError catch (e) {
+      // print(e.requestOptions.uri);
       EasyLoading.dismiss();
       final errorMessage = DioExceptions.fromDioError(e).toString();
       if (e.response?.statusCode == 401) {
@@ -114,8 +114,10 @@ class DioClient extends ChangeNotifier {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
+      EasyLoading.dismiss();
       return response;
     } on DioError catch (e) {
+      EasyLoading.dismiss();
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw errorMessage;
     }
@@ -142,8 +144,10 @@ class DioClient extends ChangeNotifier {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
+      EasyLoading.dismiss();
       return response;
     } on DioError catch (e) {
+      EasyLoading.dismiss();
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw errorMessage;
     }
@@ -167,8 +171,10 @@ class DioClient extends ChangeNotifier {
         options: options,
         cancelToken: cancelToken,
       );
+      EasyLoading.dismiss();
       return response.data;
     } on DioError catch (e) {
+      EasyLoading.dismiss();
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw errorMessage;
     }
@@ -179,7 +185,8 @@ class Endpoints {
   Endpoints._();
 
   // base url
-  static const String baseUrl = "https://fofoapp.herokuapp.com/api/";
+  static const String baseUrl =
+      "https://calm-lime-goldfish-tutu.cyclic.app/api/";
 
   // receiveTimeout
   static const int receiveTimeout = 30000;
@@ -226,6 +233,8 @@ class DioExceptions implements Exception {
   }
 
   String _handleError(int? statusCode, dynamic error) {
+    print('api errors');
+    print(error);
     switch (statusCode) {
       case 400:
         return 'Bad request';

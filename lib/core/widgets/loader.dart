@@ -30,7 +30,7 @@ class Loading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[CircularProgressIndicator(), Text("Loading...")],
+      children: [CircularProgressIndicator(), Text(text)],
     );
     ;
   }

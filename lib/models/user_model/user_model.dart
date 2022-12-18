@@ -15,6 +15,7 @@ class UserModel {
   final String? userId;
   final String? otp;
   final String? message;
+  final int? stage;
 
   const UserModel(
       {this.fullname,
@@ -26,11 +27,12 @@ class UserModel {
       this.refreshToken,
       this.userId,
       this.otp,
-      this.message});
+      this.message,
+      this.stage});
 
   @override
   String toString() {
-    return 'UserModel(fullname: $fullname, email: $email, phonenumber: $phonenumber, field: $field, password: $password, accessToken: $accessToken, refreshToken: $refreshToken, userId: $userId, otp: $otp, message: $message)';
+    return 'UserModel(fullname: $fullname, email: $email, phonenumber: $phonenumber, field: $field, password: $password, accessToken: $accessToken, refreshToken: $refreshToken, userId: $userId, otp: $otp, message: $message,stage: $stage)';
   }
 
   factory UserModel.fromMap(Map<String, dynamic> data) => UserModel(
@@ -43,7 +45,8 @@ class UserModel {
       refreshToken: data['refreshToken'] as String?,
       userId: data['userId'] as String?,
       otp: data['otp'] as String?,
-      message: data['message'] as String?);
+      message: data['message'] as String?,
+      stage: data['stage'] as int?);
 
   Map<String, dynamic> toMap() => {
         'fullname': fullname,
@@ -55,7 +58,8 @@ class UserModel {
         'refreshToken': refreshToken,
         'userId': userId,
         'otp': otp,
-        'message': message
+        'message': message,
+        'stage': stage
       };
 
   /// `dart:convert`
@@ -80,7 +84,8 @@ class UserModel {
       String? refreshToken,
       String? userId,
       String? otp,
-      String? message}) {
+      String? message,
+      int? stage}) {
     return UserModel(
       fullname: fullname ?? this.fullname,
       email: email ?? this.email,
@@ -92,6 +97,7 @@ class UserModel {
       userId: userId ?? this.userId,
       otp: otp ?? this.otp,
       message: message ?? this.message,
+      stage: stage ?? this.stage,
     );
   }
 
@@ -114,5 +120,6 @@ class UserModel {
       refreshToken.hashCode ^
       userId.hashCode ^
       otp.hashCode ^
-      message.hashCode;
+      message.hashCode ^
+      stage.hashCode;
 }

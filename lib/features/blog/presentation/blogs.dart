@@ -43,7 +43,7 @@ class _BlogsPageState extends State<BlogsPage> {
   Widget build(BuildContext context) {
     if (isLoaded) {
       return Scaffold(
-        appBar: const Appbar(title: "Blog"),
+        appBar: const Appbar(title: "Blogs"),
         body: SingleChildScrollView(
             child: Column(
           children: [

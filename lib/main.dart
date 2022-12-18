@@ -7,8 +7,11 @@ import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/presentation/onboarding.dart';
 import 'package:fofo_app/service/auth_service/auth_service.dart';
+import 'package:fofo_app/service/course/course.dart';
 import 'package:fofo_app/service/feed/feed.dart';
 import 'package:fofo_app/service/library/my_library_provider.dart';
+import 'package:fofo_app/service/podcast/podcast.dart';
+import 'package:fofo_app/service/shop/shop.dart';
 import 'package:provider/provider.dart';
 
 import 'core/presentation/app/app_scaffold.dart';
@@ -27,7 +30,10 @@ void main() async {
     ChangeNotifierProvider(create: (_) => UserProvider()),
     Provider<SignUpService>(create: (_) => SignUpService()),
     ChangeNotifierProvider(create: (_) => LibraryProvider()),
-    ChangeNotifierProvider(create: (_) => FeedsProvider())
+    ChangeNotifierProvider(create: (_) => FeedsProvider()),
+    ChangeNotifierProvider(create: (_) => ShopProvider()),
+    ChangeNotifierProvider(create: (_) => CoursesProvider()),
+    ChangeNotifierProvider(create: (_) => PodcastProvider())
   ], child: FofoApp(token: auth.token)));
 }
 

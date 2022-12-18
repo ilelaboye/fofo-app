@@ -22,7 +22,8 @@ class Creator {
         id: data['id'] as String?,
         fullname: data['fullname'] as String?,
         email: data['email'] as String?,
-        profileImage: data['profileImage'] as String?,
+        profileImage:
+            data.containsKey('profileImage') ? data['profileImage'] : null,
         createdAt: data['createdAt'] as String?,
       );
 

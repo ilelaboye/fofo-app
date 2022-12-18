@@ -14,6 +14,7 @@ import '../../../core/widgets/loader.dart';
 import '../../../core/widgets/post.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../models/feed/feeds.dart';
+import '../../../service/auth_service/auth_provider.dart';
 import '../../../service/feed/feed.dart';
 import '../../blog/presentation/blogs.dart';
 
@@ -31,7 +32,6 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   void initState() {
     super.initState();
-    // Provider.of<FeedsProvider>(context, listen: false).getFeeds(context);
     getFeeds();
   }
 
@@ -45,16 +45,22 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    final profile = authProvider.userProfile;
+
     if (!isLoaded) {
       return Loader();
     } else {
       return Scaffold(
         appBar: Appbar(
           leading: Avatar(AppColors.error,
-              data: CircleAvatar(
-                backgroundColor: Colors.red,
-                // backgroundImage: NetworkImage(profile?.profileImage ?? "")
-              )).onTap(() => AppScaffoldPage.of(context).openDrawer()),
+                  data: CircleAvatar(
+                      backgroundColor: Colors.red,
+                      backgroundImage: profile?.profileImage == null
+                          ? AssetImage("user".png) as ImageProvider
+                          : NetworkImage(profile?.profileImage ?? "")))
+              .onTap(() => AppScaffoldPage.of(context).openDrawer()),
           actions: [
             Center(
               child: Padding(

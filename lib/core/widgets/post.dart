@@ -133,7 +133,7 @@ class PostCard extends StatelessWidget {
                       size: 17,
                     ),
                     Gap.xs,
-                    Text(feed.comments_count.toString())
+                    Text(feed.blogComments.toString())
                   ],
                 )
               ],

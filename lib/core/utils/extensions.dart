@@ -29,6 +29,23 @@ extension StringExtension on String {
     if (isEmpty) return "";
     return DateFormat('HH:mm a').format(DateTime.parse(this)).toString();
   }
+
+  String getDateDifference() {
+    String ago;
+    Duration difference = DateTime.now().difference(DateTime.parse(this));
+    if (difference.inSeconds < 5) {
+      ago = "Just now";
+    } else if (difference.inMinutes < 1) {
+      ago = "${difference.inSeconds}s ago";
+    } else if (difference.inHours < 1) {
+      ago = "${difference.inMinutes}m ago";
+    } else if (difference.inHours < 24) {
+      ago = "${difference.inHours}h ago";
+    } else {
+      ago = "${difference.inDays}d ago";
+    }
+    return ago;
+  }
 }
 
 extension IntExtension on int {

@@ -8,15 +8,21 @@ class Comment {
   final String? id;
   final String? blogId;
   final Creator? commentedBy;
-  final String? comment;
+  final Creator? createdBy;
+  final String comment;
   final String? createdAt;
 
   const Comment(
-      {this.id, this.blogId, this.commentedBy, this.comment, this.createdAt});
+      {this.id,
+      this.blogId,
+      this.commentedBy,
+      this.createdBy,
+      required this.comment,
+      this.createdAt});
 
   @override
   String toString() {
-    return 'Comment(id: $id, blogId: $blogId,commentedBy: $commentedBy, comment: $comment, createdAt: $createdAt)';
+    return 'Comment(id: $id, blogId: $blogId,commentedBy: $commentedBy,createdBy: $createdBy, comment: $comment, createdAt: $createdAt)';
   }
 
   factory Comment.fromMap(Map<String, dynamic> data) => Comment(
@@ -25,7 +31,10 @@ class Comment {
         commentedBy: data['commentedBy'] == null
             ? null
             : Creator.fromMap(data['commentedBy'] as Map<String, dynamic>),
-        comment: data['comment'] as String?,
+        createdBy: data['createdBy'] == null
+            ? null
+            : Creator.fromMap(data['createdBy'] as Map<String, dynamic>),
+        comment: data['comment'] as String,
         createdAt: data['createdAt'] as String?,
       );
 
@@ -33,6 +42,7 @@ class Comment {
         'id': id,
         'blogId': blogId,
         'commentedBy': commentedBy,
+        'createdBy': createdBy,
         'comment': comment,
         'createdAt': createdAt,
       };
@@ -53,6 +63,7 @@ class Comment {
     String? id,
     String? blogId,
     Creator? commentedBy,
+    Creator? createdBy,
     String? comment,
     String? createdAt,
   }) {
@@ -60,6 +71,7 @@ class Comment {
       id: id ?? this.id,
       blogId: blogId ?? this.blogId,
       commentedBy: commentedBy ?? this.commentedBy,
+      createdBy: createdBy ?? this.createdBy,
       comment: comment ?? this.comment,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -69,6 +81,7 @@ class Comment {
   int get hashCode =>
       id.hashCode ^
       commentedBy.hashCode ^
+      createdBy.hashCode ^
       blogId.hashCode ^
       comment.hashCode ^
       createdAt.hashCode;
