@@ -55,7 +55,7 @@ class _OtpPageState extends State<OtpPage> {
                 if (otpState == OtpState.auth)
                   AuthHeading(
                     "OTP Verification",
-                    "Check your SMS messages. We’ve just sent you the Four (4) digit pin at (+) " +
+                    "Check your email. We’ve just sent you the Four (4) digit pin at (+) " +
                         widget.phone,
                   ),
                 if (otpState == OtpState.resetPassword)

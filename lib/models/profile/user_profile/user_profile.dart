@@ -13,21 +13,22 @@ class UserProfile {
   final String? id;
   final String? profileImage;
   final String? roles;
+  final String? membershipType;
 
-  const UserProfile({
-    this.fullname,
-    this.about,
-    this.booksRead,
-    this.followers,
-    this.following,
-    this.id,
-    this.profileImage,
-    this.roles,
-  });
+  const UserProfile(
+      {this.fullname,
+      this.about,
+      this.booksRead,
+      this.followers,
+      this.following,
+      this.id,
+      this.profileImage,
+      this.roles,
+      this.membershipType});
 
   @override
   String toString() {
-    return 'UserProfile(fullname: $fullname, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles)';
+    return 'UserProfile(fullname: $fullname, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles, membershipType: $membershipType)';
   }
 
   factory UserProfile.fromMap(Map<String, dynamic> data) => UserProfile(
@@ -38,6 +39,9 @@ class UserProfile {
       following: data['following'] as int?,
       id: data['id'] as String?,
       roles: data['roles'] as String?,
+      membershipType: data.containsKey('membershipType')
+          ? data['membershipType'] as String?
+          : null,
       profileImage:
           data.containsKey('profileImage') ? data['profileImage'] : null);
 
@@ -50,6 +54,7 @@ class UserProfile {
         'id': id,
         'profileImage': profileImage,
         'roles': roles,
+        'membershipType': membershipType
       };
 
   /// `dart:convert`

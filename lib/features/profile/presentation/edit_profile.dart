@@ -7,6 +7,9 @@ import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../service/auth_service/auth_provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -18,6 +21,11 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    final profile = authProvider.userProfile!;
+    print('edit profie');
+    print(profile);
     return Scaffold(
       appBar: const Appbar(title: "Edit Profile"),
       body: SingleChildScrollView(
@@ -29,6 +37,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               TextInputField(
                 labelText: "Full Name",
                 hintText: "E.g Rachel Choo",
+                initialValue: profile.fullname,
               ),
               const Gap(25),
               TextInputField(

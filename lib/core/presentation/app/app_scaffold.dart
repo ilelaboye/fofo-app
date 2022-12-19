@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fofo_app/core/presentation/app/drawer.dart';
-import 'package:fofo_app/features/chat/presentation/chat_onboarding.dart';
-import 'package:fofo_app/features/community/presentation/community_onboarding.dart';
 import 'package:fofo_app/features/feeds/presentation/feeds.dart';
-import 'package:fofo_app/features/notifications/presentation/notifications.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/auth/presentation/login.dart';
+import '../../../features/courses/presentation/courses.dart';
+import '../../../features/library/presentation/library.dart';
+import '../../../features/podcast/presentation/podcasts.dart';
 import '../../../models/profile/user_profile/user_profile.dart';
 import '../../../service/auth_service/auth_provider.dart';
 import '../../../service/library/my_library_provider.dart';
@@ -25,9 +25,12 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget> tabs = const [
     FeedsPage(),
-    CommunityOnboardingPage(),
-    NotificationsPage(),
-    ChatOnboardingPage()
+    LibraryPage(),
+    CoursesPage(),
+    PodcastsPage()
+    // CommunityOnboardingPage(),
+    // NotificationsPage(),
+    // ChatOnboardingPage()
   ];
   int currentTab = 0;
 
@@ -120,19 +123,19 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
                 label: "Home",
               ),
               BottomNavigationBarItem(
+                icon: Icon(PhosphorIcons.books),
+                activeIcon: Icon(PhosphorIcons.books),
+                label: "Library",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(PhosphorIcons.youtubeLogo),
+                activeIcon: Icon(PhosphorIcons.youtubeLogo),
+                label: "Courses",
+              ),
+              BottomNavigationBarItem(
                 icon: Icon(PhosphorIcons.applePodcastsLogo),
-                activeIcon: Icon(PhosphorIcons.applePodcastsLogoFill),
-                label: "Forum",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.bell),
-                activeIcon: Icon(PhosphorIcons.bellFill),
-                label: "Notification",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.chatsTeardrop),
                 activeIcon: Icon(PhosphorIcons.chatsTeardropFill),
-                label: "Chat",
+                label: "Podcast",
               )
             ]),
       ),

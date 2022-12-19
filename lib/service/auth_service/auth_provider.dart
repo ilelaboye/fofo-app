@@ -87,8 +87,8 @@ class AuthProvider with ChangeNotifier {
       print('get profile');
       Response response = await dioClient.get(context, "profile");
       print('profile resp');
-      print(response);
-      return UserProfile.fromMap(response.data[0]);
+      print(response.data['profile']);
+      return UserProfile.fromMap(response.data['profile']);
     } catch (err) {
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
@@ -104,12 +104,13 @@ class AuthProvider with ChangeNotifier {
       Response response = await dioClient.post(context, "auth/login",
           data: {'email': email, 'password': password});
       _loggedInStatus = Status.LoggedIn;
-      print(response.data['accessToken']);
       token = response.data['accessToken'];
       setToken(response.data['accessToken']);
       setRefreshToken(response.data['refreshToken']);
+      print(response.data['accessToken']);
       userProfile = await getUserProfile(context, response.data['accessToken']);
-      // print(userProfile?.fullname);
+      print('login after');
+      print(userProfile);
       // ;
       if (userProfile == null) {
         _loggedInStatus = Status.NotLoggedIn;

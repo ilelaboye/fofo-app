@@ -77,50 +77,69 @@ class _LibraryPageState extends State<LibraryPage> {
                     Gap.lg,
                     const SectionHeader("Continue Reading"),
                     Gap.sm,
-                    Container(
-                      height: 150,
-                      padding: const EdgeInsets.all(Insets.md),
-                      decoration: BoxDecoration(
-                        color: AppColors.palette[100],
-                        borderRadius: Corners.smBorder,
-                      ),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            child: NetworkImg(
-                              libraryProvider
-                                  .myLibrary!.continue_reading!.bookImage
-                                  .toString(),
-                              height: 150,
-                              width: 110,
+                    libraryProvider.myLibrary!.continue_reading != null
+                        ? Container(
+                            height: 150,
+                            padding: const EdgeInsets.all(Insets.md),
+                            decoration: BoxDecoration(
+                              color: AppColors.palette[100],
+                              borderRadius: Corners.smBorder,
                             ),
-                          ),
-                          Gap.md,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  libraryProvider
-                                      .myLibrary!.continue_reading!.name
-                                      .toString(),
+                                ClipRRect(
+                                  child: NetworkImg(
+                                    libraryProvider
+                                        .myLibrary!.continue_reading!.bookImage
+                                        .toString(),
+                                    height: 150,
+                                    width: 110,
+                                  ),
                                 ),
                                 Gap.md,
-                                Text(
-                                  "by " +
-                                      libraryProvider.myLibrary!
-                                          .continue_reading!.author!.fullname
-                                          .toString(),
-                                  style: context.textTheme.caption.size(13),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        libraryProvider
+                                            .myLibrary!.continue_reading!.name
+                                            .toString(),
+                                      ),
+                                      Gap.md,
+                                      Text(
+                                        "by " +
+                                            libraryProvider
+                                                .myLibrary!
+                                                .continue_reading!
+                                                .author!
+                                                .fullname
+                                                .toString(),
+                                        style:
+                                            context.textTheme.caption.size(13),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    ).onTap(() => context.push(BookPage(
-                        id: libraryProvider.myLibrary!.continue_reading!.id
-                            .toString()))),
+                          ).onTap(() => context.push(BookPage(
+                            id: libraryProvider.myLibrary!.continue_reading!.id
+                                .toString())))
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 13, horizontal: 13),
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                                color: Color(0xff0f1dcb9),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(6))),
+                            child: const Text(
+                              'No available book',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -129,71 +148,100 @@ class _LibraryPageState extends State<LibraryPage> {
                 child: SectionHeader("My Library"),
               ),
               Gap.sm,
-              SizedBox(
-                height: 180,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.only(
-                      left: index == 0 ? Insets.lg : Insets.sm,
-                      // use index == books.length -1
-                      right: index ==
-                              libraryProvider
-                                      .myLibrary!.books_in_library!.length -
-                                  1
-                          ? Insets.lg
-                          : 0,
+              libraryProvider.myLibrary!.books_in_library!.length > 0
+                  ? SizedBox(
+                      height: 180,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? Insets.lg : Insets.sm,
+                            // use index == books.length -1
+                            right: index ==
+                                    libraryProvider.myLibrary!.books_in_library!
+                                            .length -
+                                        1
+                                ? Insets.lg
+                                : 0,
+                          ),
+                          child: LibraryItem(libraryProvider
+                                  .myLibrary!.books_in_library![index])
+                              .onTap(() => context.push(BookPage(
+                                  id: libraryProvider
+                                      .myLibrary!.books_in_library![index].id
+                                      .toString()))),
+                        ),
+                        itemCount:
+                            libraryProvider.myLibrary?.books_in_library!.length,
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: Insets.lg),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 13, horizontal: 13),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                          color: Color(0xff0f1dcb9),
+                          borderRadius: BorderRadius.all(Radius.circular(6))),
+                      child: const Text(
+                        'No books available',
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
-                    child: LibraryItem(
-                            libraryProvider.myLibrary!.books_in_library![index])
-                        .onTap(() => context.push(BookPage(
-                            id: libraryProvider
-                                .myLibrary!.books_in_library![index].id
-                                .toString()))),
-                  ),
-                  itemCount:
-                      libraryProvider.myLibrary?.books_in_library!.length,
-                ),
-              ),
               Gap.lg,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
                 child: SectionHeader("Trending Books"),
               ),
               Gap.sm,
-              SizedBox(
-                height: 180,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.only(
-                      left: index == 0 ? Insets.lg : Insets.sm,
-                      // use index == books.length -1
-                      right: index ==
-                              libraryProvider
-                                      .myLibrary!.trending_books!.length -
-                                  1
-                          ? Insets.lg
-                          : 0,
+              libraryProvider.myLibrary!.trending_books!.length > 0
+                  ? SizedBox(
+                      height: 180,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? Insets.lg : Insets.sm,
+                            // use index == books.length -1
+                            right: index ==
+                                    libraryProvider
+                                            .myLibrary!.trending_books!.length -
+                                        1
+                                ? Insets.lg
+                                : 0,
+                          ),
+                          child: LibraryItem(libraryProvider
+                                  .myLibrary!.trending_books![index])
+                              .onTap(() => context.push(BookPage(
+                                  id: libraryProvider
+                                      .myLibrary!.trending_books![index].id
+                                      .toString()))),
+                        ),
+                        itemCount:
+                            libraryProvider.myLibrary!.trending_books!.length,
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: Insets.lg),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 13, horizontal: 13),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                          color: Color(0xff0f1dcb9),
+                          borderRadius: BorderRadius.all(Radius.circular(6))),
+                      child: const Text(
+                        'No trending books available',
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
-                    child: LibraryItem(
-                            libraryProvider.myLibrary!.trending_books![index])
-                        .onTap(() => context.push(BookPage(
-                            id: libraryProvider
-                                .myLibrary!.trending_books![index].id
-                                .toString()))),
-                  ),
-                  itemCount: libraryProvider.myLibrary!.trending_books!.length,
-                ),
-              ),
               Gap.lg,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-                child: SectionHeader("Top Authors", seeAll: true),
+                child: SectionHeader("Top Authors", seeAll: false),
               ),
               Gap.sm,
               SizedBox(

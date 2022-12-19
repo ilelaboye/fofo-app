@@ -7,7 +7,6 @@ import 'package:fofo_app/core/widgets/avatar_group.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
-import 'package:fofo_app/core/widgets/post_card.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/chat/presentation/chats.dart';
 import 'package:fofo_app/features/profile/presentation/edit_profile.dart';
@@ -61,7 +60,10 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Row(
                   children: [
-                    Avatar(AppColors.error, radius: 34),
+                    Avatar(AppColors.colorList()[1],
+                        data: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(profile.profileImage.toString()))),
                     Gap.md,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,9 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text.rich(
                       TextSpan(children: [
-                        const TextSpan(text: "Posts\n"),
+                        const TextSpan(text: "Books read\n"),
                         TextSpan(
-                          text: "20",
+                          text: profile.booksRead.toString(),
                           style: context.textTheme.bodyMedium.size(15).bold,
                         ),
                       ]),
@@ -259,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextSpan(children: [
                     const TextSpan(text: "Membership plan\n"),
                     TextSpan(
-                        text: "Do It Yourself",
+                        text: profile.membershipType != null ? 'Paid' : 'Free',
                         style: context.textTheme.bodyMedium
                             .size(24)
                             .changeColor(Colors.white)),
@@ -272,25 +274,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Gap.lg,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Insets.md),
-            child: SectionHeader(
-                widget.isCurrentUser ? "My Recent posts" : "Recent posts"),
-          ),
-          Gap.md,
-          const Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Insets.md, vertical: Insets.xs),
-            child: PostCard(),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Insets.md, vertical: Insets.xs),
-            child: PostCard(
-              hasImage: true,
-            ),
-          ),
-          const Gap(80),
         ],
       )),
     );

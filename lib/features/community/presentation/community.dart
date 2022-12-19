@@ -148,7 +148,7 @@ class GuidelineSheet extends StatelessWidget {
                         .copyWith(height: 1.4),
                   ),
                   Text(
-                    'Our team of Community Moderators is here to support you throughout your experience. You can reach us here: concierge@forbescouncils.com.',
+                    'Our team of Community Moderators is here to support you throughout your experience. You can reach us here: support@trailblazerfemme.com.',
                     textAlign: TextAlign.center,
                     style: context.textTheme.bodyMedium
                         .changeColor(AppColors.palette[600])

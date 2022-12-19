@@ -28,6 +28,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final formKey = new GlobalKey<FormState>();
   late String email, password;
+  bool passenable = true;
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
@@ -69,11 +70,19 @@ class _LoginPageState extends State<LoginPage> {
                     onSaved: (value) => password = value!,
                     initialValue: "",
                     labelText: "Password",
-                    obscureText: true,
+                    obscureText: passenable,
                     suffixIcon: Icon(
                       PhosphorIcons.eyeSlashFill,
                       color: AppColors.primary,
-                    ),
+                    ).onTap(() {
+                      setState(() {
+                        if (passenable) {
+                          passenable = false;
+                        } else {
+                          passenable = true;
+                        }
+                      });
+                    }),
                   ),
                   const Gap(25),
                   Text.rich(

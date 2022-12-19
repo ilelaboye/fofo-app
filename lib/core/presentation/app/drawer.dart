@@ -9,6 +9,7 @@ import 'package:fofo_app/features/courses/presentation/courses.dart';
 import 'package:fofo_app/features/library/presentation/library.dart';
 import 'package:fofo_app/features/podcast/presentation/podcasts.dart';
 import 'package:fofo_app/features/profile/presentation/profile.dart';
+import 'package:fofo_app/features/public/terms.dart';
 import 'package:fofo_app/features/shop/presentation/shop.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -179,6 +180,10 @@ class _AppDrawerState extends State<AppDrawer> {
                   "Terms and Privacy",
                   style: context.textTheme.bodyMedium.size(17),
                 ),
+                onTap: () {
+                  context.pop();
+                  context.push(const TermsCondition());
+                },
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,

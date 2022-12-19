@@ -53,6 +53,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   late String fullname, email, phonenumber, password;
+  bool passenable = true;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,7 @@ class _SignupPageState extends State<SignupPage> {
                     hintText: "(country code) 1234567890",
                     onSaved: (value) => phonenumber = value!,
                     validator: (value) {
-                      if (value!.isNotEmpty && value.length > 12) {
+                      if (value!.isNotEmpty && value.length > 5) {
                         return null;
                       } else if (value.length < 5 && value.isNotEmpty) {
                         return "Invalid phone Number";
@@ -138,12 +139,20 @@ class _SignupPageState extends State<SignupPage> {
                           }),
                   const Gap(25),
                   TextInputField(
-                      obscureText: true,
+                      obscureText: passenable,
                       labelText: "Password",
                       suffixIcon: Icon(
                         PhosphorIcons.eyeSlashFill,
                         color: AppColors.primary,
-                      ),
+                      ).onTap(() {
+                        setState(() {
+                          if (passenable) {
+                            passenable = false;
+                          } else {
+                            passenable = true;
+                          }
+                        });
+                      }),
                       onSaved: (value) => password = value!,
                       validator: (value) {
                         if (value!.isEmpty) {
