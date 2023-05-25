@@ -11,6 +11,7 @@ import 'package:fofo_app/models/user_model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/api.dart';
+import '../../core/widgets/notification.dart';
 import '../../features/auth/presentation/login.dart';
 import '../../models/profile/user_profile/user_profile.dart';
 import '../../models/user_model/reset_password.dart';
@@ -292,5 +293,23 @@ class AuthProvider with ChangeNotifier {
       result = {'status': false, 'message': response.data['error']};
     }
     return result;
+  }
+
+  Future<Map<String, dynamic>> updateProfile(BuildContext context,
+      {required Map user}) async {
+    try {
+      print(user);
+      Response response = await dioClient
+          .patch(context, "profile/update-profile-info", data: user);
+      print('object');
+      print(response.data);
+      notifyListeners();
+
+      return {'status': true, 'data': response.data};
+    } catch (err) {
+      notifyListeners();
+      showNotification(context, false, err);
+      return {'status': false, 'message': err};
+    }
   }
 }

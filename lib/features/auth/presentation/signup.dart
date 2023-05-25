@@ -14,7 +14,7 @@ import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/login.dart';
 import 'package:fofo_app/features/subscription/presentation/subscription.dart';
-import 'package:fofo_app/service/auth_service/auth_service.dart';
+// import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -66,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
       ],
     );
 
-    final ISignUp _signupService = SignUpService();
+    // final ISignUp _signupService = SignUpService();
     // final notify = Notification();
     return Scaffold(
       // appBar: const Appbar(hasLeading: false),
@@ -85,7 +85,7 @@ class _SignupPageState extends State<SignupPage> {
                     Gap.lg,
                     TextInputField(
                       labelText: "Full Name",
-                      initialValue: "Adekunle ojo",
+                      initialValue: "",
                       hintText: "E.g Rachel Choo",
                       validator: (value) {
                         if (value!.isNotEmpty) {
@@ -99,7 +99,7 @@ class _SignupPageState extends State<SignupPage> {
                     const Gap(25),
                     TextInputField(
                         labelText: "Email Address",
-                        initialValue: "ilelaboyealekan+10@gmail.com",
+                        initialValue: "",
                         hintText: "E.g Rachelchoo@gmail.com",
                         onSaved: (value) => email = value!,
                         validator: (value) {
@@ -112,7 +112,7 @@ class _SignupPageState extends State<SignupPage> {
                     const Gap(25),
                     TextInputField(
                       labelText: "Phone Number",
-                      initialValue: "2348102721335",
+                      initialValue: "",
                       hintText: "(country code) 1234567890",
                       onSaved: (value) => phonenumber = value!,
                       validator: (value) {
@@ -145,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                     TextInputField(
                         obscureText: passenable,
                         labelText: "Password",
-                        initialValue: "1234567",
+                        initialValue: "",
                         suffixIcon: Icon(
                           PhosphorIcons.eyeSlashFill,
                           color: AppColors.primary,

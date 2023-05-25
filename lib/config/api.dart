@@ -159,6 +159,9 @@ class DioClient extends ChangeNotifier {
       print('patch error');
       print(e);
       final errorMessage = DioExceptions.fromDioError(e).toString();
+      if (e.response?.statusCode == 401) {
+        logout(context);
+      }
       throw errorMessage;
     }
   }

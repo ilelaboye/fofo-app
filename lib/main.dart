@@ -6,7 +6,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/presentation/onboarding.dart';
-import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:fofo_app/service/course/course.dart';
 import 'package:fofo_app/service/feed/feed.dart';
 import 'package:fofo_app/service/job/job.dart';
@@ -31,7 +30,6 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => auth),
     ChangeNotifierProvider(create: (_) => UserProvider()),
-    Provider<SignUpService>(create: (_) => SignUpService()),
     ChangeNotifierProvider(create: (_) => LibraryProvider()),
     ChangeNotifierProvider(create: (_) => FeedsProvider()),
     ChangeNotifierProvider(create: (_) => ShopProvider()),
