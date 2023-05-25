@@ -20,7 +20,7 @@ void showNotification(BuildContext context, status, message) {
               ),
               Expanded(
                 child: Text(
-                  message,
+                  message.toString(),
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,

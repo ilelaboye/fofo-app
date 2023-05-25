@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -7,7 +8,6 @@ import 'package:fofo_app/core/widgets/avatar_group.dart';
 import 'package:fofo_app/core/widgets/categories.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
-import 'package:fofo_app/core/widgets/loader.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/library/presentation/book.dart';
@@ -17,7 +17,7 @@ import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/library/my_library/books.dart';
+import '../../../models/library/my_library/my_library.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
@@ -28,32 +28,32 @@ class LibraryPage extends StatefulWidget {
 
 class _LibraryPageState extends State<LibraryPage> {
   // late final List<Book> books;
-  Books? books;
-  bool isLoaded = false;
+  MyLibrary? library;
+  bool loaded = false;
+  // final libraryProvider = Provider.of<LibraryProvider>(context);
   @override
   void initState() {
     super.initState();
-    getBooks();
+    getLibrary();
   }
 
-  getBooks() async {
-    books = await Provider.of<LibraryProvider>(context, listen: false)
-        .getBooks(context);
-    print('pbookd');
-    print(books);
+  getLibrary() async {
+    EasyLoading.show(status: "Loading...");
+    library = await Provider.of<LibraryProvider>(context, listen: false)
+        .getLibrary(context);
     setState(() {
-      isLoaded = true;
+      loaded = true;
     });
+    EasyLoading.dismiss();
+    print('pbookd');
+    print(library);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!isLoaded) {
-      return Loader();
-    } else {
-      final libraryProvider = Provider.of<LibraryProvider>(context);
-      print('my lib');
-      print(libraryProvider.myLibrary);
+    print('library page');
+    // print(library);
+    if (loaded) {
       return Scaffold(
         appBar: const Appbar(
           title: "Library",
@@ -72,12 +72,12 @@ class _LibraryPageState extends State<LibraryPage> {
                     ),
                     Gap.lg,
                     CategorySection(
-                      categories: libraryProvider.myLibrary?.categories ?? [],
+                      categories: library?.categories ?? [],
                     ),
                     Gap.lg,
                     const SectionHeader("Continue Reading"),
                     Gap.sm,
-                    libraryProvider.myLibrary!.continue_reading != null
+                    library!.continue_reading != null
                         ? Container(
                             height: 150,
                             padding: const EdgeInsets.all(Insets.md),
@@ -89,8 +89,7 @@ class _LibraryPageState extends State<LibraryPage> {
                               children: [
                                 ClipRRect(
                                   child: NetworkImg(
-                                    libraryProvider
-                                        .myLibrary!.continue_reading!.bookImage
+                                    library!.continue_reading!.bookImage
                                         .toString(),
                                     height: 150,
                                     width: 110,
@@ -103,17 +102,13 @@ class _LibraryPageState extends State<LibraryPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        libraryProvider
-                                            .myLibrary!.continue_reading!.name
+                                        library!.continue_reading!.name
                                             .toString(),
                                       ),
                                       Gap.md,
                                       Text(
                                         "by " +
-                                            libraryProvider
-                                                .myLibrary!
-                                                .continue_reading!
-                                                .author!
+                                            library!.continue_reading!.author!
                                                 .fullname
                                                 .toString(),
                                         style:
@@ -125,8 +120,7 @@ class _LibraryPageState extends State<LibraryPage> {
                               ],
                             ),
                           ).onTap(() => context.push(BookPage(
-                            id: libraryProvider.myLibrary!.continue_reading!.id
-                                .toString())))
+                            id: library!.continue_reading!.id.toString())))
                         : Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 13, horizontal: 13),
@@ -148,7 +142,7 @@ class _LibraryPageState extends State<LibraryPage> {
                 child: SectionHeader("My Library"),
               ),
               Gap.sm,
-              libraryProvider.myLibrary!.books_in_library!.length > 0
+              library!.books_in_library!.length > 0
                   ? SizedBox(
                       height: 180,
                       child: ListView.builder(
@@ -159,22 +153,17 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: EdgeInsets.only(
                             left: index == 0 ? Insets.lg : Insets.sm,
                             // use index == books.length -1
-                            right: index ==
-                                    libraryProvider.myLibrary!.books_in_library!
-                                            .length -
-                                        1
-                                ? Insets.lg
-                                : 0,
+                            right:
+                                index == library!.books_in_library!.length - 1
+                                    ? Insets.lg
+                                    : 0,
                           ),
-                          child: LibraryItem(libraryProvider
-                                  .myLibrary!.books_in_library![index])
+                          child: LibraryItem(library!.books_in_library![index])
                               .onTap(() => context.push(BookPage(
-                                  id: libraryProvider
-                                      .myLibrary!.books_in_library![index].id
+                                  id: library!.books_in_library![index].id
                                       .toString()))),
                         ),
-                        itemCount:
-                            libraryProvider.myLibrary?.books_in_library!.length,
+                        itemCount: library?.books_in_library!.length,
                       ),
                     )
                   : Container(
@@ -196,7 +185,7 @@ class _LibraryPageState extends State<LibraryPage> {
                 child: SectionHeader("Trending Books"),
               ),
               Gap.sm,
-              libraryProvider.myLibrary!.trending_books!.length > 0
+              library!.trending_books!.length > 0
                   ? SizedBox(
                       height: 180,
                       child: ListView.builder(
@@ -207,22 +196,16 @@ class _LibraryPageState extends State<LibraryPage> {
                           padding: EdgeInsets.only(
                             left: index == 0 ? Insets.lg : Insets.sm,
                             // use index == books.length -1
-                            right: index ==
-                                    libraryProvider
-                                            .myLibrary!.trending_books!.length -
-                                        1
+                            right: index == library!.trending_books!.length - 1
                                 ? Insets.lg
                                 : 0,
                           ),
-                          child: LibraryItem(libraryProvider
-                                  .myLibrary!.trending_books![index])
+                          child: LibraryItem(library!.trending_books![index])
                               .onTap(() => context.push(BookPage(
-                                  id: libraryProvider
-                                      .myLibrary!.trending_books![index].id
+                                  id: library!.trending_books![index].id
                                       .toString()))),
                         ),
-                        itemCount:
-                            libraryProvider.myLibrary!.trending_books!.length,
+                        itemCount: library!.trending_books!.length,
                       ),
                     )
                   : Container(
@@ -253,8 +236,7 @@ class _LibraryPageState extends State<LibraryPage> {
                     padding: EdgeInsets.only(
                       left: index == 0 ? Insets.lg : Insets.sm,
                       // use index == authors.length -1
-                      right: index ==
-                              libraryProvider.myLibrary!.top_authors!.length - 1
+                      right: index == library!.top_authors!.length - 1
                           ? Insets.lg
                           : 0,
                     ),
@@ -266,28 +248,24 @@ class _LibraryPageState extends State<LibraryPage> {
                           // radius: 10,
                           data: CircleAvatar(
                             backgroundImage: NetworkImage(
-                              libraryProvider
-                                  .myLibrary!.top_authors![index].image_url
-                                  .toString(),
+                              library!.top_authors![index].image_url.toString(),
                             ),
                           ),
                         ).onTap(
                           () => context.push(
                             SingleAuthorBooksPage(
-                                author: libraryProvider
-                                    .myLibrary!.top_authors![index]),
+                                author: library!.top_authors![index]),
                           ),
                         ),
                         Text(
-                          libraryProvider
-                              .myLibrary!.top_authors![index].fullname
-                              .toString(),
+                          library!.top_authors![index].fullname.toString(),
                           style: TextStyle(fontSize: 12),
+                          maxLines: 2,
                         )
                       ],
                     ),
                   ),
-                  itemCount: libraryProvider.myLibrary!.top_authors!.length,
+                  itemCount: library!.top_authors!.length,
                 ),
               ),
               const Gap(50)
@@ -295,6 +273,8 @@ class _LibraryPageState extends State<LibraryPage> {
           ),
         ),
       );
+    } else {
+      return Container();
     }
   }
 }

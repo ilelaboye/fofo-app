@@ -70,9 +70,9 @@ class _StartResetPasswordPageState extends State<StartResetPasswordPage> {
                       form.save();
                       auth.resetPassword(context, email);
                       context.push(OtpPage(
-                        otpState: OtpState.resetPassword,
-                        email: email,
-                      ));
+                          otpState: OtpState.resetPassword,
+                          email: email,
+                          user: {'email': email}));
                     }
                   },
                 ),

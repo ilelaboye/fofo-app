@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
+import 'package:fofo_app/core/widgets/notification.dart';
 import 'package:fofo_app/core/widgets/review.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/shop/presentation/product_card.dart';
@@ -26,13 +28,21 @@ class ProductDescriptionPage extends StatefulWidget {
 }
 
 class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
-  late final GetProductById product;
+  late final Map product;
 
+  late final String imgUrl;
+  late final String currentSize;
+  late final String currentPrice;
+  late final Map currentVariation;
+  late Color currentColor;
+  int quantity = 1;
   bool isLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    // print('inti pro');
+    // print(DateTime.now().toString().getDateDifference());
     getProduct();
   }
 
@@ -43,13 +53,19 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
     print('get single prod returns');
     print(product);
     setState(() {
+      EasyLoading.dismiss();
+      imgUrl = product['product']['product_images'][0]['secure_url'];
+      currentVariation = product['product']['product_variation'][0];
+      currentColor =
+          (AppColors.colorMap()[currentVariation['color'].toLowerCase()] != null
+              ? AppColors.colorMap()[currentVariation['color'].toLowerCase()]!
+              : AppColors.colorMap()["white"])!;
+      // currentSize = product['product']['product_variation'][0]['size'];
+      // currentPrice = product['product']['product_variation'][0]['price'];
       isLoaded = true;
     });
   }
 
-  String imgUrl = 'shop2';
-  String currentSize = "S";
-  Color currentColor = Colors.black;
   @override
   Widget build(BuildContext context) {
     if (!isLoaded) {
@@ -66,14 +82,14 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NetworkImg(
-                    product.product.product_images![0].secure_url.toString(),
+                    imgUrl.toString(),
                     width: context.width,
                     height: 250,
                   ),
                   Gap.md,
                   Row(
-                    children: ["shop2", "shop", "shop"]
-                        .map(
+                    children: product['product']['product_images']
+                        .map<Widget>(
                           (img) => Padding(
                             padding: const EdgeInsets.only(
                               right: Insets.sm,
@@ -83,21 +99,21 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                               decoration: BoxDecoration(
                                   borderRadius: Corners.xsBorder,
                                   border: Border.all(
-                                    color: imgUrl == img
+                                    color: imgUrl == img['secure_url']
                                         ? Colors.black
                                         : Colors.transparent,
                                   )),
                               child: ClipRRect(
                                 borderRadius: Corners.xsBorder,
-                                child: LocalImage(
-                                  img.png,
+                                child: NetworkImg(
+                                  img['secure_url'],
                                   height: 40,
                                   width: 40,
                                 ),
                               ),
                             ).onTap(() {
                               setState(() {
-                                imgUrl = img;
+                                imgUrl = img['secure_url'];
                               });
                             }),
                           ),
@@ -108,7 +124,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   SizedBox(
                     width: context.width / 1.2,
                     child: Text(
-                      product.product.name,
+                      product['product']['name'],
                       style: context.textTheme.headlineMedium
                           .size(20)
                           .changeColor(AppColors.primary),
@@ -122,7 +138,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                         (index) => Padding(
                           padding: const EdgeInsets.only(right: 2),
                           child: Icon(
-                            index != 4
+                            index < product['product']['ratings']
                                 ? PhosphorIcons.starFill
                                 : PhosphorIcons.star,
                             size: 14,
@@ -131,7 +147,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                         ),
                       ),
                       Gap.xs,
-                      const Text("(4)"),
+                      Text('(${product['product']['ratings']})'),
                     ],
                   ),
                   Gap.md,
@@ -149,12 +165,18 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                             child: const Icon(
                               PhosphorIcons.minus,
                             ),
-                          ),
+                          ).onTap(() {
+                            setState(() {
+                              if (quantity > 1) {
+                                quantity -= 1;
+                              }
+                            });
+                          }),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: Insets.sm),
                             child: Text(
-                              "1",
+                              quantity.toString(),
                               style: context.textTheme.bodyMedium
                                   .changeColor(AppColors.primary)
                                   .size(20)
@@ -170,13 +192,15 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                             child: const Icon(
                               PhosphorIcons.plus,
                             ),
-                          ),
+                          ).onTap(() {
+                            setState(() {
+                              quantity += 1;
+                            });
+                          }),
                         ],
                       ),
                       Text(
-                        "\$" +
-                            product.product.product_variation![0].price
-                                .toString(),
+                        "\$" + currentVariation['price'].toString(),
                         style: context.textTheme.bodyMedium
                             .changeColor(AppColors.primary)
                             .size(22)
@@ -188,7 +212,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   const SectionHeader("About"),
                   Gap.sm,
                   Text(
-                    product.product.description.toString(),
+                    product['product']['description'].toString(),
                     style: context.textTheme.caption
                         .size(12)
                         .copyWith(height: 1.8),
@@ -199,12 +223,12 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   Wrap(
                     spacing: Insets.md,
                     runSpacing: Insets.sm,
-                    children: ["S", "M", "L", "XL", "XXL"]
-                        .map(
-                          (size) => Container(
+                    children: product['product']['product_variation']
+                        .map<Widget>(
+                          (item) => Container(
                             decoration: BoxDecoration(
                               borderRadius: Corners.xsBorder,
-                              color: currentSize == size
+                              color: currentVariation['size'] == item['size']
                                   ? AppColors.primary
                                   : AppColors.palette[200],
                             ),
@@ -213,18 +237,18 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                               horizontal: Insets.md,
                             ),
                             child: Text(
-                              size,
+                              item['size'],
                               style: context.textTheme.bodyMedium
                                   .size(14)
                                   .changeColor(
-                                    currentSize == size
+                                    currentVariation['size'] == item['size']
                                         ? Colors.white
                                         : AppColors.primary,
                                   ),
                             ),
                           ).onTap(() {
                             setState(() {
-                              currentSize = size;
+                              currentVariation = item;
                             });
                           }),
                         )
@@ -236,22 +260,19 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   Wrap(
                     spacing: Insets.md,
                     runSpacing: Insets.sm,
-                    children: [
-                      Colors.black,
-                      Colors.red,
-                      Colors.blue,
-                      Colors.yellow,
-                      Colors.pink,
-                    ]
-                        .map(
+                    children: product['product']['product_variation']
+                        .map<Widget>(
                           (color) => Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: color,
+                              color: AppColors.colorMap()[
+                                  color['color'].toLowerCase()],
                             ),
                             height: 36,
                             width: 36,
-                            child: currentColor == color
+                            child: currentColor ==
+                                    AppColors.colorMap()[
+                                        color['color'].toLowerCase()]
                                 ? const Icon(
                                     PhosphorIcons.checkCircleFill,
                                     color: Colors.white,
@@ -259,7 +280,8 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                                 : null,
                           ).onTap(() {
                             setState(() {
-                              currentColor = color;
+                              currentColor = AppColors.colorMap()[
+                                  color['color'].toLowerCase()]!;
                             });
                           }),
                         )
@@ -268,7 +290,16 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   Gap.lg,
                   Button(
                     "Add This To Bag",
-                    onTap: () {},
+                    onTap: () async {
+                      print('adding to c');
+                      // print(product['product']);
+                      Map cartResp = await Provider.of<ShopProvider>(context,
+                              listen: false)
+                          .addToCart(product['product'], quantity, currentColor,
+                              currentVariation);
+                      showNotification(context, true, cartResp['msg']);
+                      print(cartResp);
+                    },
                   )
                 ],
               ),
@@ -277,14 +308,18 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
               padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
               child: SectionHeader(
                 "Reviews",
-                seeAll: true,
+                seeAll: product['reviews']['docs'].length > 0 ? true : false,
                 onClickSeeAll: () {
-                  context.push(const ProductReviewsPage());
+                  context.push(ProductReviewsPage(
+                      reviews: product['reviews']['docs'],
+                      productId: product['product']['id']));
                 },
               ),
             ),
             Gap.md,
-            const ReviewList(),
+            ReviewList(
+              reviews: product['reviews']['docs'],
+            ),
             Gap.lg,
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.lg),
@@ -302,13 +337,22 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                 itemBuilder: (context, index) => Padding(
                   padding: EdgeInsets.only(
                     left: index == 0 ? Insets.lg : Insets.sm,
-                    right: index == 2 ? Insets.lg : 0,
+                    right: index ==
+                            product['product_you_may_like']['docs'].length - 1
+                        ? Insets.lg
+                        : 0,
                   ),
-                  child: const ShopCard().onTap(
-                    () => context.push(const ProductDescriptionPage()),
+                  child: ShopCard(
+                          product: product['product_you_may_like']['docs']
+                              [index],
+                          imgHeight: 10)
+                      .onTap(
+                    () => context.push(ProductDescriptionPage(
+                        id: product['product_you_may_like']['docs'][index]
+                            ['id'])),
                   ),
                 ),
-                itemCount: 3,
+                itemCount: product['product_you_may_like']['docs'].length,
               ),
             ),
             const Gap(50)

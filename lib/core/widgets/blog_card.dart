@@ -30,10 +30,11 @@ class BlogCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (feed.blogImage != null)
+            if (feed.blogImages!.isNotEmpty &&
+                feed.blogImages![0]['image_url'] != null)
               ClipRRect(
                 child: NetworkImg(
-                  feed.blogImage.toString(),
+                  feed.blogImages![0]['image_url'].toString(),
                   width: context.width,
                   height: 100,
                   fit: BoxFit.cover,
@@ -41,7 +42,9 @@ class BlogCard extends StatelessWidget {
               ),
             Gap.xs,
             Text(
-              feed.blogCategory!.name.toString().titleCaseSingle(),
+              feed.blogCategory != null
+                  ? feed.blogCategory!.name.toString().titleCaseSingle()
+                  : '',
               style: context.textTheme.bodySmall
                   .changeColor(AppColors.palette[600]!),
             ),

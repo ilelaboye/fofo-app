@@ -10,6 +10,7 @@ import 'package:fofo_app/core/widgets/image.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/chat/presentation/chats.dart';
 import 'package:fofo_app/features/profile/presentation/edit_profile.dart';
+import 'package:fofo_app/features/subscription/presentation/subscription.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,21 @@ class _ProfilePageState extends State<ProfilePage> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     final profile = authProvider.userProfile!;
+    Map hold = {
+      "fullname": profile.fullname,
+      "email": profile,
+      "phonenumber": profile.phonenumber,
+      "membershipType": profile.membershipType,
+      "isActive": profile.isActive,
+      "paid": profile.paid,
+      "about": profile.about,
+      "followers": profile.followers,
+      "following": profile.following,
+      "booksRead": profile.booksRead,
+      "profileImage": profile.profileImage,
+      "id": profile.id,
+      "roles": profile.roles,
+    };
     print('get profile');
     print(profile);
 
@@ -40,14 +56,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: const Appbar(title: "Profile"),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () => context.push(const ChatsPage()),
-        child: const Icon(
-          PhosphorIcons.chatsTeardropFill,
-          color: Colors.white,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: AppColors.primary,
+      //   onPressed: () => context.push(const ChatsPage()),
+      //   child: const Icon(
+      //     PhosphorIcons.chatsTeardropFill,
+      //     color: Colors.white,
+      //   ),
+      // ),
       body: SingleChildScrollView(
           child: Column(
         children: [
@@ -62,8 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Avatar(AppColors.colorList()[1],
                         data: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(profile.profileImage.toString()))),
+                            backgroundImage: profile.profileImage == null
+                                ? AssetImage("user".png) as ImageProvider
+                                : NetworkImage(
+                                    profile.profileImage.toString()))),
                     Gap.md,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,26 +161,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             .size(18)
                             .bold,
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text("Edit About"),
-                          Gap.sm,
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 2.5),
-                            child: Icon(
-                              PhosphorIcons.arrowRight,
-                              size: 18,
-                            ),
-                          )
-                        ],
-                      )
                     ],
                   ),
                 ],
                 Gap.md,
                 Text(
-                  "Starting a career can sometimes be daunting. We’ll help you clarify your purpose, overcome impostor syndrome, boost your confidence, and accelerate success. We’ll help you and clarify your purpose, overcome impostor syndr see more...",
+                  profile.about ?? '',
                   style:
                       context.textTheme.caption.size(13).copyWith(height: 1.4),
                 ),
@@ -193,57 +197,66 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-          Gap.md,
+          // Gap.md,
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: Insets.md),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Text(
+          //         widget.isCurrentUser ? "My Communities" : "Communities",
+          //         style: context.textTheme.headlineMedium
+          //             .changeColor(AppColors.primary)
+          //             .size(18)
+          //             .bold,
+          //       ),
+          //       Row(
+          //         mainAxisSize: MainAxisSize.min,
+          //         children: const [
+          //           Text("More communitites"),
+          //           Gap.sm,
+          //           Padding(
+          //             padding: EdgeInsets.only(bottom: 2.5),
+          //             child: Icon(
+          //               PhosphorIcons.arrowRight,
+          //               size: 18,
+          //             ),
+          //           )
+          //         ],
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // Gap.sm,
+          // SizedBox(
+          //   height: 160,
+          //   child: ListView.builder(
+          //     scrollDirection: Axis.horizontal,
+          //     physics: const BouncingScrollPhysics(),
+          //     itemBuilder: (context, index) => Padding(
+          //       padding: EdgeInsets.only(
+          //         left: index == 0 ? Insets.md : Insets.sm,
+          //         // use index == blog.length -1
+          //         right: index == 2 ? Insets.md : 0,
+          //       ),
+          //       child: const CommnunityCard(),
+          //     ),
+          //     itemCount: 3,
+          //   ),
+          // ),
+          Gap.lg,
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Insets.md),
+            padding: EdgeInsets.symmetric(horizontal: Insets.md),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  widget.isCurrentUser ? "My Communities" : "Communities",
-                  style: context.textTheme.headlineMedium
-                      .changeColor(AppColors.primary)
-                      .size(18)
-                      .bold,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text("More communitites"),
-                    Gap.sm,
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 2.5),
-                      child: Icon(
-                        PhosphorIcons.arrowRight,
-                        size: 18,
-                      ),
-                    )
-                  ],
+                const SectionHeader("Membership"),
+                GestureDetector(
+                  child: const Text('Upgrade'),
+                  onTap: () => context.push(SubscriptionPage(user: hold)),
                 )
               ],
             ),
-          ),
-          Gap.sm,
-          SizedBox(
-            height: 160,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? Insets.md : Insets.sm,
-                  // use index == blog.length -1
-                  right: index == 2 ? Insets.md : 0,
-                ),
-                child: const CommnunityCard(),
-              ),
-              itemCount: 3,
-            ),
-          ),
-          Gap.lg,
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Insets.md),
-            child: SectionHeader("Membership"),
           ),
           Gap.sm,
           Container(
@@ -251,7 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
             margin: const EdgeInsets.symmetric(horizontal: Insets.md),
             padding: const EdgeInsets.symmetric(horizontal: Insets.md),
             decoration: const BoxDecoration(
-              color: Color(0xff5AA2E8),
+              color: Color(0xFF990808),
               borderRadius: Corners.smBorder,
             ),
             child: Row(
@@ -259,9 +272,11 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Text.rich(
                   TextSpan(children: [
-                    const TextSpan(text: "Membership plan\n"),
+                    const TextSpan(
+                        text: "Membership plan\n",
+                        style: TextStyle(color: Colors.white)),
                     TextSpan(
-                        text: profile.membershipType != null ? 'Paid' : 'Free',
+                        text: profile.membershipType,
                         style: context.textTheme.bodyMedium
                             .size(24)
                             .changeColor(Colors.white)),

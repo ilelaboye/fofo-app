@@ -6,10 +6,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/models/user_model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/api.dart';
+import '../../features/auth/presentation/login.dart';
 import '../../models/profile/user_profile/user_profile.dart';
 import '../../models/user_model/reset_password.dart';
 
@@ -51,9 +53,13 @@ class AuthProvider with ChangeNotifier {
     // print('logged');
   }
 
-  void logOut() async {
+  void logOut(BuildContext context) async {
     await _preferences.clear();
+    skipOnboarding();
     setToken("null");
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false);
   }
 
   void setToken(String token) {
@@ -76,6 +82,14 @@ class AuthProvider with ChangeNotifier {
     _preferences.setString(_STORE_USER_KEY, jsonEncode(user.toJson()));
   }
 
+  void skipOnboarding() {
+    _preferences.setBool("skipOnboard", true);
+  }
+
+  bool getSkipOnboarding() {
+    return _preferences.getBool("skipOnboard") ?? false;
+  }
+
   UserProfile? getUser() {
     String? user = _preferences.getString(_STORE_USER_KEY);
     return user == null ? null : UserProfile.fromJson(jsonDecode(user));
@@ -85,11 +99,14 @@ class AuthProvider with ChangeNotifier {
       BuildContext context, String _token) async {
     try {
       print('get profile');
+      EasyLoading.show(status: 'loading...');
       Response response = await dioClient.get(context, "profile");
       print('profile resp');
       print(response.data['profile']);
+      EasyLoading.dismiss();
       return UserProfile.fromMap(response.data['profile']);
     } catch (err) {
+      EasyLoading.dismiss();
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
       return null;
@@ -154,29 +171,24 @@ class AuthProvider with ChangeNotifier {
     try {
       response = await dioClient.post(context, "auth/register",
           data: registrationData);
-      final body = response.data;
+      Map body = response.data;
 
-      authUser = UserModel.fromMap(body);
-      authUser = authUser!.copyWith(
-          fullname: fullname,
-          email: email,
-          phonenumber: phonenumber,
-          field: field,
-          password: password);
       print('register...');
-      print(authUser);
-      token = authUser!.accessToken;
-      setToken(authUser!.accessToken as String);
+      print(body);
+      token = body['accessToken'];
+      setToken(body['accessToken'] as String);
       _registeredInStatus = Status.NotLoading;
       notifyListeners();
       return {
         'status': true,
         'message': 'Successfully registered',
-        'data': authUser
+        'data': body
       };
     } catch (e) {
       _registeredInStatus = Status.NotLoading;
       notifyListeners();
+      print('signup error');
+      print(e);
       return {'status': false, 'message': e};
     }
   }
@@ -185,12 +197,16 @@ class AuthProvider with ChangeNotifier {
       BuildContext context, String otp, String token) async {
     final Map<String, dynamic> otpData = {"otp": otp};
     Response response;
-
+    print('before otp ve');
     try {
       response = await dioClient.post(context, "auth/verifyotp", data: otpData);
+      print('verify otp resp');
+      print(response);
       notifyListeners();
       return {'status': true, 'message': 'Otp verified successfully'};
     } catch (e) {
+      print('verify otp error');
+      print(e);
       notifyListeners();
       return {'status': false, 'message': e};
     }
@@ -208,7 +224,7 @@ class AuthProvider with ChangeNotifier {
     Response response;
     try {
       response = await dioClient.patch(
-          context, 'profile/upload-profile-image/' + userId,
+          context, 'profile/update-profile-image/' + userId,
           data: formData);
 
       print('upload');
@@ -239,12 +255,16 @@ class AuthProvider with ChangeNotifier {
     response = await dioClient.post(context, "auth/reset-password", data: data);
     // final body = response.data;
     // response = await Dio().post(api, data: data);
+    print('reset resp');
+    print(response);
     if (response.statusCode == 200) {
       final body = response.data;
       UserModel resetPassword = UserModel.fromMap(body);
       notifyListeners();
       result = {'status': true, 'message': 'Successful', 'user': resetPassword};
     } else {
+      print('reset error');
+      print(response);
       notifyListeners();
       result = {'status': false, 'message': response.data['error']};
     }

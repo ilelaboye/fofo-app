@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -34,22 +35,24 @@ class _BlogPageState extends State<BlogPage> {
   var _controller = TextEditingController();
 
   getBlog() async {
+    EasyLoading.show(status: 'loadings...');
     blog = await Provider.of<FeedsProvider>(context, listen: false)
         .getBlog(context, widget.id);
+    EasyLoading.dismiss();
     setState(() {
       isLoaded = true;
     });
   }
 
   postComment(comment) async {
+    EasyLoading.show(status: 'loadings...');
     Comment index = await Provider.of<FeedsProvider>(context, listen: false)
         .postComment(context, widget.id, comment);
     _controller.clear();
-    print('comment returens');
     setState(() {
       blog.blogComments!.insert(0, index);
     });
-    print(blog.blogComments);
+    EasyLoading.dismiss();
   }
 
   @override
@@ -115,7 +118,7 @@ class _BlogPageState extends State<BlogPage> {
                           controller: _controller,
                           hintText: "Type in your comment",
                           validator: (value) =>
-                              value!.isEmpty ? "Please enter password" : null,
+                              value!.isEmpty ? "Comment field required" : null,
                           onSaved: (value) => comment = value!,
                           suffixIcon: const Icon(
                             PhosphorIcons.paperPlaneTiltFill,
@@ -158,14 +161,16 @@ class _BlogPageState extends State<BlogPage> {
                           .changeColor(AppColors.primary),
                     ),
                     Gap.md,
-                    if (blog.blog.blogImage != null)
+                    if (blog.blog.blogImages!.isNotEmpty &&
+                        blog.blog.blogImages![0]['image_url'] != null)
                       // {
                       ClipRRect(
                         borderRadius: Corners.mdBorder,
                         child: NetworkImg(
-                          blog.blog.blogImage.toString(),
+                          blog.blog.blogImages![0]['image_url'].toString(),
                           height: 200,
                           width: double.infinity,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     // },
@@ -180,9 +185,14 @@ class _BlogPageState extends State<BlogPage> {
                               AppColors.error,
                               radius: 12,
                               data: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                  blog.blog.createdBy!.profileImage.toString(),
-                                ),
+                                backgroundImage: blog
+                                            .blog.createdBy?.profileImage !=
+                                        null
+                                    ? NetworkImage(
+                                        blog.blog.createdBy!.profileImage
+                                            .toString(),
+                                      )
+                                    : AssetImage("user".png) as ImageProvider,
                               ),
                               //   NetworkImg(
                               //       blog.blog.createdBy!.profileImage.toString()),

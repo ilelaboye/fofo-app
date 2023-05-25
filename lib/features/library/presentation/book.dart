@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -41,6 +42,7 @@ class _BookPageState extends State<BookPage> {
   getBook() async {
     book = await Provider.of<LibraryProvider>(context, listen: false)
         .getBook(context, widget.id);
+    EasyLoading.dismiss();
     setState(() {
       isLoaded = true;
     });
@@ -96,7 +98,7 @@ class _BookPageState extends State<BookPage> {
                               5,
                               (index) => Padding(
                                   padding: EdgeInsets.only(right: 2),
-                                  child: index < book!.book.ratings!.toInt()
+                                  child: index < 5
                                       ? const Icon(
                                           PhosphorIcons.starFill,
                                           size: 14,
@@ -109,7 +111,8 @@ class _BookPageState extends State<BookPage> {
                                         )),
                             ),
                             Text(
-                              "(${book!.book.ratings}/5)",
+                              // "(${book!.book.ratings}/5)",
+                              "1/5",
                               style: context.textTheme.caption
                                   .size(12)
                                   .changeColor(AppColors.primary),
@@ -147,7 +150,9 @@ class _BookPageState extends State<BookPage> {
                 child: SectionHeader("Reviews"),
               ),
               Gap.sm,
-              const ReviewList(),
+              ReviewList(
+                reviews: [],
+              ),
               Gap.lg,
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
@@ -194,6 +199,7 @@ class _BookPageState extends State<BookPage> {
                           setState(() {
                             isLoading = false;
                           });
+
                           print('retunrs');
                           print(res);
                           if (res['status']) {

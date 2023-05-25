@@ -13,10 +13,13 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/features/podcast/presentation/podcast_episode_list.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../../core/utils/luncher.dart';
 import '../../../models/library/my_library/category.dart';
+import '../../../models/podcast/podcast.dart';
 
 class PodcastPage extends StatelessWidget {
-  const PodcastPage({Key? key}) : super(key: key);
+  final Podcast podcast;
+  const PodcastPage({required this.podcast, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class PodcastPage extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(Insets.lg),
+              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -36,8 +39,8 @@ class PodcastPage extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: Corners.smBorder,
-                        child: LocalImage(
-                          "podcast".png,
+                        child: NetworkImg(
+                          podcast.podcastImage,
                           width: 140,
                           height: 140,
                         ),
@@ -48,34 +51,34 @@ class PodcastPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "The Black Women Working Podcast",
+                              podcast.name,
                               style: context.textTheme.bodyMedium.size(16).bold,
                             ),
-                            Gap.xs,
-                            Text(
-                              "by Omoregie & Johnson",
-                              style: context.textTheme.bodyMedium.size(14),
-                            ),
+                            // Gap.xs,
+                            // Text(
+                            //   "by Omoregie & Johnson",
+                            //   style: context.textTheme.bodyMedium.size(14),
+                            // ),
                             Gap.sm,
-                            Row(
-                              children: [
-                                ...List.generate(
-                                  5,
-                                  (index) => Padding(
-                                    padding: const EdgeInsets.only(right: 2),
-                                    child: Icon(
-                                      index != 4
-                                          ? PhosphorIcons.starFill
-                                          : PhosphorIcons.star,
-                                      size: 14,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                                Gap.xs,
-                                const Text("(4)"),
-                              ],
-                            ),
+                            // Row(
+                            //   children: [
+                            //     ...List.generate(
+                            //       5,
+                            //       (index) => Padding(
+                            //         padding: const EdgeInsets.only(right: 2),
+                            //         child: Icon(
+                            //           index != 4
+                            //               ? PhosphorIcons.starFill
+                            //               : PhosphorIcons.star,
+                            //           size: 14,
+                            //           color: AppColors.primary,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     Gap.xs,
+                            //     const Text("(4)"),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
@@ -85,35 +88,12 @@ class PodcastPage extends StatelessWidget {
                   const SectionHeader("About"),
                   Gap.sm,
                   Text(
-                    "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words whichdon't look even slightly believable. ... See mores",
+                    podcast.description.toString(),
                     style: context.textTheme.caption
                         .size(12)
                         .copyWith(height: 1.8),
                   ),
-                  Gap.sm,
-                  CategorySection(
-                    showTitle: false,
-                    categories: [
-                      Category(name: "Career"),
-                      Category(name: "Black Women")
-                    ],
-                  ),
                   Gap.lg,
-                  SectionHeader(
-                    "Episodes",
-                    seeAll: true,
-                    onClickSeeAll: () =>
-                        context.push(const PodcastEpisodesListPage()),
-                  ),
-                  Gap.sm,
-                  // ListView.builder(
-                  //   padding: EdgeInsets.zero,
-                  //   shrinkWrap: true,
-                  //   physics: const NeverScrollableScrollPhysics(),
-                  //   itemBuilder: (context, index) =>
-                  //       const PodcastPlayableItem(canPlay: true),
-                  //   itemCount: 3,
-                  // ),
                 ],
               ),
             ),
@@ -130,16 +110,25 @@ class PodcastPage extends StatelessWidget {
                 itemBuilder: (context, index) => Padding(
                   padding: EdgeInsets.only(
                     left: index == 0 ? Insets.lg : Insets.sm,
-                    right: index == 2 ? Insets.lg : 0,
+                    right: index == podcast.hosts!.length - 1 ? Insets.lg : 0,
                   ),
                   child: Column(
                     children: [
-                      Avatar(AppColors.colorList()[index]),
+                      Avatar(
+                        AppColors.colorList()[index],
+                        data: CircleAvatar(
+                            backgroundImage:
+                                podcast.hosts![index]['image_url'] == null
+                                    ? AssetImage("user".png) as ImageProvider
+                                    : NetworkImage(podcast.hosts![index]
+                                            ['image_url']
+                                        .toString())),
+                      ),
                       Gap.xs,
                       SizedBox(
                         width: 70,
                         child: Text(
-                          "Jasmine Cole",
+                          podcast.hosts![index]['fullname'],
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.textTheme.caption
@@ -149,43 +138,18 @@ class PodcastPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                itemCount: 2,
-              ),
-            ),
-            Gap.lg,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: SectionHeader("Reviews"),
-            ),
-            Gap.md,
-            const ReviewList(),
-            Gap.lg,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: SectionHeader("Similar podcasts", seeAll: true),
-            ),
-            Gap.md,
-            SizedBox(
-              height: 180,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? Insets.lg : Insets.sm,
-                    right: index == 2 ? Insets.lg : 0,
-                  ),
-                  // child: const PodcastListItem(),
-                ),
-                itemCount: 3,
+                itemCount: podcast.hosts?.length,
               ),
             ),
             Gap.lg,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
               child: Button(
-                "Notify Me About New Episodes",
-                onTap: () {},
+                "Play",
+                onTap: () {
+                  var launch = Luncher();
+                  launch.launchURL(context, podcast.link);
+                },
               ),
             ),
             const Gap(50),

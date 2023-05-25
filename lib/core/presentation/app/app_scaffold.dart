@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/core/presentation/app/drawer.dart';
 import 'package:fofo_app/features/feeds/presentation/feeds.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../features/auth/presentation/login.dart';
-import '../../../features/courses/presentation/courses.dart';
 import '../../../features/library/presentation/library.dart';
 import '../../../features/podcast/presentation/podcasts.dart';
+import '../../../features/shop/presentation/shop.dart';
 import '../../../models/profile/user_profile/user_profile.dart';
 import '../../../service/auth_service/auth_provider.dart';
-import '../../../service/library/my_library_provider.dart';
 import '../../widgets/notification.dart';
 
 class AppScaffoldPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   final List<Widget> tabs = const [
     FeedsPage(),
     LibraryPage(),
-    CoursesPage(),
+    ShopPage(),
     PodcastsPage()
     // CommunityOnboardingPage(),
     // NotificationsPage(),
@@ -43,11 +43,6 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   void initState() {
     super.initState();
     getProfile();
-    // Provider.of<FeedsProvider>(context, listen: false).getFeeds(context);
-    Future.delayed(
-        const Duration(seconds: 10),
-        () => Provider.of<LibraryProvider>(context, listen: false)
-            .getLibrary(context));
   }
 
   getProfile() async {
@@ -59,7 +54,7 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
     print('after get profile');
     if (profile == null) {
       showNotification(context, false, "Unauthorized access, please login");
-      Provider.of<AuthProvider>(context, listen: false).logOut();
+      Provider.of<AuthProvider>(context, listen: false).logOut(context);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginPage()),
           (route) => false);
@@ -70,8 +65,6 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
 
   @override
   Widget build(BuildContext context) {
-    // AuthProvider user = Provider.of<AuthProvider>(context);
-    // print(user.getUser());
     return WillPopScope(
       onWillPop: () async {
         // bool? shouldPop = true;
@@ -108,34 +101,39 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
         drawer: AppDrawer(),
         body: Provider.value(
           value: this,
-          child: IndexedStack(
-            index: currentTab,
-            children: tabs,
-          ),
+          child: tabs[currentTab],
         ),
         bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: AppColors.primary,
+            fixedColor: Colors.white,
             currentIndex: currentTab,
+            iconSize: 30,
+            unselectedItemColor: Colors.grey[350],
             onTap: changeTab,
             items: const [
               BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.houseSimple),
+                icon: Icon(
+                  PhosphorIcons.houseSimple,
+                ),
                 activeIcon: Icon(PhosphorIcons.houseSimpleFill),
                 label: "Home",
               ),
               BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.books),
-                activeIcon: Icon(PhosphorIcons.books),
-                label: "Library",
+                icon: Icon(
+                  PhosphorIcons.lifebuoy,
+                ),
+                activeIcon: Icon(PhosphorIcons.lifebuoyFill),
+                label: "Services",
               ),
               BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.youtubeLogo),
-                activeIcon: Icon(PhosphorIcons.youtubeLogo),
-                label: "Courses",
+                icon: Icon(PhosphorIcons.storefront),
+                activeIcon: Icon(PhosphorIcons.storefrontFill),
+                label: "Shop",
               ),
               BottomNavigationBarItem(
-                icon: Icon(PhosphorIcons.applePodcastsLogo),
-                activeIcon: Icon(PhosphorIcons.chatsTeardropFill),
-                label: "Podcast",
+                icon: Icon(PhosphorIcons.shareNetwork),
+                activeIcon: Icon(PhosphorIcons.shareNetworkFill),
+                label: "Network",
               )
             ]),
       ),

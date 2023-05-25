@@ -9,6 +9,7 @@ import 'package:fofo_app/core/presentation/onboarding.dart';
 import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:fofo_app/service/course/course.dart';
 import 'package:fofo_app/service/feed/feed.dart';
+import 'package:fofo_app/service/job/job.dart';
 import 'package:fofo_app/service/library/my_library_provider.dart';
 import 'package:fofo_app/service/podcast/podcast.dart';
 import 'package:fofo_app/service/shop/shop.dart';
@@ -22,9 +23,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey =
       'pk_test_51Kzz4mBSyohQ7ttbTspbenL6d9AoDdjdRlqbT9bFRe7mTPllaqiBD9HjgrGhWRVst2pD13F9aizC58y2bYzcXixO00JLrLw5N9';
-
+  Stripe.merchantIdentifier = 'FofoApp';
+  await Stripe.instance.applySettings();
   final auth = AuthProvider();
   await auth.init();
+  configLoading();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => auth),
     ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -33,13 +36,13 @@ void main() async {
     ChangeNotifierProvider(create: (_) => FeedsProvider()),
     ChangeNotifierProvider(create: (_) => ShopProvider()),
     ChangeNotifierProvider(create: (_) => CoursesProvider()),
-    ChangeNotifierProvider(create: (_) => PodcastProvider())
-  ], child: FofoApp(token: auth.token)));
+    ChangeNotifierProvider(create: (_) => PodcastProvider()),
+    ChangeNotifierProvider(create: (_) => JobProvider())
+  ], child: FofoApp()));
 }
 
 class FofoApp extends StatefulWidget {
-  FofoApp({required this.token, Key? key}) : super(key: key);
-  String? token;
+  FofoApp({Key? key}) : super(key: key);
 
   // final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   @override
@@ -49,13 +52,34 @@ class FofoApp extends StatefulWidget {
 class _FofoAppState extends State<FofoApp> {
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    bool skipOnboard = auth.getSkipOnboarding();
+
+    print('print skip');
+    print(skipOnboard);
     return MaterialApp(
         title: AppStrings.kTitle,
         theme: AppTheme.defaultTheme,
-        home: widget.token != "" ? AppScaffoldPage() : OnboardingPage(),
+        home: skipOnboard ? AppScaffoldPage() : OnboardingPage(),
         debugShowCheckedModeBanner: false,
         builder: EasyLoading.init()
         // navigatorKey: widget.navigatorKey,
         );
   }
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.custom
+    // ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.white
+    ..backgroundColor = Colors.black
+    ..indicatorColor = Colors.white
+    ..textColor = Colors.white
+    ..maskColor = Colors.blue
+    ..userInteractions = true
+    ..dismissOnTap = false;
 }

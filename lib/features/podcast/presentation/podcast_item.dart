@@ -5,6 +5,7 @@ import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
+import 'package:fofo_app/features/podcast/presentation/podcast.dart';
 import 'package:fofo_app/models/podcast/podcast.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -154,8 +155,10 @@ class PodcastListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () => context.push(const PodcastPage()),
-      onTap: () => _launchURL(context, podcast.link),
+      onTap: () => context.push(PodcastPage(
+        podcast: podcast,
+      )),
+      // onTap: () => _launchURL(context, podcast.link),
       child: Column(
         children: [
           ClipRRect(

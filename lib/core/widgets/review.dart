@@ -6,22 +6,25 @@ import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ReviewCard extends StatelessWidget {
-  const ReviewCard({Key? key}) : super(key: key);
+  Map review = {};
+  ReviewCard({required this.review, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.topLeft,
       width: context.getWidth(0.75),
       padding: const EdgeInsets.all(Insets.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: Corners.smBorder,
         border: Border.all(
-          color: AppColors.palette[200]!,
+          color: Colors.red,
           width: 0.7,
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +39,9 @@ class ReviewCard extends StatelessWidget {
                       (index) => Padding(
                         padding: const EdgeInsets.only(right: 2),
                         child: Icon(
-                          PhosphorIcons.starFill,
+                          index < review['rating']
+                              ? PhosphorIcons.starFill
+                              : PhosphorIcons.star,
                           size: 14,
                           color: AppColors.primary,
                         ),
@@ -45,14 +50,14 @@ class ReviewCard extends StatelessWidget {
                   ),
                   Gap.sm,
                   Text(
-                    "It's nice",
+                    review['name'],
                     style: context.textTheme.bodySmall
                         .changeColor(AppColors.primary),
                   )
                 ],
               ),
               Text(
-                "7 days ago",
+                review['createdAt'].toString().getDateDifference(),
                 style: context.textTheme.caption
                     .changeColor(AppColors.palette[600]!),
               )
@@ -60,7 +65,7 @@ class ReviewCard extends StatelessWidget {
           ),
           Gap.md,
           Text(
-            "Ut enim ad minima veniam, quis nostrum exercitatio nem ullam corporis suscipit labori osam, nisi ut aliq uid ex ea commodi consu  sequatur? Quis autem vel eum iure repreh.",
+            review['comment'],
             style: context.textTheme.caption
                 .changeColor(AppColors.palette[700]!)
                 .copyWith(height: 1.4),
@@ -72,31 +77,46 @@ class ReviewCard extends StatelessWidget {
 }
 
 class ReviewList extends StatelessWidget {
-  const ReviewList({Key? key}) : super(key: key);
+  List reviews = [];
+  ReviewList({required this.reviews, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 170,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) => Padding(
-          padding: EdgeInsets.only(
-            left: index == 0 ? Insets.lg : Insets.sm,
-            // use index == reviews.length -1
-            right: index == 2 ? Insets.lg : 0,
-          ),
-          child: const ReviewCard(),
-        ),
-        itemCount: 3,
-      ),
-    );
+    return reviews.length > 0
+        ? SizedBox(
+            height: 170,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) => Padding(
+                padding: EdgeInsets.only(
+                  left: index == 0 ? Insets.lg : Insets.sm,
+                  // use index == reviews.length -1
+                  right: index == 2 ? Insets.lg : 0,
+                ),
+                child: ReviewCard(review: reviews[index]),
+              ),
+              itemCount: reviews.length,
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.symmetric(horizontal: Insets.lg),
+            padding: EdgeInsets.symmetric(vertical: 13, horizontal: 13),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+                color: Color(0xff0f1dcb9),
+                borderRadius: BorderRadius.all(Radius.circular(6))),
+            child: const Text(
+              'No review',
+              style: TextStyle(fontSize: 14),
+            ),
+          );
   }
 }
 
 class ReviewAllList extends StatelessWidget {
-  const ReviewAllList({Key? key}) : super(key: key);
+  List reviews = [];
+  ReviewAllList({Key? key, required this.reviews}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

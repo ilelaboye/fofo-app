@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 @immutable
 class UserProfile {
   final String? fullname;
+  final String? email;
   final dynamic about;
   final int? booksRead;
   final int? followers;
@@ -14,9 +15,13 @@ class UserProfile {
   final String? profileImage;
   final String? roles;
   final String? membershipType;
+  final bool? isActive;
+  final String? phonenumber;
+  final bool? paid;
 
   const UserProfile(
       {this.fullname,
+      this.email,
       this.about,
       this.booksRead,
       this.followers,
@@ -24,15 +29,19 @@ class UserProfile {
       this.id,
       this.profileImage,
       this.roles,
-      this.membershipType});
+      this.membershipType,
+      this.isActive,
+      this.phonenumber,
+      this.paid});
 
   @override
   String toString() {
-    return 'UserProfile(fullname: $fullname, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles, membershipType: $membershipType)';
+    return 'UserProfile(fullname: $fullname,email: $email, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles, membershipType: $membershipType, isActive: $isActive,phonenumber: $phonenumber,paid: $paid)';
   }
 
   factory UserProfile.fromMap(Map<String, dynamic> data) => UserProfile(
       fullname: data['fullname'] as String?,
+      email: data['email'] as String?,
       about: data['about'] as dynamic,
       booksRead: data['booksRead'] as int?,
       followers: data['followers'] as int?,
@@ -43,10 +52,14 @@ class UserProfile {
           ? data['membershipType'] as String?
           : null,
       profileImage:
-          data.containsKey('profileImage') ? data['profileImage'] : null);
+          data.containsKey('profileImage') ? data['profileImage'] : null,
+      isActive: data['isActive'] as bool?,
+      phonenumber: data['phonenumber'] as String?,
+      paid: data['paid'] as bool?);
 
   Map<String, dynamic> toMap() => {
         'fullname': fullname,
+        'email': email,
         'about': about,
         'booksRead': booksRead,
         'followers': followers,
@@ -54,7 +67,10 @@ class UserProfile {
         'id': id,
         'profileImage': profileImage,
         'roles': roles,
-        'membershipType': membershipType
+        'membershipType': membershipType,
+        'isActive': isActive,
+        'phonenumber': phonenumber,
+        'paid': paid
       };
 
   /// `dart:convert`
@@ -69,44 +85,25 @@ class UserProfile {
   /// Converts [UserProfile] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  UserProfile copyWith({
-    String? fullname,
-    dynamic about,
-    int? booksRead,
-    int? followers,
-    int? following,
-    String? id,
-    String? profileImage,
-    String? roles,
-  }) {
+  UserProfile copyWith(
+      {String? fullname,
+      dynamic about,
+      int? booksRead,
+      int? followers,
+      int? following,
+      String? id,
+      String? profileImage,
+      String? roles,
+      bool? isActive}) {
     return UserProfile(
-      fullname: fullname ?? this.fullname,
-      about: about ?? this.about,
-      booksRead: booksRead ?? this.booksRead,
-      followers: followers ?? this.followers,
-      following: following ?? this.following,
-      id: id ?? this.id,
-      profileImage: profileImage ?? this.profileImage,
-      roles: roles ?? this.roles,
-    );
+        fullname: fullname ?? this.fullname,
+        about: about ?? this.about,
+        booksRead: booksRead ?? this.booksRead,
+        followers: followers ?? this.followers,
+        following: following ?? this.following,
+        id: id ?? this.id,
+        profileImage: profileImage ?? this.profileImage,
+        roles: roles ?? this.roles,
+        isActive: isActive ?? this.isActive);
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    if (other is! UserProfile) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
-    return mapEquals(other.toMap(), toMap());
-  }
-
-  @override
-  int get hashCode =>
-      fullname.hashCode ^
-      about.hashCode ^
-      booksRead.hashCode ^
-      followers.hashCode ^
-      following.hashCode ^
-      id.hashCode ^
-      profileImage.hashCode ^
-      roles.hashCode;
 }

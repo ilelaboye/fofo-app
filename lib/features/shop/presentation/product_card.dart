@@ -9,21 +9,36 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../models/shop/product.dart';
 
 class ShopCard extends StatelessWidget {
-  final Product? product;
+  final Map? product;
   final double? imgHeight;
   const ShopCard({this.imgHeight, this.product, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 170,
+    return Container(
+      width: 160,
+      height: 120,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+            Radius.circular(MediaQuery.of(context).size.width * 0.03)),
+        color: Colors.grey.withOpacity(0.1),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey.withOpacity(0.5),
+        //     spreadRadius: 3,
+        //     blurRadius: 4,
+        //     // offset: Offset(0, 3), // changes position of shadow
+        //   ),
+        // ],
+      ),
       child: Column(
         children: [
           ClipRRect(
             borderRadius: Corners.xsBorder,
             child: NetworkImg(
-              product!.product_images![0].secure_url.toString(),
-              height: imgHeight,
+              product!['product_images'][0]['secure_url'].toString(),
+              height: 65,
             ),
           ),
           Gap.sm,
@@ -31,25 +46,21 @@ class ShopCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "\$" + product!.product_variation![0].price.toString(),
+                "\$" + product!['product_variation'][0]['price'].toString(),
                 // "\$100",
                 style: context.textTheme.bodyMedium
                     .changeColor(AppColors.primary)
-                    .size(18)
+                    .size(15)
                     .bold,
               ),
-              const Icon(
-                PhosphorIcons.heart,
-                size: 20,
-              )
             ],
           ),
-          Gap.sm,
+          // Gap.sm,
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              product!.name.toString(),
-              style: context.textTheme.bodyMedium,
+              product!['name'].toString(),
+              style: context.textTheme.bodyMedium.size(12),
               maxLines: 2,
             ),
           )

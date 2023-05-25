@@ -5,7 +5,7 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData get _baseTheme => ThemeData(
-        primaryColor: AppColors.primary,
+        primaryColor: Colors.red,
         primarySwatch: AppColors.palette,
         scaffoldBackgroundColor: AppColors.scaffold,
         fontFamily: Fonts.primary,
@@ -87,4 +87,19 @@ class IconSizes {
   static const double sm = 18;
   static const double md = 24;
   static const double lg = 32;
+}
+
+class SizeConfig {
+  static MediaQueryData? _mediaQueryData;
+  static Orientation? orientation;
+
+  init(BuildContext context) {
+    _mediaQueryData = MediaQuery.of(context);
+    orientation = _mediaQueryData!.orientation;
+  }
+
+  double get screenHeight =>
+      _mediaQueryData!.size.height - _mediaQueryData!.padding.top;
+
+  double get screenWidth => _mediaQueryData!.size.width;
 }

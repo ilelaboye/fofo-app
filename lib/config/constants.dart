@@ -6,7 +6,7 @@ class AppStrings {
 
 class AppColors {
   static Color get scaffold => const Color(0xFFFFFFFF);
-  static Color get primary => const Color(0xFF2A3147);
+  static Color get primary => const Color(0xFF990808);
   static Color get dark => const Color(0xFF111418);
   static Color get error => const Color(0xFFFE1B02);
   static Color get grey => const Color(0xFF676D7E);
@@ -66,4 +66,22 @@ class AppColors {
         Colors.black,
         Colors.cyan
       ];
+
+  static Map<String, Color> colorMap() => {
+        "teal": Colors.teal,
+        'pink': Colors.pink,
+        'deepPurple': Colors.deepPurple,
+        'purple': Colors.purple,
+        'yellow': Colors.yellow,
+        'orange': Colors.orange,
+        'lightBlue': Colors.lightBlue,
+        'black': Colors.black,
+        'cyan': Colors.cyan,
+        'white': Colors.white,
+        'red': Colors.red,
+        'green': Colors.green,
+        'blue': Colors.blue,
+        'grey': Colors.grey,
+        'lime': Colors.lime,
+      };
 }

@@ -28,6 +28,8 @@ class CoursesProvider extends ChangeNotifier {
 
   Future getCourse(BuildContext context, String id) async {
     try {
+      print('get single course intro');
+      print(id);
       Response response = await dioClient.get(context, "course/" + id + "/get");
 
       print('get single course');

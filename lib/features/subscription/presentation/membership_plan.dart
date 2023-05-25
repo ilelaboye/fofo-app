@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
@@ -15,6 +17,7 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:http/http.dart' as http;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../../config/api.dart';
 import '../../../core/presentation/app/app_scaffold.dart';
 import '../../../core/widgets/notification.dart';
 
@@ -22,12 +25,14 @@ class MembershipPlanPage extends StatefulWidget {
   final List<String> perks;
   final int fee;
   final String title, desc, benefit;
+  final Map user;
   MembershipPlanPage(this.perks,
       {Key? key,
       this.fee = 0,
       this.title = "Access",
       this.desc = "",
-      this.benefit = ''})
+      this.benefit = '',
+      required this.user})
       : super(key: key);
 
   @override
@@ -36,6 +41,8 @@ class MembershipPlanPage extends StatefulWidget {
 
 class _MembershipPlanPageState extends State<MembershipPlanPage> {
   Map<String, dynamic>? paymentIntentData;
+  bool yearState = true;
+  int yearAmount = 250;
 
   @override
   Widget build(BuildContext context) {
@@ -53,22 +60,40 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "\$250",
+                        yearState ? "\$250" : "\$25",
                         style: context.textTheme.headlineLarge
                             .changeColor(AppColors.primary),
                       ),
                       Gap.sm,
                       Text(
-                        "/ Year",
+                        yearState ? "/ Year" : "/ Month",
                         style: context.textTheme.bodyMedium
                             .changeColor(AppColors.primary),
                       ),
                       const Spacer(),
-                      // CupertinoSwitch(
-                      //   activeColor: AppColors.primary,
-                      //   value: true,
-                      //   onChanged: (value) {},
-                      // )
+                      Row(
+                        children: [
+                          Text('Y'),
+                          CupertinoSwitch(
+                            activeColor: AppColors.primary,
+                            value: yearState ? false : true,
+                            onChanged: (value) {
+                              print(value);
+                              setState(() {
+                                yearState = !value;
+                                if (yearState == false) {
+                                  yearAmount = 25;
+                                } else {
+                                  yearAmount = 250;
+                                }
+                                print(yearState);
+                                print(yearAmount);
+                              });
+                            },
+                          ),
+                          Text('M'),
+                        ],
+                      )
                     ],
                   )
                 : Container(
@@ -181,8 +206,13 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
             padding: const EdgeInsets.all(Insets.lg),
             child: Button("Choose This Plan", onTap: () async {
               if (widget.fee > 0) {
+                print('ll');
+                print(widget.user);
+                print(yearAmount);
                 await makePayment(
-                    amount: widget.fee.toString(), currency: 'USD');
+                    amount: yearAmount.toString(),
+                    currency: 'USD',
+                    user: widget.user);
               } else {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -205,12 +235,28 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
   }
 
   Future<void> makePayment(
-      {required String amount, required String currency}) async {
+      {required String amount,
+      required String currency,
+      required Map user}) async {
+    print(amount);
     try {
-      paymentIntentData = await createPaymentIntent(amount, currency);
-      print('paym int');
-      print(paymentIntentData);
-      if (paymentIntentData != null) {
+      EasyLoading.show(status: 'loading...');
+      print('pay intro');
+      DioClient dioClient = DioClient(Dio());
+      Response response =
+          await dioClient.post(context, "stripe/membership-checkout", data: {
+        "membership": {
+          'amount': amount,
+          'membershipId': user['userId'],
+          'mode': yearState ? "yearly" : "monthly",
+          'membershipType': 'Gold'
+        }
+      });
+
+      print("pay resp");
+      print(response.data);
+      print(response.data['paymentIntent']);
+      if (response.data != null) {
         await Stripe.instance.initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
           applePay: true,
@@ -218,15 +264,42 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
           testEnv: true,
           merchantCountryCode: 'US',
           merchantDisplayName: 'Prospects',
-          customerId: paymentIntentData!['customer'],
-          paymentIntentClientSecret: paymentIntentData!['client_secret'],
-          customerEphemeralKeySecret: paymentIntentData!['ephemeralKey'],
+          customerId: response.data!['customerId'],
+          paymentIntentClientSecret: response.data['paymentIntent'],
+          customerEphemeralKeySecret: response.data['ephemeralKey'],
         ));
+        EasyLoading.dismiss();
         displayPaymentSheet();
       }
-    } catch (e, s) {
-      print('exception:$e$s');
+    } catch (err) {
+      EasyLoading.dismiss();
+      print('init pay err');
+      print(err);
+      // _loggedInStatus = Status.NotLoggedIn;
+      // notifyListeners();
+      // return {'status': false, 'message': err};
     }
+    // try {
+    //   paymentIntentData = await createPaymentIntent(amount, currency);
+    //   print('paym int');
+    //   print(paymentIntentData);
+    //   if (paymentIntentData != null) {
+    //     await Stripe.instance.initPaymentSheet(
+    //         paymentSheetParameters: SetupPaymentSheetParameters(
+    //       applePay: true,
+    //       googlePay: true,
+    //       testEnv: true,
+    //       merchantCountryCode: 'US',
+    //       merchantDisplayName: 'Prospects',
+    //       customerId: paymentIntentData!['customer'],
+    //       paymentIntentClientSecret: paymentIntentData!['client_secret'],
+    //       customerEphemeralKeySecret: paymentIntentData!['ephemeralKey'],
+    //     ));
+    //     displayPaymentSheet();
+    //   }
+    // } catch (e, s) {
+    //   print('exception:$e$s');
+    // }
   }
 
   displayPaymentSheet() async {

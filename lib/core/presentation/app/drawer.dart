@@ -6,6 +6,7 @@ import 'package:fofo_app/core/widgets/avatar_group.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/features/blog/presentation/blogs.dart';
 import 'package:fofo_app/features/courses/presentation/courses.dart';
+import 'package:fofo_app/features/jobs/presentation/jobs.dart';
 import 'package:fofo_app/features/library/presentation/library.dart';
 import 'package:fofo_app/features/podcast/presentation/podcasts.dart';
 import 'package:fofo_app/features/profile/presentation/profile.dart';
@@ -154,6 +155,21 @@ class _AppDrawerState extends State<AppDrawer> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(
+                  PhosphorIcons.personFill,
+                  size: 27,
+                ),
+                onTap: () {
+                  context.pop();
+                  context.push(const JobsPage());
+                },
+                title: Text(
+                  "Opportunities",
+                  style: context.textTheme.bodyMedium.size(17),
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(
                   PhosphorIcons.storefront,
                   size: 27,
                 ),
@@ -195,7 +211,8 @@ class _AppDrawerState extends State<AppDrawer> {
               const Divider(height: 10),
               GestureDetector(
                 onTap: () {
-                  Provider.of<AuthProvider>(context, listen: false).logOut();
+                  Provider.of<AuthProvider>(context, listen: false)
+                      .logOut(context);
                   // context.push(const LoginPage());
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(

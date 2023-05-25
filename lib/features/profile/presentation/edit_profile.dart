@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../service/auth_service/auth_provider.dart';
+import '../../auth/presentation/signup.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -19,6 +18,9 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final formKey = GlobalKey<FormState>();
+  late String fullname, phone, city, jobTitle, linkedin;
+  String? selectedItem;
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -38,67 +40,61 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 labelText: "Full Name",
                 hintText: "E.g Rachel Choo",
                 initialValue: profile.fullname,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter fullname" : null,
+                onSaved: (value) => fullname = value!,
               ),
               const Gap(25),
               TextInputField(
+                enabled: false,
                 labelText: "Email Address",
+                initialValue: profile.email,
                 hintText: "E.g Rachelchoo@gmail.com",
               ),
               const Gap(25),
               TextInputField(
                 labelText: "Phone Number",
                 hintText: "E.g 1234567890",
-                prefix: ClipRRect(
-                  child: Container(
-                    width: 100,
-                    margin: const EdgeInsets.only(right: Insets.sm),
-                    decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Corners.xsRadius,
-                          bottomLeft: Corners.xsRadius,
-                        )),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "+234",
-                          style: context.textTheme.bodyMedium!
-                              .size(16)
-                              .changeColor(Colors.white),
-                        ),
-                        const Icon(
-                          PhosphorIcons.caretDown,
-                          color: Colors.white,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                initialValue: profile.phonenumber,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter phone number" : null,
+                onSaved: (value) => phone = value!,
               ),
               const Gap(25),
               TextInputField(
                 labelText: "City, State",
                 hintText: "E.g New York",
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter city" : null,
+                onSaved: (value) => city = value!,
               ),
               const Gap(25),
               TextInputField(
                 labelText: "Job Title",
                 hintText: "E.g Administrative Assistant",
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter job title" : null,
+                onSaved: (value) => jobTitle = value!,
               ),
               const Gap(25),
-              TextInputField(
-                labelText: "Field",
-                hintText: "Select your field",
-                suffixIcon: Icon(
-                  PhosphorIcons.caretDown,
-                  color: AppColors.primary,
-                ),
-              ),
+              DropDownCategory(
+                  selectedItem: selectedItem,
+                  onSelectItem: (item) => {
+                        setState(() => {selectedItem = item})
+                      }),
+              // TextInputField(
+              //   labelText: "Field",
+              //   hintText: "Select your field",
+              //   suffixIcon: Icon(
+              //     PhosphorIcons.caretDown,
+              //     color: AppColors.primary,
+              //   ),
+              // ),
               const Gap(25),
               TextInputField(
                 labelText: "Linkedin",
                 hintText: "Eg https://linkedin.com/in/fofoApp",
+                onSaved: (value) => linkedin = value!,
               ),
               Gap.lg,
               Button(

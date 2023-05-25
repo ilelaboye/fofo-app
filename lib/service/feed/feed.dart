@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fofo_app/features/feeds/presentation/feeds.dart';
 import 'package:fofo_app/models/feed/comment.dart';
 
 import '../../config/api.dart';
@@ -19,11 +20,14 @@ class FeedsProvider extends ChangeNotifier {
     try {
       Response response = await dioClient.get(context, "blog/lists");
       print('get feeds data');
-      print(response.data);
+
       feeds = Feeds.fromMap(response.data);
+      print(feeds);
       notifyListeners();
       return feeds;
     } catch (err) {
+      print('get feeds err');
+      print(err);
       showNotification(context, false, err);
       notifyListeners();
     }
@@ -45,15 +49,18 @@ class FeedsProvider extends ChangeNotifier {
     try {
       Response response = await dioClient.get(context, "blog/" + id + "/show");
 
-      // print('single blog');
+      print('single blog');
 
       feed = GetFeedById.fromMap(response.data);
-      // print(feed);
+      print(feed);
       notifyListeners();
       return feed;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const FeedsPage()),
+      );
     }
   }
 

@@ -26,7 +26,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   late String email, password;
   bool passenable = true;
   @override
@@ -41,113 +41,126 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-      appBar: const Appbar(),
+      // appBar: const Appbar(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(Insets.lg),
-          child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  const AuthHeading(
-                    "Welcome back",
-                    "Sign into your account to continue from where you left off.",
-                  ),
-                  Gap.lg,
-                  TextInputField(
-                    validator: (value) =>
-                        value!.isEmpty ? "Please enter email" : null,
-                    // validator: validateEmail,
-                    onSaved: (value) => email = value!,
-                    initialValue: "",
-                    labelText: "Email Address",
-                    hintText: "E.g Rachelchoo@gmail.com",
-                  ),
-                  const Gap(25),
-                  TextInputField(
-                    validator: (value) =>
-                        value!.isEmpty ? "Please enter password" : null,
-                    onSaved: (value) => password = value!,
-                    initialValue: "",
-                    labelText: "Password",
-                    obscureText: passenable,
-                    suffixIcon: Icon(
-                      PhosphorIcons.eyeSlashFill,
-                      color: AppColors.primary,
-                    ).onTap(() {
-                      setState(() {
-                        if (passenable) {
-                          passenable = false;
-                        } else {
-                          passenable = true;
-                        }
-                      });
-                    }),
-                  ),
-                  const Gap(25),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(text: "Forgot password ? "),
-                        TextSpan(
-                          text: "Reset Password Here",
-                          style: context.textTheme.caption!
-                              .changeColor(AppColors.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () =>
-                                context.push(const StartResetPasswordPage()),
-                        ),
-                      ],
-                    ),
-                    style: context.textTheme.caption,
-                  ),
-                  Gap.lg,
-                  auth.loggedInStatus == Status.Authenticating
-                      ? loading
-                      : Button('Sign In', onTap: () async {
-                          final form = formKey.currentState!;
-                          if (form.validate()) {
-                            form.save();
-                            await auth
-                                .login(context, email, password)
-                                .then((response) => {
-                                      if (response['status'])
-                                        {
-                                          Navigator.of(context).pushAndRemoveUntil(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const AppScaffoldPage()),
-                                              (route) => false)
-                                        }
-                                      else
-                                        {
-                                          showNotification(context, false,
-                                              response['message'])
-                                        }
-                                    });
-                          } else {
-                            showNotification(
-                                context, false, "Invalid form input");
-                          }
-                        }),
-                  const Gap(25),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(text: "Don’t have an account ?"),
-                        TextSpan(
-                          text: " Register Here",
-                          style: context.textTheme.caption!
-                              .changeColor(AppColors.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => context.push(const SignupPage()),
-                        ),
-                      ],
-                    ),
-                    style: context.textTheme.caption,
-                  ),
-                ],
+        child: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                color: Colors.red,
+                width: 3,
               )),
+            ),
+            padding: const EdgeInsets.all(Insets.lg),
+            child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const AuthHeading(
+                      "Welcome back",
+                      "Sign into your account to continue from where you left off.",
+                    ),
+                    Gap.lg,
+                    TextInputField(
+                      validator: (value) =>
+                          value!.isEmpty ? "Please enter email" : null,
+                      // validator: validateEmail,
+                      onSaved: (value) => email = value!,
+                      initialValue: "ilelaboyealekan+1@gmail.com",
+                      labelText: "Email Address",
+                      hintText: "E.g Rachelchoo@gmail.com",
+                    ),
+                    const Gap(25),
+                    TextInputField(
+                      validator: (value) =>
+                          value!.isEmpty ? "Please enter password" : null,
+                      onSaved: (value) => password = value!,
+                      initialValue: "1234567",
+                      labelText: "Password",
+                      obscureText: passenable,
+                      suffixIcon: Icon(
+                        PhosphorIcons.eyeSlashFill,
+                        color: AppColors.primary,
+                      ).onTap(() {
+                        setState(() {
+                          if (passenable) {
+                            passenable = false;
+                          } else {
+                            passenable = true;
+                          }
+                        });
+                      }),
+                    ),
+                    const Gap(25),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          const TextSpan(text: "Forgot password ? "),
+                          TextSpan(
+                            text: "Reset Password Here",
+                            style: context.textTheme.caption!
+                                .changeColor(AppColors.primary),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () =>
+                                  context.push(const StartResetPasswordPage()),
+                          ),
+                        ],
+                      ),
+                      style: context.textTheme.caption,
+                    ),
+                    Gap.lg,
+                    auth.loggedInStatus == Status.Authenticating
+                        ? loading
+                        : Button('Sign In', onTap: () async {
+                            print('login cliked');
+                            final form = formKey.currentState!;
+                            if (form.validate()) {
+                              form.save();
+                              await auth
+                                  .login(context, email, password)
+                                  .then((response) => {
+                                        if (response['status'])
+                                          {
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const AppScaffoldPage()),
+                                                    (route) => false)
+                                          }
+                                        else
+                                          {
+                                            showNotification(context, false,
+                                                response['message'])
+                                          }
+                                      });
+                            } else {
+                              showNotification(
+                                  context, false, "Invalid form input");
+                            }
+                          }),
+                    const Gap(25),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          const TextSpan(text: "Don’t have an account ?"),
+                          TextSpan(
+                            text: " Register Here",
+                            style: context.textTheme.caption!
+                                .changeColor(AppColors.primary),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => context.push(const SignupPage()),
+                          ),
+                        ],
+                      ),
+                      style: context.textTheme.caption,
+                    ),
+                  ],
+                )),
+          ),
         ),
       ),
     );

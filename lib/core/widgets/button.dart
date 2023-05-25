@@ -8,6 +8,7 @@ class Button extends StatelessWidget {
   final double? height;
   final Color? color;
   final Color? textColor;
+  final double? radius;
 
   /// if child is not null, we want to use it instead of the label
   final Widget? child;
@@ -17,6 +18,7 @@ class Button extends StatelessWidget {
       this.textColor,
       this.width,
       this.height,
+      this.radius,
       this.child,
       Key? key})
       : super(key: key);
@@ -37,6 +39,12 @@ class Button extends StatelessWidget {
             ),
         style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
               backgroundColor: MaterialStateProperty.all(color),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  // Change your radius here
+                  borderRadius: BorderRadius.circular(radius ?? 9),
+                ),
+              ),
             ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/loader.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -32,11 +33,14 @@ class _BlogsPageState extends State<BlogsPage> {
   }
 
   getBlogs() async {
+    print('get blogds');
+    EasyLoading.show(status: 'loadings...');
     blogs = await Provider.of<FeedsProvider>(context, listen: false)
         .getFeeds(context);
     setState(() {
       isLoaded = true;
     });
+    EasyLoading.dismiss();
   }
 
   @override
@@ -57,18 +61,19 @@ class _BlogsPageState extends State<BlogsPage> {
                   ),
                   Gap.lg,
                   CategorySection(
-                      categories: categoryItemsNoIcons(), seeAll: true),
+                      categories: categoryItemsNoIcons(), seeAll: false),
                   Gap.lg,
                   const SectionHeader("Hot"),
                   Gap.sm,
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (blogs.hot?.blogImage != null)
+                      if (blogs.hot!.blogImages!.isNotEmpty &&
+                          blogs.hot!.blogImages![0]['image_url'] != null)
                         ClipRRect(
                           borderRadius: Corners.smBorder,
                           child: NetworkImg(
-                            blogs.hot!.blogImage.toString(),
+                            blogs.hot!.blogImages![0]['image_url'].toString(),
                             width: 100,
                             height: 100,
                           ),
@@ -79,9 +84,11 @@ class _BlogsPageState extends State<BlogsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              blogs.hot!.blogCategory!.name
-                                  .toString()
-                                  .titleCaseSingle(),
+                              blogs.hot!.blogCategory == null
+                                  ? ""
+                                  : blogs.hot!.blogCategory!.name
+                                      .toString()
+                                      .titleCaseSingle(),
                               style: context.textTheme.caption.size(12),
                             ),
                             Gap.xs,

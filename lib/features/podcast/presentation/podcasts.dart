@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
+import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/avatar_group.dart';
 import 'package:fofo_app/core/widgets/categories.dart';
@@ -36,6 +38,7 @@ class _PodcastsPageState extends State<PodcastsPage> {
         .getPodcasts(context);
     print('podcast loade');
     setState(() {
+      EasyLoading.dismiss();
       isLoaded = true;
     });
   }
@@ -105,18 +108,18 @@ class _PodcastsPageState extends State<PodcastsPage> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(Insets.lg),
+                padding: const EdgeInsets.symmetric(horizontal: Insets.md),
                 child: Column(
                   children: [
-                    TextInputField(
-                      hintText: "Titles, authors & topics",
-                      prefix: const Icon(PhosphorIcons.magnifyingGlassBold),
-                    ),
-                    Gap.lg,
-                    CategorySection(
-                      categories: [],
-                      // categories: categoryItems(),
-                    ),
+                    // TextInputField(
+                    //   hintText: "Titles, authors & topics",
+                    //   prefix: const Icon(PhosphorIcons.magnifyingGlassBold),
+                    // ),
+                    // Gap.lg,
+                    // CategorySection(
+                    //   categories: [],
+                    //   // categories: categoryItems(),
+                    // ),
                     Gap.lg,
                     const SectionHeader(
                       "Recently Played",
@@ -161,7 +164,7 @@ class _PodcastsPageState extends State<PodcastsPage> {
               ),
               Gap.sm,
               SizedBox(
-                height: 75,
+                height: 77,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
@@ -176,6 +179,14 @@ class _PodcastsPageState extends State<PodcastsPage> {
                       children: [
                         Avatar(
                           AppColors.colorList()[index],
+                          data: CircleAvatar(
+                              backgroundImage: podcasts.top_podcaster![index]
+                                          .hosts![0]['image_url'] ==
+                                      null
+                                  ? AssetImage("user".png) as ImageProvider
+                                  : NetworkImage(podcasts.top_podcaster![index]
+                                      .hosts![0]['image_url']
+                                      .toString())),
                         ),
                         Container(
                           constraints: const BoxConstraints(maxWidth: 100),

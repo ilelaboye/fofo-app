@@ -7,12 +7,17 @@ import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
 import 'package:fofo_app/core/widgets/section_header.dart';
-import 'package:fofo_app/features/jobs/presentation/job_application_form.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:flutter_html/flutter_html.dart';
+// import 'package:fofo_app/features/jobs/presentation/job_application_form.dart';
+// import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import '../../../core/utils/luncher.dart';
 
 class JobPage extends StatelessWidget {
-  const JobPage({Key? key}) : super(key: key);
+  final Map job;
 
+  JobPage({Key? key, required this.job}) : super(key: key);
+  final luncher = Luncher();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,23 +26,31 @@ class JobPage extends StatelessWidget {
           child: Padding(
         padding: const EdgeInsets.all(Insets.lg),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LocalImage("job".png, height: 120),
+                // LocalImage("job".png, height: 120),
+                NetworkImg(
+                  job['jobImages'][0]['secure_url'],
+                  width: 80,
+                  height: 120,
+                  fit: BoxFit.contain,
+                ),
                 Gap.sm,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Admin Assistant",
+                        job['jobField'],
                         style: context.textTheme.bodyMedium.size(16).bold,
                       ),
                       Gap.xs,
                       Text(
-                        "Zetti Compliance Ltd",
+                        job['company_name'],
                         style: context.textTheme.bodyMedium.size(14),
                       ),
                       Gap.xs,
@@ -49,8 +62,8 @@ class JobPage extends StatelessWidget {
                                 .size(12)
                                 .changeColor(AppColors.palette[700]!),
                           ),
-                          const TextSpan(
-                            text: "Full time",
+                          TextSpan(
+                            text: job['jobType'],
                           ),
                         ]),
                         style: context.textTheme.bodyMedium.size(12),
@@ -63,42 +76,43 @@ class JobPage extends StatelessWidget {
             Gap.md,
             const SectionHeader("Description"),
             Gap.sm,
-            Text(
-              "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words whichdon't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't any thing embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet to repeat predefined chunks as necessary, making this the  first true generator on the Internet. It uses a dictionary of  over 200 Latin words, combined with a handful of model  sentence structures, to generate Lorem Ipsum which looks  reasonable... show less",
-              style: context.textTheme.caption.size(13).copyWith(height: 1.8),
-            ),
+            Html(data: job['description']),
+            // Text(
+            //   job['description'],
+            //   style: context.textTheme.caption.size(13).copyWith(height: 1.8),
+            // ),
             Gap.md,
-            const SectionHeader("Position Responsibilities"),
-            Gap.sm,
-            Text(
-              _responsibilitisText,
-              style: context.textTheme.caption.size(13).copyWith(height: 1.8),
-            ),
-            Gap.md,
-            const SectionHeader("Minimum Qualifications & Skills"),
-            Gap.sm,
-            Text(
-              _skillsText,
-              style: context.textTheme.caption.size(13).copyWith(height: 1.8),
-            ),
-            Gap.md,
-            Row(
-              children: [
-                const Icon(
-                  PhosphorIcons.flagBanner,
-                  size: 15,
-                ),
-                Gap.xs,
-                Text(
-                  "Report this post",
-                  style: context.textTheme.caption.size(12),
-                )
-              ],
-            ),
-            Gap.lg,
+            // const SectionHeader("Position Responsibilities"),
+            // Gap.sm,
+            // Text(
+            //   _responsibilitisText,
+            //   style: context.textTheme.caption.size(13).copyWith(height: 1.8),
+            // ),
+            // Gap.md,
+            // const SectionHeader("Minimum Qualifications & Skills"),
+            // Gap.sm,
+            // Text(
+            //   _skillsText,
+            //   style: context.textTheme.caption.size(13).copyWith(height: 1.8),
+            // ),
+            // Gap.md,
+            // Row(
+            //   children: [
+            //     const Icon(
+            //       PhosphorIcons.flagBanner,
+            //       size: 15,
+            //     ),
+            //     Gap.xs,
+            //     Text(
+            //       "Report this post",
+            //       style: context.textTheme.caption.size(12),
+            //     )
+            //   ],
+            // ),
+            // Gap.lg,
             Button(
               "Apply For This Job",
-              onTap: () => context.push(const JobApplicationFormPage()),
+              onTap: () => luncher.launchURL(context, job['link']),
             ),
             const Gap(50)
           ],

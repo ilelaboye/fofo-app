@@ -6,54 +6,105 @@ import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
 import 'package:fofo_app/core/widgets/image.dart';
+import 'package:fofo_app/core/widgets/notification.dart';
 import 'package:fofo_app/features/shop/presentation/shop_checkout.dart';
+import 'package:fofo_app/service/shop/shop.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
-class BagPage extends StatelessWidget {
+class BagPage extends StatefulWidget {
   const BagPage({Key? key}) : super(key: key);
 
   @override
+  State<BagPage> createState() => _BagPageState();
+}
+
+class _BagPageState extends State<BagPage> {
+  late final List products;
+  bool loaded = true;
+  @override
+  void initState() {
+    super.initState();
+
+    // products = Provider.of<ShopProvider>(context, listen: true).cart;
+    // print(products);
+    // getCart();
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   getCart();
+  // }
+
+  // getCart() async {
+  //   print('get cart');
+  //   products = await Provider.of<ShopProvider>(context, listen: true).cart;
+  //   print(products);
+  //   setState(() {
+  //     loaded = true;
+  //   });
+  // }
+
+  @override
   Widget build(BuildContext context) {
+    final products = Provider.of<ShopProvider>(context).cart;
     return Scaffold(
       appBar: const Appbar(
         title: "My Bag",
       ),
-      bottomSheet: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(Insets.lg),
-        child: Button(
-          "Proceed To Checkout",
-          onTap: () => context.push(const ShopCheckoutPage()),
-        ),
-      ),
+      bottomSheet: products.isNotEmpty
+          ? Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: Insets.lg, vertical: 10),
+              child: Button(
+                "Proceed To Checkout",
+                onTap: () => context.push(const ShopCheckoutPage()),
+              ),
+            )
+          : const EmytyBag(),
       body: SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Gap.md,
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-            child: Text("2 items : Total(excluding delivery) \$200.00"),
-          ),
-          Gap.md,
-          BagItem(
-            imgUrl: "shop".png,
-          ),
-          BagItem(
-            imgUrl: "shop2".png,
-          ),
-        ],
+          child: Padding(
+        padding: const EdgeInsets.only(bottom: 40.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Gap.md,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+              child: Text("${products.length} item(s) in cart"),
+            ),
+            Gap.md,
+            Wrap(
+                children: products
+                    .map((product) => BagItem(
+                          product: product,
+                        ))
+                    .toList())
+          ],
+        ),
       )),
     );
   }
 }
 
-class BagItem extends StatelessWidget {
-  final String imgUrl;
-  const BagItem({required this.imgUrl, Key? key}) : super(key: key);
+class BagItem extends StatefulWidget {
+  final Map product;
+  const BagItem({required this.product, Key? key}) : super(key: key);
 
   @override
+  State<BagItem> createState() => _BagItemState();
+}
+
+class _BagItemState extends State<BagItem> {
+  @override
   Widget build(BuildContext context) {
+    print('printint var');
+    print(widget.product['variation']);
+    print('printing quantity');
+    print(widget.product['quantity']);
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: Insets.lg, vertical: Insets.sm),
@@ -62,8 +113,8 @@ class BagItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: Corners.xsBorder,
-            child: LocalImage(
-              imgUrl,
+            child: NetworkImg(
+              widget.product['product_images'][0]['secure_url'],
               height: 170,
               width: 120,
             ),
@@ -74,7 +125,7 @@ class BagItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "\$100.00",
+                  "\$${widget.product['variation']['price']}",
                   style: context.textTheme.bodyMedium
                       .changeColor(AppColors.primary)
                       .size(22)
@@ -82,29 +133,27 @@ class BagItem extends StatelessWidget {
                 ),
                 Gap.sm,
                 Text(
-                  "Plain black medium sized tote bag",
+                  widget.product['name'],
                   style: context.textTheme.bodyMedium,
                 ),
                 Gap.md,
                 Row(
                   children: [
+                    // Row(
+                    //   children: const [
+                    //     Text("Black"),
+                    //     Gap.xs,
+                    //     Icon(
+                    //       PhosphorIcons.caretDown,
+                    //     ),
+                    //   ],
+                    // ),
+                    // Gap.sm,
                     Row(
-                      children: const [
-                        Text("Black"),
+                      children: [
+                        Text(
+                            "Size: ${widget.product['variation']['size'].toString()}"),
                         Gap.xs,
-                        Icon(
-                          PhosphorIcons.caretDown,
-                        ),
-                      ],
-                    ),
-                    Gap.sm,
-                    Row(
-                      children: const [
-                        Text("Small"),
-                        Gap.xs,
-                        Icon(
-                          PhosphorIcons.caretDown,
-                        ),
                       ],
                     )
                   ],
@@ -121,12 +170,33 @@ class BagItem extends StatelessWidget {
                       child: const Icon(
                         PhosphorIcons.minus,
                       ),
-                    ),
+                    ).onTap(() async {
+                      Map resp = {};
+                      if (widget.product['quantity'] > 1) {
+                        setState(() {
+                          widget.product['quantity'] -= 1;
+                        });
+                        resp = await Provider.of<ShopProvider>(context,
+                                listen: false)
+                            .addToCart(
+                                widget.product,
+                                widget.product['quantity'],
+                                widget.product['color'],
+                                widget.product['variation']);
+                      } else {
+                        resp = await Provider.of<ShopProvider>(context,
+                                listen: false)
+                            .reduceOrRemoveFromCart(widget.product);
+                        setState(() {});
+                      }
+
+                      showNotification(context, true, resp['msg']);
+                    }),
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(horizontal: Insets.sm),
                       child: Text(
-                        "1",
+                        widget.product['quantity'].toString(),
                         style: context.textTheme.bodyMedium
                             .changeColor(AppColors.primary)
                             .size(20)
@@ -142,7 +212,20 @@ class BagItem extends StatelessWidget {
                       child: const Icon(
                         PhosphorIcons.plus,
                       ),
-                    ),
+                    ).onTap(() async {
+                      setState(() {
+                        widget.product['quantity'] += 1;
+                      });
+                      var resp = await Provider.of<ShopProvider>(context,
+                              listen: false)
+                          .addToCart(
+                              widget.product,
+                              widget.product['quantity'],
+                              widget.product['color'],
+                              widget.product['variation']);
+                      showNotification(context, true, resp['msg']);
+                      // print(widget.product);
+                    }),
                   ],
                 ),
               ],

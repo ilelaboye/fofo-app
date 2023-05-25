@@ -13,6 +13,7 @@ class MembershipPlanCard extends StatelessWidget {
   final String title, desc, benefit;
   final bool isPopular;
   final List<String> perks;
+  final Map user;
   const MembershipPlanCard(
       {this.color,
       this.textColor,
@@ -22,6 +23,7 @@ class MembershipPlanCard extends StatelessWidget {
       this.title = "Access",
       this.isPopular = false,
       this.perks = const [],
+      required this.user,
       Key? key})
       : super(key: key);
 
@@ -38,7 +40,7 @@ class MembershipPlanCard extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: Corners.mdBorder,
-            border: Border.all(color: AppColors.primary, width: 0.7),
+            border: Border.all(color: const Color(0xFF2A3147), width: 0.7),
             color: color,
           ),
           child: Column(
@@ -65,7 +67,7 @@ class MembershipPlanCard extends StatelessWidget {
                 Text(
                   "Free",
                   style: context.textTheme.headlineLarge!
-                      .changeColor(AppColors.primary)
+                      .changeColor(const Color(0xFF2A3147))
                       .bold,
                 ),
               Gap.sm,
@@ -111,12 +113,23 @@ class MembershipPlanCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Button(
-                "Learn More",
-                onTap: () => context.push(MembershipPlanPage(perks,
-                    fee: fee, title: title, desc: desc, benefit: benefit)),
-                color: color == AppColors.palette[100] ? color : Colors.white,
-                textColor: AppColors.palette[900],
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(color: const Color(0xFF2A3147)),
+                  color: color,
+                ),
+                child: Button(
+                  "Learn More",
+                  onTap: () => context.push(MembershipPlanPage(perks,
+                      fee: fee,
+                      title: title,
+                      desc: desc,
+                      benefit: benefit,
+                      user: user)),
+                  color: color == AppColors.palette[100] ? color : Colors.white,
+                  textColor: AppColors.palette[900],
+                ),
               )
             ],
           ),

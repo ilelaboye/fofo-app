@@ -5,6 +5,9 @@ import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/features/shop/presentation/bag.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../service/shop/shop.dart';
 
 class ShopAppbar extends Appbar {
   const ShopAppbar({required String title, Key? key})
@@ -43,7 +46,10 @@ class ShopAppbar extends Appbar {
                           color: AppColors.error,
                         ),
                         child: Text(
-                          "4",
+                          Provider.of<ShopProvider>(context, listen: true)
+                              .cart
+                              .length
+                              .toString(),
                           style: context.textTheme.caption
                               .changeColor(Colors.white),
                         ),

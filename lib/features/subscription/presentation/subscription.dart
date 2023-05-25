@@ -7,8 +7,8 @@ import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/features/subscription/presentation/membership_plan_card.dart';
 
 class SubscriptionPage extends StatefulWidget {
-  const SubscriptionPage({Key? key}) : super(key: key);
-
+  const SubscriptionPage({Key? key, required this.user}) : super(key: key);
+  final Map user;
   @override
   _SubscriptionPageState createState() => _SubscriptionPageState();
 }
@@ -42,8 +42,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               onPressed: () => context.pushOff(const AppScaffoldPage()),
               icon: Text(
                 "Skip",
-                style:
-                    context.textTheme.bodyLarge!.changeColor(AppColors.primary),
+                style: context.textTheme.bodyLarge!
+                    .changeColor(const Color(0xFF2A3147)),
               ),
             ),
           ),
@@ -58,49 +58,50 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               "Memberships",
               style: context.textTheme.headlineMedium!.bold
                   .size(24)
-                  .changeColor(AppColors.primary),
+                  .changeColor(const Color(0xFF2A3147)),
             ),
           ),
           SizedBox(
-            height: 580,
+            height: 600,
             child: PageView(
               controller: _controller,
               children: [
                 MembershipPlanCard(
-                  color: AppColors.primary,
-                  fee: 25,
-                  isPopular: true,
-                  title: "Gold Access",
-                  desc:
-                      "Take your Tfemme experience to the next level with exclusive features and front row access to growth spurring resources.",
-                  benefit:
-                      "Accelerate your growth with access to discounts on trainings and books. Network with thought leaders and high flyers in your industry.",
-                  perks: const [
-                    "Can access silver membership plus",
-                    "Downloadable templates to feel more confident, empowered and organized.",
-                    "Bonus training worth \$49 from co-founder Mofoluwaso Ilevbare",
-                    "Digital Community Networking Forum & Groups",
-                    "Monthly Goal Challenges (push notifications)",
-                    "Discounts to Affiliate Partner Services"
-                  ],
-                ),
+                    color: AppColors.primary,
+                    textColor: Colors.white,
+                    fee: 25,
+                    isPopular: true,
+                    title: "Gold Access",
+                    desc:
+                        "Take your Tfemme experience to the next level with exclusive features and front row access to growth spurring resources.",
+                    benefit:
+                        "Accelerate your growth with access to discounts on trainings and books. Network with thought leaders and high flyers in your industry.",
+                    perks: const [
+                      "Can access silver membership plus",
+                      "Downloadable templates to feel more confident, empowered and organized.",
+                      "Bonus training worth \$49 from co-founder Mofoluwaso Ilevbare",
+                      "Digital Community Networking Forum & Groups",
+                      "Monthly Goal Challenges (push notifications)",
+                      "Discounts to Affiliate Partner Services"
+                    ],
+                    user: widget.user),
                 MembershipPlanCard(
-                  color: AppColors.palette[100],
-                  textColor: AppColors.primary,
-                  title: "Silver Access",
-                  desc:
-                      "Become a member of the TFemme community. Get insights to help you grow as a professional.",
-                  benefit:
-                      "Increase you productivity and get the tools you need to overcome self doubt and imposter syndrome. Manage your time and energy with actionable plans. Get access to free, industry relevant opportunities",
-                  perks: const [
-                    "Home page",
-                    "Blog page, Podcast, YouTube, Shop, etc.",
-                    "Daily Affirmations (push notifications).",
-                    "Announcement Dashboard (push notification).",
-                    "FREE GIFT: a Downloadable Planner.",
-                    "Can create a post or ask a question (simple page)."
-                  ],
-                ),
+                    color: const Color(0xFFFFF5F5),
+                    textColor: const Color(0xFF2A3147),
+                    title: "Silver Access",
+                    desc:
+                        "Become a member of the TFemme community. Get insights to help you grow as a professional.",
+                    benefit:
+                        "Increase you productivity and get the tools you need to overcome self doubt and imposter syndrome. Manage your time and energy with actionable plans. Get access to free, industry relevant opportunities",
+                    perks: const [
+                      "Home page",
+                      "Blog page, Podcast, YouTube, Shop, etc.",
+                      "Daily Affirmations (push notifications).",
+                      "Announcement Dashboard (push notification).",
+                      "FREE GIFT: a Downloadable Planner.",
+                      "Can create a post or ask a question (simple page)."
+                    ],
+                    user: widget.user),
               ],
             ),
           ),

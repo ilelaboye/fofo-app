@@ -11,7 +11,8 @@ class Feed {
   final String id;
   final String name;
   final String? description;
-  final String? blogImage;
+  final List? blogImages;
+  final List? authorImages;
   final String createdAt;
   final int? blogComments;
   final int? blogLikes;
@@ -23,7 +24,8 @@ class Feed {
     required this.id,
     required this.name,
     this.description,
-    this.blogImage,
+    this.blogImages,
+    this.authorImages,
     required this.createdAt,
     this.blogComments,
     this.blogLikes,
@@ -34,14 +36,15 @@ class Feed {
 
   @override
   String toString() {
-    return 'Feed(id: $id, name: $name, description: $description, blogImage: $blogImage, createdAt: $createdAt, blogComments: $blogComments, blogLikes: $blogLikes, blogviews: $blogviews, createdBy: $createdBy, blogCategory: $blogCategory)';
+    return 'Feed(id: $id, name: $name, description: $description, blogImages: $blogImages, authorImages: $authorImages, createdAt: $createdAt, blogComments: $blogComments, blogLikes: $blogLikes, blogviews: $blogviews, createdBy: $createdBy, blogCategory: $blogCategory)';
   }
 
   factory Feed.fromMap(Map<String, dynamic> data) => Feed(
       id: data['id'] as String,
       name: data['name'] as String,
       description: data['description'] as String?,
-      blogImage: data['blogImage'] as String?,
+      blogImages: data['blogImages'] as List?,
+      authorImages: data['authorImages'] as List?,
       createdAt: data['createdAt'] as String,
       blogComments: data['blogComments'] as int?,
       blogLikes: data['blogLikes'] as int?,
@@ -64,7 +67,8 @@ class Feed {
         'id': id,
         'name': name,
         'description': description,
-        'blogImage': blogImage,
+        'blogImages': blogImages,
+        'authorImages': authorImages,
         'createdAt': createdAt,
         'blogCategory': blogCategory,
         'blogviews': blogviews,
@@ -89,7 +93,8 @@ class Feed {
     String? id,
     String? name,
     String? description,
-    String? blogImage,
+    List? blogImages,
+    List? authorImages,
     String? createdAt,
     Category? blogCategory,
     Creator? createdBy,
@@ -101,7 +106,8 @@ class Feed {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
-      blogImage: blogImage ?? this.blogImage,
+      blogImages: blogImages ?? this.blogImages,
+      authorImages: authorImages ?? this.authorImages,
       createdAt: createdAt ?? this.createdAt,
       blogCategory: blogCategory ?? this.blogCategory,
       blogviews: blogviews ?? this.blogviews,
@@ -124,7 +130,8 @@ class Feed {
       id.hashCode ^
       name.hashCode ^
       description.hashCode ^
-      blogImage.hashCode ^
+      blogImages.hashCode ^
+      authorImages.hashCode ^
       createdAt.hashCode ^
       blogCategory.hashCode ^
       blogviews.hashCode ^

@@ -16,6 +16,7 @@ class Book {
   final String? description;
   final Author? author;
   final String? bookCategoryId;
+  final String? bookLink;
   // BookCategory? bookCategoryId;
 
   Book(
@@ -27,18 +28,19 @@ class Book {
       this.store,
       this.bookImage,
       this.description,
-      this.bookCategoryId});
+      this.bookCategoryId,
+      this.bookLink});
 
   @override
   String toString() {
-    return 'Book( id: $id, name: $name, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage,description:$description, bookCategoryId: $bookCategoryId)';
+    return 'Book( id: $id, name: $name, author: $author, price: $price, ratings: $ratings, store: $store, bookImage: $bookImage,description:$description, bookCategoryId: $bookCategoryId, bookLink: $bookLink)';
   }
 
   factory Book.fromMap(Map<String, dynamic> data) => Book(
       id: data['id'] as String?,
       name: data['name'] as String?,
       price: data['price'] as String?,
-      ratings: data['ratings'] as int?,
+      // ratings: data['ratings'] ?? 0,
       store: data['store'] as String?,
       bookImage: data['bookImage'] as String?,
       description:
@@ -46,8 +48,9 @@ class Book {
       author: data['author'] == null
           ? null
           : Author.fromMap(data['author'] as Map<String, dynamic>),
-      bookCategoryId:
-          data['bookCategoryId'] == null ? null : data['bookCategoryId']);
+      bookCategoryId: data['bookCategoryId'] ?? data['bookCategoryId'],
+      bookLink: data['bookLink'] as String?);
+
   // : BookCategory.fromMap(
   //     data['bookCategoryId'] as Map<String, dynamic>));
 
@@ -60,6 +63,7 @@ class Book {
         'bookImage': bookImage,
         'author': author,
         'bookCategoryId': bookCategoryId,
+        'bookLink': bookLink
       };
 
   /// `dart:convert`
@@ -74,17 +78,17 @@ class Book {
   /// Converts [Book] to a JSON string.
   String toJson() => json.encode(toMap());
 
-  Book copyWith({
-    String? id,
-    String? name,
-    String? price,
-    int? ratings,
-    String? store,
-    String? bookImage,
-    Author? author,
-    // BookCategory? bookCategoryId,
-    String? bookCategoryId,
-  }) {
+  Book copyWith(
+      {String? id,
+      String? name,
+      String? price,
+      int? ratings,
+      String? store,
+      String? bookImage,
+      Author? author,
+      // BookCategory? bookCategoryId,
+      String? bookCategoryId,
+      String? bookLink}) {
     return Book(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -94,6 +98,7 @@ class Book {
       bookImage: bookImage ?? this.bookImage,
       author: author ?? this.author,
       bookCategoryId: bookCategoryId ?? this.bookCategoryId,
+      bookLink: bookLink ?? this.bookLink,
     );
   }
 
@@ -115,5 +120,6 @@ class Book {
       store.hashCode ^
       bookImage.hashCode ^
       author.hashCode ^
-      bookCategoryId.hashCode;
+      bookCategoryId.hashCode ^
+      bookLink.hashCode;
 }

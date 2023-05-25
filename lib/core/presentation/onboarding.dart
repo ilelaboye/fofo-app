@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fofo_app/core/widgets/image.dart';
-import 'package:fofo_app/features/auth/presentation/signup.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/button.dart';
 import 'package:fofo_app/core/widgets/gap.dart';
-
-import '../../features/auth/presentation/profile_picture_upload.dart';
+import 'package:fofo_app/core/widgets/image.dart';
+import 'package:fofo_app/features/auth/presentation/signup.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OnboardingPage extends StatefulWidget {
   static const String route = "/onboarding";
@@ -30,7 +27,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
             .map((item) => Stack(
                   children: [
                     SizedBox(
-                      child: LocalImage("onboarding".jpg),
+                      child: LocalImage(
+                        item.imgUrl.png,
+                        width: double.infinity,
+                      ),
                     ),
                     Positioned(
                       top: Insets.lg + Insets.lg,
@@ -47,9 +47,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       right: 0,
                       bottom: 0,
                       child: Container(
-                        height: context.getHeight(0.42),
+                        height: context.getHeight(0.45),
                         decoration: const BoxDecoration(
-                          color: Colors.white,
+                          // color: Colors.white,
                           borderRadius: BorderRadius.only(
                             topLeft: Corners.lgRadius,
                             topRight: Corners.lgRadius,
@@ -63,7 +63,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               item.title,
                               style: context.textTheme.headlineMedium!.bold
                                   .size(24)
-                                  .changeColor(AppColors.primary),
+                                  .changeColor(Colors.white),
                             ),
                             Gap.sm,
                             Padding(
@@ -74,28 +74,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 textAlign: TextAlign.center,
                                 style: context.textTheme.bodyMedium!
                                     .size(12)
-                                    .changeColor(AppColors.palette[700]!)
+                                    .changeColor(Colors.white)
                                     .copyWith(height: 1.8),
-                              ),
-                            ),
-                            Gap.lg,
-                            Button("Get Started", width: context.width / 2,
-                                onTap: () {
-                              // context.push(const ProfilePictureUploadPage());
-                              context.push(const SignupPage());
-                            }),
-                            Gap.md,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text('Next'),
-                                Gap.sm,
-                                Icon(PhosphorIcons.arrowRight)
-                              ],
-                            ).onTap(
-                              () => _controller.nextPage(
-                                duration: 200.millisecs,
-                                curve: Curves.ease,
                               ),
                             ),
                             Gap.lg,
@@ -114,7 +94,37 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                   ),
                                 ).toList()
                               ],
-                            )
+                            ),
+                            Gap.lg,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Insets.lg),
+                              child: Button("Get Started",
+                                  width: context.width, radius: 20, onTap: () {
+                                // context.push(const ProfilePictureUploadPage());
+                                context.push(const SignupPage());
+                              }),
+                            ),
+                            Gap.md,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Next',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                Gap.sm,
+                                Icon(
+                                  PhosphorIcons.arrowRight,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ).onTap(
+                              () => _controller.nextPage(
+                                duration: 200.millisecs,
+                                curve: Curves.ease,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -148,27 +158,27 @@ class PageIndicator extends StatelessWidget {
 class Item {
   final String title;
   final String desc;
-  // addd imgUrl
-  const Item({
-    required this.title,
-    required this.desc,
-  });
+  final String imgUrl;
+  const Item({required this.title, required this.desc, required this.imgUrl});
 }
 
 const items = [
   Item(
-    title: 'Build It',
+    imgUrl: '1',
+    title: 'Live a Bold Life',
     desc:
-        'Starting a career can sometimes be daunting. We’ll help you clarify your purpose, overcome impostor syndrome, boost your confidence, and accelerate success.',
+        "Starting a career can sometimes be daunting. We'll help you clarify your purpose,  overcome impostor syndrome boost your confidence, and accelerate success.",
   ),
   Item(
-    title: 'Expand It',
+    imgUrl: "2",
+    title: "Join a Vibrant Network",
     desc:
-        'As your career progresses, you need to stand out and leverage influence - we help you enjoy work, attract sponsors, make bold career moves, and harmonize work life.',
+        "Starting a career can sometimes be daunting. We'll help you clarify your purpose,  overcome impostor syndrome, boost your confidence, and accelerate success.",
   ),
   Item(
-    title: 'Sustain It',
+    imgUrl: "3",
+    title: "Advance Your Career",
     desc:
-        'Whether stepping into a C-suite or board-level position, we help you live purposefully, in and out of the boardroom, building lasting influence and impact globally.',
+        "Starting a career can sometimes be daunting. We'll help you clarify your purpose,  overcome impostor syndrome, boost your confidence, and accelerate success.",
   ),
 ];

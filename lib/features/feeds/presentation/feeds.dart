@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,6 @@ import '../../../core/widgets/avatar_group.dart';
 import '../../../core/widgets/blog_card.dart';
 import '../../../core/widgets/gap.dart';
 import '../../../core/widgets/image.dart';
-import '../../../core/widgets/loader.dart';
 import '../../../core/widgets/post.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../models/feed/feeds.dart';
@@ -36,8 +36,12 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   getFeeds() async {
+    EasyLoading.show(status: 'loading...');
     feeds = await Provider.of<FeedsProvider>(context, listen: false)
         .getFeeds(context);
+    print('print feeds');
+    print(feeds);
+    EasyLoading.dismiss();
     setState(() {
       isLoaded = true;
     });
@@ -45,12 +49,13 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("feeds page");
     final authProvider = Provider.of<AuthProvider>(context);
 
     final profile = authProvider.userProfile;
 
     if (!isLoaded) {
-      return Loader();
+      return Container();
     } else {
       return Scaffold(
         appBar: Appbar(
@@ -90,7 +95,7 @@ class _FeedsPageState extends State<FeedsPage> {
                     (item) => Container(
                       margin: const EdgeInsets.symmetric(vertical: Insets.md),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: Insets.md, vertical: Insets.xs),
                         child: PostCard(
                           feed: item,
@@ -147,7 +152,7 @@ class _FeedsPageState extends State<FeedsPage> {
                     (item) => Container(
                       margin: const EdgeInsets.symmetric(vertical: Insets.md),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: Insets.md, vertical: Insets.xs),
                         child: PostCard(
                           feed: item,
@@ -161,128 +166,5 @@ class _FeedsPageState extends State<FeedsPage> {
         ),
       );
     }
-    // return FutureBuilder(
-    //     future: Provider.of<FeedsProvider>(context, listen: false)
-    //         .getFeeds(context),
-    //     builder: (context, AsyncSnapshot snapshot) {
-    //       if (snapshot.data == null) {
-    //         return Container(child: Loader());
-    //       } else {
-    //         print(snapshot.data.categories);
-    //         // Feeds feeds = snapshot.data;
-    //         var feeds = Feeds.fromMap(snapshot.data as Map<String, dynamic>);
-    //         return Scaffold(
-    //           appBar: Appbar(
-    //             leading: Avatar(AppColors.error,
-    //                 data: CircleAvatar(
-    //                   backgroundColor: Colors.red,
-    //                   // backgroundImage: NetworkImage(profile?.profileImage ?? "")
-    //                 )).onTap(() => AppScaffoldPage.of(context).openDrawer()),
-    //             actions: [
-    //               Center(
-    //                 child: Padding(
-    //                   padding: const EdgeInsets.only(right: Insets.md),
-    //                   child: LocalImage(
-    //                     "logo".png,
-    //                     height: 37,
-    //                   ),
-    //                 ),
-    //               )
-    //             ],
-    //           ),
-    //           // floatingActionButton: FloatingActionButton(
-    //           //   backgroundColor: AppColors.primary,
-    //           //   onPressed: () => context.push(const CreatePostPage()),
-    //           //   heroTag: ValueKey(DateTime.now()), // for dev
-    //           //   child: const Icon(
-    //           //     PhosphorIcons.plus,
-    //           //     color: Colors.white,
-    //           //   ),
-    //           // ),
-    //           body: SingleChildScrollView(
-    //             child: Column(
-    //               children: [
-    //                 // feeds.map((e) => null)
-    //                 ...feeds.popular!.take(2).map(
-    //                       (item) => Container(
-    //                         margin:
-    //                             const EdgeInsets.symmetric(vertical: Insets.md),
-    //                         child: Padding(
-    //                           padding: EdgeInsets.symmetric(
-    //                               horizontal: Insets.md, vertical: Insets.xs),
-    //                           child: PostCard(
-    //                             feed: item,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ),
-    //                 const Padding(
-    //                   padding: EdgeInsets.symmetric(horizontal: Insets.md),
-    //                   child: SectionHeader(
-    //                     "Just Joined",
-    //                     seeAll: true,
-    //                   ),
-    //                 ),
-    //                 Gap.md,
-    //                 Padding(
-    //                   padding:
-    //                       const EdgeInsets.symmetric(horizontal: Insets.lg),
-    //                   child: Row(
-    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                     children: List.generate(
-    //                       6,
-    //                       (index) => Avatar(AppColors.colorList()[index]),
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 Gap.md,
-    //                 Padding(
-    //                   padding: EdgeInsets.symmetric(horizontal: Insets.md),
-    //                   child: SectionHeader(
-    //                     "Blog",
-    //                     seeAll: true,
-    //                     onClickSeeAll: () => context.push(const BlogsPage()),
-    //                   ),
-    //                 ),
-    //                 Gap.md,
-    //                 SizedBox(
-    //                   height: 160,
-    //                   child: ListView.builder(
-    //                     scrollDirection: Axis.horizontal,
-    //                     physics: const BouncingScrollPhysics(),
-    //                     itemBuilder: (context, index) => Padding(
-    //                       padding: EdgeInsets.only(
-    //                         left: index == 0 ? Insets.md : Insets.sm,
-    //                         // use index == blog.length -1
-    //                         right: index == feeds.recent!.length - 1
-    //                             ? Insets.md
-    //                             : 0,
-    //                       ),
-    //                       child: BlogCard(feed: feeds.recent![index]),
-    //                     ),
-    //                     itemCount: feeds.recent!.length,
-    //                   ),
-    //                 ),
-    //                 Gap.md,
-    //                 ...feeds.popular!.skip(2).map(
-    //                       (item) => Container(
-    //                         margin:
-    //                             const EdgeInsets.symmetric(vertical: Insets.md),
-    //                         child: Padding(
-    //                           padding: EdgeInsets.symmetric(
-    //                               horizontal: Insets.md, vertical: Insets.xs),
-    //                           child: PostCard(
-    //                             feed: item,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ),
-    //                 const Gap(80),
-    //               ],
-    //             ),
-    //           ),
-    //         );
-    //       }
-    //     });
   }
 }

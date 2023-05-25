@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -36,8 +37,10 @@ class _CoursesPageState extends State<CoursesPage> {
   }
 
   getCourses() async {
+    EasyLoading.show(status: 'loading...');
     courses = await Provider.of<CoursesProvider>(context, listen: false)
         .getCourses(context);
+    EasyLoading.dismiss();
     setState(() {
       isLoaded = true;
     });
@@ -196,16 +199,6 @@ class CategoryItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Container(
-            //   decoration: BoxDecoration(
-            //     shape: BoxShape.circle,
-            //     color: AppColors.palette[300],
-            //   ),
-            //   child: category['iconName'] == null
-            //       ? const Offstage()
-            //       : ImageIcon(NetworkImage(category['iconName'])),
-            // ),
-            // Gap.sm,
             Text(
               category!.name ?? '',
               style: context.textTheme.bodyMedium.size(12),

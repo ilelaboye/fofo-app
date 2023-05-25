@@ -41,8 +41,9 @@ class PostCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push(BlogPage(id: feed.id)),
       child: Container(
-        width: context.width,
+        // width: context.width,
         padding: const EdgeInsets.all(Insets.md),
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: Corners.smBorder,
@@ -59,8 +60,10 @@ class PostCard extends StatelessWidget {
                   AppColors.error,
                   radius: 18,
                   data: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          feed.createdBy!.profileImage.toString())),
+                      backgroundImage: feed.createdBy!.profileImage == null
+                          ? AssetImage("user".png) as ImageProvider
+                          : NetworkImage(
+                              feed.createdBy!.profileImage.toString())),
                 ),
                 Gap.sm,
                 Column(
@@ -71,26 +74,20 @@ class PostCard extends StatelessWidget {
                       style: context.textTheme.bodyMedium.size(14),
                     ),
                     Gap.xs,
-                    Text.rich(
-                      TextSpan(children: [
-                        TextSpan(
-                          text: ago + " • to ",
-                          style: context.textTheme.bodyMedium
-                              .size(10)
-                              .changeColor(AppColors.palette[700]!),
-                        ),
-                        TextSpan(
-                          text: feed.name.toString(),
-                        ),
-                      ]),
-                      style: context.textTheme.bodyMedium.size(10),
-                    )
+                    SizedBox(
+                      width: context.width * 0.7,
+                      child: Text(ago + " • to " + feed.name.toString(),
+                          overflow: TextOverflow.clip,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          )),
+                    ),
                   ],
                 ),
               ],
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: Insets.md),
+              padding: const EdgeInsets.symmetric(vertical: Insets.md),
               child: Container(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -100,11 +97,12 @@ class PostCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (feed.blogImage != null) ...[
+            if (feed.blogImages!.isNotEmpty &&
+                feed.blogImages![0]['image_url'] != null) ...[
               ClipRRect(
                 borderRadius: Corners.smBorder,
                 child: NetworkImg(
-                  feed.blogImage.toString(),
+                  feed.blogImages![0]['image_url'].toString(),
                   width: context.width,
                   height: 200,
                 ),

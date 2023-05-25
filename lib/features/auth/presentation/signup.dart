@@ -13,14 +13,12 @@ import 'package:fofo_app/core/widgets/notification.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:fofo_app/features/auth/presentation/heading.dart';
 import 'package:fofo_app/features/auth/presentation/login.dart';
-import 'package:fofo_app/features/auth/presentation/profile_picture_upload.dart';
+import 'package:fofo_app/features/subscription/presentation/subscription.dart';
 import 'package:fofo_app/service/auth_service/auth_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/user_model/user_model.dart';
 import '../../../service/auth_service/auth_provider.dart';
-import '../../../service/user_provider/user_provider.dart';
 import 'otp.dart';
 
 String? selectedItem;
@@ -54,10 +52,12 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   late String fullname, email, phonenumber, password;
   bool passenable = true;
+  bool terms = false;
 
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
+    auth.skipOnboarding();
     var loading = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -69,164 +69,208 @@ class _SignupPageState extends State<SignupPage> {
     final ISignUp _signupService = SignUpService();
     // final notify = Notification();
     return Scaffold(
-      appBar: const Appbar(),
+      // appBar: const Appbar(hasLeading: false),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(Insets.lg),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const AuthHeading(
-                    "Create Account",
-                    "Sign up to see how We can help you build, expand and sustain your career in any industry.",
-                  ),
-                  Gap.lg,
-                  TextInputField(
-                    labelText: "Full Name",
-                    hintText: "E.g Rachel Choo",
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        return null;
-                      } else {
-                        return "Please Input Fullname";
-                      }
-                    },
-                    onSaved: (value) => fullname = value!,
-                  ),
-                  const Gap(25),
-                  TextInputField(
-                      labelText: "Email Address",
-                      hintText: "E.g Rachelchoo@gmail.com",
-                      onSaved: (value) => email = value!,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(Insets.lg),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const AuthHeading(
+                      "Create Account",
+                      "Sign up to see how We can help you build, expand and sustain your career in any industry.",
+                    ),
+                    Gap.lg,
+                    TextInputField(
+                      labelText: "Full Name",
+                      initialValue: "Adekunle ojo",
+                      hintText: "E.g Rachel Choo",
                       validator: (value) {
                         if (value!.isNotEmpty) {
                           return null;
                         } else {
-                          return "Please Input Email";
+                          return "Please Input Fullname";
                         }
-                      }),
-                  const Gap(25),
-                  TextInputField(
-                    labelText: "Phone Number",
-                    hintText: "(country code) 1234567890",
-                    onSaved: (value) => phonenumber = value!,
-                    validator: (value) {
-                      if (value!.isNotEmpty && value.length > 5) {
-                        return null;
-                      } else if (value.length < 5 && value.isNotEmpty) {
-                        return "Invalid phone Number";
-                      } else {
-                        return "Please Input Phone Number";
-                      }
-                    },
-                    prefix: Container(
-                      width: 50,
-                      margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      color: AppColors.dark,
-                      child: Center(
-                          child: Text(
-                        '+',
-                        style: TextStyle(color: Colors.white, fontSize: 35),
-                      )),
+                      },
+                      onSaved: (value) => fullname = value!,
                     ),
-                  ),
-                  const Gap(25),
-                  DropDownCategory(
-                      selectedItem: selectedItem,
-                      onSelectItem: (item) => {
-                            setState(() => {selectedItem = item})
-                          }),
-                  const Gap(25),
-                  TextInputField(
-                      obscureText: passenable,
-                      labelText: "Password",
-                      suffixIcon: Icon(
-                        PhosphorIcons.eyeSlashFill,
-                        color: AppColors.primary,
-                      ).onTap(() {
-                        setState(() {
-                          if (passenable) {
-                            passenable = false;
+                    const Gap(25),
+                    TextInputField(
+                        labelText: "Email Address",
+                        initialValue: "ilelaboyealekan+10@gmail.com",
+                        hintText: "E.g Rachelchoo@gmail.com",
+                        onSaved: (value) => email = value!,
+                        validator: (value) {
+                          if (value!.isNotEmpty) {
+                            return null;
                           } else {
-                            passenable = true;
+                            return "Please Input Email";
                           }
-                        });
-                      }),
-                      onSaved: (value) => password = value!,
+                        }),
+                    const Gap(25),
+                    TextInputField(
+                      labelText: "Phone Number",
+                      initialValue: "2348102721335",
+                      hintText: "(country code) 1234567890",
+                      onSaved: (value) => phonenumber = value!,
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Input Password";
+                        if (value!.isNotEmpty && value.length > 5) {
+                          return null;
+                        } else if (value.length < 5 && value.isNotEmpty) {
+                          return "Invalid phone Number";
+                        } else {
+                          return "Please Input Phone Number";
                         }
-                        if (value.length < 7) {
-                          return "Minimum of 7 characters is required";
-                        }
-
-                        return null;
-                      }),
-                  const Gap(25),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(text: "Already have an account ? "),
-                        TextSpan(
-                          text: "Login Here",
-                          style: context.textTheme.caption!
-                              .changeColor(AppColors.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => context.push(const LoginPage()),
-                        )
-                      ],
+                      },
+                      prefix: Container(
+                        width: 50,
+                        margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        color: AppColors.dark,
+                        child: Center(
+                            child: Text(
+                          '+',
+                          style: TextStyle(color: Colors.white, fontSize: 35),
+                        )),
+                      ),
                     ),
-                    style: context.textTheme.caption,
-                  ),
-                  Gap.lg,
-                  auth.registeredInStatus == Status.Loading
-                      ? loading
-                      : Button(
-                          'Create Your Account',
-                          onTap: () {
-                            final form = _formKey.currentState!;
-                            if (form.validate()) {
-                              form.save();
-                              auth
-                                  .register(
-                                      context,
-                                      fullname,
-                                      email,
-                                      phonenumber,
-                                      selectedItem.toString(),
-                                      password)
-                                  .then((response) {
-                                print('signup response');
-                                print(response);
-                                if (response['status']) {
-                                  UserModel user = response['data'];
-                                  Provider.of<UserProvider>(context,
-                                          listen: false)
-                                      .setUser(user);
-                                  if (user.stage == 1) {
-                                    context.push(OtpPage(
-                                        otpState: OtpState.auth,
-                                        email: email,
-                                        phone: phonenumber));
-                                  } else if (user.stage == 2) {
-                                    context
-                                        .push(const ProfilePictureUploadPage());
-                                  }
-                                } else {
-                                  showNotification(
-                                      context, false, response['message']);
-                                }
-                              });
+                    const Gap(25),
+                    DropDownCategory(
+                        selectedItem: selectedItem,
+                        onSelectItem: (item) => {
+                              setState(() => {selectedItem = item})
+                            }),
+                    const Gap(25),
+                    TextInputField(
+                        obscureText: passenable,
+                        labelText: "Password",
+                        initialValue: "1234567",
+                        suffixIcon: Icon(
+                          PhosphorIcons.eyeSlashFill,
+                          color: AppColors.primary,
+                        ).onTap(() {
+                          setState(() {
+                            if (passenable) {
+                              passenable = false;
                             } else {
-                              showNotification(context, false, "Invalid form");
+                              passenable = true;
                             }
-                          },
-                        ),
-                  const Gap(50)
-                ],
-              )),
+                          });
+                        }),
+                        onSaved: (value) => password = value!,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please Input Password";
+                          }
+                          if (value.length < 7) {
+                            return "Minimum of 7 characters is required";
+                          }
+
+                          return null;
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                              height: 24.0,
+                              width: 24.0,
+                              child: Checkbox(
+                                checkColor: Colors.white,
+                                activeColor: AppColors.primary,
+                                value: terms,
+                                onChanged: (value) {
+                                  print(value);
+                                  setState(() {
+                                    terms = value!;
+                                  });
+                                },
+                              )),
+                          Expanded(
+                            child: Text(
+                              'I agree to the Trailblazer Terms and Condition',
+                              style: TextStyle(color: AppColors.primary),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(25),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          const TextSpan(text: "Already have an account ? "),
+                          TextSpan(
+                            text: "Login Here",
+                            style: context.textTheme.caption!
+                                .changeColor(AppColors.primary),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => context.push(const LoginPage()),
+                          )
+                        ],
+                      ),
+                      style: context.textTheme.caption,
+                    ),
+                    Gap.lg,
+                    auth.registeredInStatus == Status.Loading
+                        ? loading
+                        : Button(
+                            'Create Your Account',
+                            onTap: () {
+                              final form = _formKey.currentState!;
+                              if (!terms) {
+                                showNotification(context, false,
+                                    "Agree to terms and condition");
+                                return;
+                              }
+                              if (form.validate()) {
+                                form.save();
+                                auth
+                                    .register(
+                                        context,
+                                        fullname,
+                                        email,
+                                        phonenumber,
+                                        selectedItem.toString(),
+                                        password)
+                                    .then((response) {
+                                  print('signup response');
+                                  print(response);
+                                  if (response['status']) {
+                                    Map user = response['data'];
+                                    // Provider.of<UserProvider>(context,
+                                    //         listen: false)
+                                    //     .setUser(user);
+                                    if (user['stage'] == 1) {
+                                      context.push(OtpPage(
+                                          otpState: OtpState.auth,
+                                          email: email,
+                                          phone: phonenumber,
+                                          user: user));
+                                    } else if (user['stage'] == 2) {
+                                      context.push(SubscriptionPage(
+                                        user: user,
+                                      ));
+                                    }
+                                  } else {
+                                    showNotification(
+                                        context, false, response['message']);
+                                  }
+                                });
+                              } else {
+                                showNotification(
+                                    context, false, "Invalid form");
+                              }
+                            },
+                          ),
+                    const Gap(50),
+                  ],
+                )),
+          ),
         ),
       ),
     );

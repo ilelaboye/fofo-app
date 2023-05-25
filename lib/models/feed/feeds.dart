@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:fofo_app/models/feed/category.dart';
 
 import './feed.dart';
 
 @immutable
 class Feeds {
-  final List<Category>? categories;
+  final Map? categories;
   final Feed? hot;
   final List<Feed>? recent;
   final List<Feed>? popular;
@@ -21,9 +20,7 @@ class Feeds {
   }
 
   factory Feeds.fromMap(Map<String, dynamic> data) => Feeds(
-        categories: (data['categories']['docs'] as List<dynamic>)
-            .map((e) => Category.fromMap(e as Map<String, dynamic>))
-            .toList(),
+        categories: data['categories'],
         hot: data['hot'] == null
             ? null
             : Feed.fromMap(data['hot'] as Map<String, dynamic>),
@@ -36,7 +33,7 @@ class Feeds {
       );
 
   Map<String, dynamic> toMap() => {
-        'categories': categories?.map((e) => e.toMap()).toList(),
+        'categories': categories,
         'hot': hot?.toMap(),
         'recent': recent?.map((e) => e.toMap()).toList(),
         'popular': popular?.map((e) => e.toMap()).toList(),
@@ -55,10 +52,7 @@ class Feeds {
   String toJson() => json.encode(toMap());
 
   Feeds copyWith(
-      {List<Category>? categories,
-      Feed? hot,
-      List<Feed>? recent,
-      List<Feed>? popular}) {
+      {Map? categories, Feed? hot, List<Feed>? recent, List<Feed>? popular}) {
     return Feeds(
       categories: categories ?? this.categories,
       hot: hot ?? this.hot,

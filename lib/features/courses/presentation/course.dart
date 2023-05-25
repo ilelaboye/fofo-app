@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -38,8 +39,10 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   getCourse() async {
+    print('init courxe');
     course = await Provider.of<CoursesProvider>(context, listen: false)
         .getCourse(context, widget.id);
+    EasyLoading.dismiss();
     print('single course');
     print(course);
     setState(() {
@@ -110,13 +113,15 @@ class _CoursePageState extends State<CoursePage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: Insets.xs),
-                              child: Text(
-                                "by " +
-                                    course.course.createdBy![0].fullname
-                                        .toString() +
-                                    " • ",
-                                style: context.textTheme.caption.size(12),
-                              ),
+                              child: course.course.createdBy!.length > 0
+                                  ? Text(
+                                      "by " +
+                                          course.course.createdBy![0].fullname
+                                              .toString() +
+                                          " • ",
+                                      style: context.textTheme.caption.size(12),
+                                    )
+                                  : Text(''),
                             ),
                             ...List.generate(
                               5,

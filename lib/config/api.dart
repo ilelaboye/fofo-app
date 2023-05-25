@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../service/auth_service/auth_provider.dart';
 import '../core/widgets/notification.dart';
@@ -29,6 +29,7 @@ class DioClient extends ChangeNotifier {
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
   }) async {
+    print('get into');
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     try {
       final Response response = await _dio.get(
@@ -38,9 +39,11 @@ class DioClient extends ChangeNotifier {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
-      EasyLoading.dismiss();
+
       return response;
     } on DioError catch (e) {
+      print('get error');
+      print(e);
       EasyLoading.dismiss();
       final errorMessage = DioExceptions.fromDioError(e).toString();
       if (e.response?.statusCode == 401) {
@@ -52,9 +55,11 @@ class DioClient extends ChangeNotifier {
   }
 
   Future<void> logout(context) async {
-    EasyLoading.dismiss();
     // await auth.init();
-    auth.logOut();
+    // auth.logOut(context);
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    await _preferences.clear();
+    _preferences.setBool("skipOnboard", true);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false);
@@ -81,11 +86,14 @@ class DioClient extends ChangeNotifier {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      EasyLoading.dismiss();
+
       return response;
     } on DioError catch (e) {
-      // print(e.requestOptions.uri);
       EasyLoading.dismiss();
+      // print(e.requestOptions.uri);
+      print('post error');
+      print(e);
+
       final errorMessage = DioExceptions.fromDioError(e).toString();
       if (e.response?.statusCode == 401) {
         logout(context);
@@ -114,7 +122,7 @@ class DioClient extends ChangeNotifier {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      EasyLoading.dismiss();
+
       return response;
     } on DioError catch (e) {
       EasyLoading.dismiss();
@@ -144,10 +152,12 @@ class DioClient extends ChangeNotifier {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      EasyLoading.dismiss();
+
       return response;
     } on DioError catch (e) {
       EasyLoading.dismiss();
+      print('patch error');
+      print(e);
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw errorMessage;
     }
@@ -171,7 +181,7 @@ class DioClient extends ChangeNotifier {
         options: options,
         cancelToken: cancelToken,
       );
-      EasyLoading.dismiss();
+
       return response.data;
     } on DioError catch (e) {
       EasyLoading.dismiss();
@@ -199,7 +209,6 @@ class DioExceptions implements Exception {
   late String message;
 
   DioExceptions.fromDioError(DioError dioError) {
-    EasyLoading.dismiss();
     switch (dioError.type) {
       case DioErrorType.cancel:
         message = "Request to server was cancelled";
@@ -243,11 +252,11 @@ class DioExceptions implements Exception {
       case 403:
         return 'Forbidden';
       case 404:
-        return error['error']['message'];
+        return error['error'];
       case 409:
         return error['error']['message'];
       case 422:
-        return error['error']['message'];
+        return error['error'];
       case 500:
         return 'Internal server error';
       case 502:

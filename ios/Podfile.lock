@@ -1,0 +1,85 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_custom_tabs (0.0.1):
+    - Flutter
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - smart_auth (0.0.1):
+    - Flutter
+  - Stripe (22.5.1):
+    - Stripe/Stripe3DS2 (= 22.5.1)
+    - StripeApplePay (= 22.5.1)
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - Stripe/Stripe3DS2 (22.5.1):
+    - StripeApplePay (= 22.5.1)
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - stripe_ios (0.0.1):
+    - Flutter
+    - Stripe (~> 22.5.1)
+    - StripeFinancialConnections (~> 22.5.1)
+  - StripeApplePay (22.5.1):
+    - StripeCore (= 22.5.1)
+  - StripeCore (22.5.1)
+  - StripeFinancialConnections (22.5.1):
+    - StripeCore (= 22.5.1)
+    - StripeUICore (= 22.5.1)
+  - StripeUICore (22.5.1):
+    - StripeCore (= 22.5.1)
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_custom_tabs (from `.symlinks/plugins/flutter_custom_tabs/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
+  - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
+  - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripeFinancialConnections
+    - StripeUICore
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_custom_tabs:
+    :path: ".symlinks/plugins/flutter_custom_tabs/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
+  smart_auth:
+    :path: ".symlinks/plugins/smart_auth/ios"
+  stripe_ios:
+    :path: ".symlinks/plugins/stripe_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
+
+SPEC CHECKSUMS:
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_custom_tabs: 7a10a08686955cb748e5d26e0ae586d30689bf89
+  image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
+  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
+  smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
+  Stripe: 2b2decd03146e08a350960966d41f3028c2eac29
+  stripe_ios: e94186250816de030881ced3399154eab186e439
+  StripeApplePay: b14f06ac6fc24b56704c1e598149ed0cc45e166f
+  StripeCore: 4833738f2ca4336712f279f3c2867a0a7eb67c93
+  StripeFinancialConnections: 982115b82af429968d8aa78d329a42ed7ba3feab
+  StripeUICore: 08c1efbd7e3c54ee7fa74334a37a1d4c08ba944d
+  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
+
+PODFILE CHECKSUM: 2262097366c615de59b03ca3bf748d7aaad51773
+
+COCOAPODS: 1.12.0

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/models/library/my_library/books.dart';
 
 import '../../config/api.dart';
@@ -20,11 +21,18 @@ class LibraryProvider extends ChangeNotifier {
   DioClient dioClient = DioClient(Dio());
   Future getLibrary(BuildContext context) async {
     try {
+      EasyLoading.show(status: 'loading...');
       Response response = await dioClient.get(context, "library");
+      print('library rezp');
+      print(response);
       myLibrary = MyLibrary.fromMap(response.data);
+      print('library afer map');
+      print(myLibrary);
+      EasyLoading.dismiss();
       notifyListeners();
       return myLibrary;
     } catch (err) {
+      EasyLoading.dismiss();
       print('library error');
       showNotification(context, false, err);
       notifyListeners();

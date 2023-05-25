@@ -17,21 +17,23 @@ class BaseTextField extends StatelessWidget {
   final String? initialValue;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final bool enabled;
 
-  BaseTextField({
-    Key? key,
-    required this.labelText,
-    required this.hintText,
-    required this.validator,
-    this.onSaved,
-    this.inputFormatters,
-    this.controller,
-    this.initialValue,
-    this.suffixIcon,
-    this.prefix,
-    this.keyboardType,
-    this.obscureText = false,
-  }) : super(key: key);
+  BaseTextField(
+      {Key? key,
+      required this.labelText,
+      required this.hintText,
+      required this.validator,
+      this.onSaved,
+      this.inputFormatters,
+      this.controller,
+      this.initialValue,
+      this.suffixIcon,
+      this.prefix,
+      this.keyboardType,
+      this.obscureText = false,
+      this.enabled = true})
+      : super(key: key);
 
   final _border = OutlineInputBorder(
     borderRadius: Corners.xsBorder,
@@ -70,6 +72,7 @@ class BaseTextField extends StatelessWidget {
             const BoxConstraints(minWidth: 48, minHeight: 48),
         suffixIcon: suffixIcon,
         border: _border,
+        enabled: enabled,
         enabledBorder: _border,
         errorBorder: _border,
         focusedErrorBorder: _border,
@@ -96,6 +99,7 @@ class TextInputField extends BaseTextField {
     String? Function(String?)? validator = defaultValidator,
     TextInputType? keyboardType = TextInputType.text,
     bool obscureText = false,
+    bool enabled = true,
     Key? key,
   }) : super(
             key: key,
@@ -108,6 +112,7 @@ class TextInputField extends BaseTextField {
             keyboardType: keyboardType,
             obscureText: obscureText,
             validator: validator,
+            enabled: enabled,
             controller: controller);
 
   @override
