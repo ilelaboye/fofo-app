@@ -9,15 +9,23 @@ import 'package:fofo_app/features/subscription/presentation/membership_plan.dart
 class MembershipPlanCard extends StatelessWidget {
   // replace with membershipEntity
   final Color? color, textColor;
-  final int fee;
+  final String membershipId;
+  final String membershipType;
+  final double fee;
+  final double pricePerYear;
+  final double pricePerMonth;
   final String title, desc, benefit;
   final bool isPopular;
-  final List<String> perks;
+  final List<dynamic> perks;
   final Map user;
   const MembershipPlanCard(
-      {this.color,
+      {required this.membershipId,
+      required this.membershipType,
+      this.color,
       this.textColor,
       this.fee = 0,
+      this.pricePerYear = 0,
+      this.pricePerMonth = 0,
       this.desc = "",
       this.benefit = "",
       this.title = "Access",
@@ -121,12 +129,18 @@ class MembershipPlanCard extends StatelessWidget {
                 ),
                 child: Button(
                   "Learn More",
-                  onTap: () => context.push(MembershipPlanPage(perks,
-                      fee: fee,
-                      title: title,
-                      desc: desc,
-                      benefit: benefit,
-                      user: user)),
+                  onTap: () => context.push(MembershipPlanPage(
+                    perks,
+                    membershipId: membershipId,
+                    membershipType: membershipType,
+                    fee: fee,
+                    title: title,
+                    desc: desc,
+                    benefit: benefit,
+                    user: user,
+                    pricePerYear: pricePerYear,
+                    pricePerMonth: pricePerMonth,
+                  )),
                   color: color == AppColors.palette[100] ? color : Colors.white,
                   textColor: AppColors.palette[900],
                 ),

@@ -28,7 +28,7 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
   Map products = {};
-
+  var _formKey = GlobalKey<FormState>();
   bool isLoaded = false;
   ScrollController scrollController = ScrollController();
 
@@ -37,13 +37,22 @@ class _ShopPageState extends State<ShopPage> {
     super.initState();
     getCart();
     getProducts();
+    _formKey = GlobalKey<FormState>();
   }
 
   getProducts({String? search, String? nextPage}) async {
-    products = await Provider.of<ShopProvider>(context, listen: false)
+    print('prit seach');
+    print(search);
+    Map result = await Provider.of<ShopProvider>(context, listen: false)
         .getProducts(context, search: search, nextPage: nextPage);
     print('init prod returns');
     print(products);
+    if (search != null) {
+      print('search not null');
+      products['products'] = result['products'];
+    } else {
+      products = result;
+    }
 
     setState(() {
       isLoaded = true;
@@ -58,7 +67,7 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     String search = '';
-    final _formKey = GlobalKey<FormState>();
+
     if (!isLoaded) {
       return const Loader();
     } else {
@@ -200,7 +209,7 @@ class _ShopPageState extends State<ShopPage> {
                             onTap: () async => {
                               EasyLoading.show(status: "Loading"),
                               await getProducts(
-                                  nextPage: products['products']['nextPage']
+                                  nextPage: products['products']['prevPage']
                                       .toString()),
                               EasyLoading.dismiss(),
                               scrollController.animateTo(

@@ -14,6 +14,7 @@ import 'package:fofo_app/features/podcast/presentation/podcast_episode_list.dart
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../core/utils/luncher.dart';
+import '../../../core/widgets/notification.dart';
 import '../../../models/library/my_library/category.dart';
 import '../../../models/podcast/podcast.dart';
 
@@ -148,7 +149,11 @@ class PodcastPage extends StatelessWidget {
                 "Play",
                 onTap: () {
                   var launch = Luncher();
-                  launch.launchURL(context, podcast.link);
+                  if (podcast.link == null) {
+                    showNotification(context, false, "Invalid host data");
+                  } else {
+                    launch.launchURL(context, podcast.link);
+                  }
                 },
               ),
             ),

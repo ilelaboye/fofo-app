@@ -259,7 +259,7 @@ class _CoursePageState extends State<CoursePage> {
               Gap.md,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-                child: SectionHeader("Similar Courses", seeAll: true),
+                child: SectionHeader("Similar Courses", seeAll: false),
               ),
               Gap.sm,
               SizedBox(

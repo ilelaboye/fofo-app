@@ -42,17 +42,10 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       // appBar: const Appbar(),
-      body: SingleChildScrollView(
-        child: SafeArea(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                color: Colors.red,
-                width: 3,
-              )),
-            ),
             padding: const EdgeInsets.all(Insets.lg),
             child: Form(
                 key: formKey,

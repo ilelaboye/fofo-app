@@ -32,16 +32,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         width: double.infinity,
                       ),
                     ),
-                    Positioned(
-                      top: Insets.lg + Insets.lg,
-                      right: Insets.lg,
-                      child: Text(
-                        'Skip',
-                        style: context.textTheme.bodyLarge!
-                            .changeColor(Colors.white)
-                            .size(18),
-                      ).onTap(() => context.push(const SignupPage())),
-                    ),
+                    item.imgUrl != "3"
+                        ? Positioned(
+                            top: Insets.lg + Insets.lg,
+                            right: Insets.lg,
+                            child: Text(
+                              'Skip',
+                              style: context.textTheme.bodyLarge!
+                                  .changeColor(Colors.white)
+                                  .size(18),
+                            ).onTap(() => context.push(const SignupPage())),
+                          )
+                        : Container(),
                     Positioned(
                       left: 0,
                       right: 0,
@@ -106,25 +108,27 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               }),
                             ),
                             Gap.md,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Next',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Gap.sm,
-                                Icon(
-                                  PhosphorIcons.arrowRight,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ).onTap(
-                              () => _controller.nextPage(
-                                duration: 200.millisecs,
-                                curve: Curves.ease,
-                              ),
-                            ),
+                            item.imgUrl != "3"
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'Next',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      Gap.sm,
+                                      Icon(
+                                        PhosphorIcons.arrowRight,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ).onTap(
+                                    () => _controller.nextPage(
+                                      duration: 200.millisecs,
+                                      curve: Curves.ease,
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),

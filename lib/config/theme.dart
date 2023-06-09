@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fofo_app/config/constants.dart';
 
 class AppTheme {
@@ -33,6 +34,11 @@ class AppTheme {
         appBarTheme: const AppBarTheme(
           elevation: 0,
           backgroundColor: Colors.white,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF990808),
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.light,
+          ),
         ),
       );
 

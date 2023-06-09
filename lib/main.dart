@@ -6,6 +6,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/presentation/onboarding.dart';
+import 'package:fofo_app/core/widgets/preloader.dart';
 import 'package:fofo_app/service/course/course.dart';
 import 'package:fofo_app/service/feed/feed.dart';
 import 'package:fofo_app/service/job/job.dart';
@@ -58,7 +59,7 @@ class _FofoAppState extends State<FofoApp> {
     return MaterialApp(
         title: AppStrings.kTitle,
         theme: AppTheme.defaultTheme,
-        home: skipOnboard ? AppScaffoldPage() : OnboardingPage(),
+        home: skipOnboard ? Preloader() : OnboardingPage(),
         debugShowCheckedModeBanner: false,
         builder: EasyLoading.init()
         // navigatorKey: widget.navigatorKey,

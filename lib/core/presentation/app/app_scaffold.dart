@@ -42,26 +42,27 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
   @override
   void initState() {
     super.initState();
-    getProfile();
+    // getProfile();
+    profile = Provider.of<AuthProvider>(context, listen: false).userProfile;
   }
 
-  getProfile() async {
-    print(
-        'scaffold toke - ${Provider.of<AuthProvider>(context, listen: false).token.toString()}');
-    profile = await Provider.of<AuthProvider>(context, listen: false)
-        .getUserProfile(context,
-            Provider.of<AuthProvider>(context, listen: false).token.toString());
-    print('after get profile');
-    if (profile == null) {
-      showNotification(context, false, "Unauthorized access, please login");
-      Provider.of<AuthProvider>(context, listen: false).logOut(context);
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-          (route) => false);
-    } else {
-      Provider.of<AuthProvider>(context, listen: false).setUser(profile!);
-    }
-  }
+  // getProfile() async {
+  //   print(
+  //       'scaffold toke - ${Provider.of<AuthProvider>(context, listen: false).token.toString()}');
+  //   profile = await Provider.of<AuthProvider>(context, listen: false)
+  //       .getUserProfile(context,
+  //           Provider.of<AuthProvider>(context, listen: false).token.toString());
+  //   print('after get profile');
+  //   if (profile == null) {
+  //     showNotification(context, false, "Unauthorized access, please login");
+  //     Provider.of<AuthProvider>(context, listen: false).logOut(context);
+  //     Navigator.of(context).pushAndRemoveUntil(
+  //         MaterialPageRoute(builder: (context) => const LoginPage()),
+  //         (route) => false);
+  //   } else {
+  //     Provider.of<AuthProvider>(context, listen: false).setUser(profile!);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -35,6 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     final profile = authProvider.userProfile!;
+    selectedItem = profile.field;
     print('edit profie');
     print(profile);
     return Scaffold(
@@ -74,6 +75,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   const Gap(25),
                   TextInputField(
                     labelText: "City",
+                    initialValue: profile.city,
                     hintText: "",
                     validator: (value) =>
                         value!.isEmpty ? "Please enter city" : null,
@@ -83,6 +85,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   TextInputField(
                     labelText: "State",
                     hintText: "E.g New York",
+                    initialValue: profile.state,
                     validator: (value) =>
                         value!.isEmpty ? "Please enter state" : null,
                     onSaved: (value) => state = value!,
@@ -91,6 +94,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   TextInputField(
                     labelText: "Job Title",
                     hintText: "E.g Administrative Assistant",
+                    initialValue: profile.jobTitle,
                     validator: (value) =>
                         value!.isEmpty ? "Please enter job title" : null,
                     onSaved: (value) => jobTitle = value!,

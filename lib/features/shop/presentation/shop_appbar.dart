@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
+import 'package:fofo_app/core/presentation/app/app_scaffold.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
 import 'package:fofo_app/core/widgets/appbar.dart';
 import 'package:fofo_app/features/shop/presentation/bag.dart';
@@ -16,6 +17,18 @@ class ShopAppbar extends Appbar {
   @override
   Widget build(BuildContext context) {
     return Appbar(
+      leading: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.palette[200],
+        ),
+        child: Icon(
+          PhosphorIcons.caretLeftBold,
+          color: AppColors.primary,
+        ),
+      ).onTap(
+        () => context.push(AppScaffoldPage()),
+      ),
       title: title,
       actions: [
         Padding(
@@ -58,6 +71,26 @@ class ShopAppbar extends Appbar {
               )),
         )
       ],
+    );
+  }
+}
+
+class CustomBackButton extends StatelessWidget {
+  const CustomBackButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.palette[200],
+      ),
+      child: Icon(
+        PhosphorIcons.caretLeftBold,
+        color: AppColors.primary,
+      ),
+    ).onTap(
+      () => context.pop(),
     );
   }
 }

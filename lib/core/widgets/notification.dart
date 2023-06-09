@@ -8,7 +8,7 @@ void showNotification(BuildContext context, status, message) {
     content:
         Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
       Container(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
           height: 60,
           decoration: BoxDecoration(
               color: status ? Color(0xFF0e6f40) : Color(0xFFC72C41),

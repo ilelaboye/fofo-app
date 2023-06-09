@@ -19,6 +19,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../service/auth_service/auth_provider.dart';
+import '../../public/terms.dart';
 import 'otp.dart';
 
 String? selectedItem;
@@ -194,7 +195,9 @@ class _SignupPageState extends State<SignupPage> {
                               overflow: TextOverflow.ellipsis,
                               softWrap: false,
                               maxLines: 2,
-                            ),
+                            ).onTap(() {
+                              context.push(const TermsCondition());
+                            }),
                           ),
                         ],
                       ),

@@ -10,6 +10,7 @@ class BaseTextField extends StatelessWidget {
   final String? hintText;
   final List<TextInputFormatter>? inputFormatters;
   final FormFieldSetter<String>? onSaved;
+  final FormFieldSetter<String>? onChanged;
   final FormFieldValidator<String>? validator;
   final TextEditingController? controller;
   final Widget? suffixIcon;
@@ -25,6 +26,7 @@ class BaseTextField extends StatelessWidget {
       required this.hintText,
       required this.validator,
       this.onSaved,
+      this.onChanged,
       this.inputFormatters,
       this.controller,
       this.initialValue,
@@ -53,6 +55,7 @@ class BaseTextField extends StatelessWidget {
       initialValue: initialValue,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      onChanged: onChanged,
       style: context.textTheme.bodyMedium!.size(15).changeColor(
             AppColors.primary,
           ),
@@ -90,6 +93,7 @@ class BaseTextField extends StatelessWidget {
 class TextInputField extends BaseTextField {
   TextInputField({
     FormFieldSetter<String>? onSaved,
+    FormFieldSetter<String>? onChanged,
     String? initialValue,
     Widget? suffixIcon,
     Widget? prefix,
@@ -106,6 +110,7 @@ class TextInputField extends BaseTextField {
             labelText: labelText,
             hintText: hintText,
             onSaved: onSaved,
+            onChanged: onChanged,
             initialValue: initialValue,
             suffixIcon: suffixIcon,
             prefix: prefix,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fofo_app/config/constants.dart';
 import 'package:fofo_app/config/theme.dart';
 import 'package:fofo_app/core/utils/extensions.dart';
@@ -21,6 +22,18 @@ class PostCard extends StatelessWidget {
       required this.feed,
       Key? key})
       : super(key: key);
+
+  // postComment(comment) async {
+  //   EasyLoading.show(status: 'loadings...');
+  //   Comment index = await Provider.of<FeedsProvider>(context, listen: false)
+  //       .postComment(context, widget.id, comment);
+  //   _controller.clear();
+  //   setState(() {
+  //     blog.blogComments!.insert(0, index);
+  //   });
+  //   FocusScope.of(context).unfocus();
+  //   EasyLoading.dismiss();
+  // }
 
   @override
   Widget build(BuildContext context) {

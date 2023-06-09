@@ -183,31 +183,31 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               const Divider(height: 27),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  "Settings",
-                  style: context.textTheme.bodyMedium.size(17),
-                ),
-              ),
+              // ListTile(
+              //   contentPadding: EdgeInsets.zero,
+              //   title: Text(
+              //     "Settings",
+              //     style: context.textTheme.bodyMedium.size(15),
+              //   ),
+              // ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   "Terms and Privacy",
-                  style: context.textTheme.bodyMedium.size(17),
+                  style: context.textTheme.bodyMedium.size(15),
                 ),
                 onTap: () {
                   context.pop();
                   context.push(const TermsCondition());
                 },
               ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  "Help Center",
-                  style: context.textTheme.bodyMedium.size(17),
-                ),
-              ),
+              // ListTile(
+              //   contentPadding: EdgeInsets.zero,
+              //   title: Text(
+              //     "Help Center",
+              //     style: context.textTheme.bodyMedium.size(15),
+              //   ),
+              // ),
               const Divider(height: 10),
               GestureDetector(
                 onTap: () {

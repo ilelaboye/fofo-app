@@ -14,6 +14,7 @@ import 'package:fofo_app/core/widgets/section_header.dart';
 import 'package:fofo_app/core/widgets/text_input.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
+import '../../../core/widgets/button.dart';
 import '../../../service/job/job.dart';
 
 class JobsPage extends StatefulWidget {
@@ -24,8 +25,10 @@ class JobsPage extends StatefulWidget {
 }
 
 class _JobsPageState extends State<JobsPage> {
-  late final Map jobs;
+  Map jobs = {};
   bool isLoaded = false;
+  String search = '';
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -33,12 +36,27 @@ class _JobsPageState extends State<JobsPage> {
     getJobs();
   }
 
-  getJobs() async {
+  getJobs({int nextPage = 1}) async {
     EasyLoading.show(status: 'loading...');
-    jobs =
-        await Provider.of<JobProvider>(context, listen: false).getJobs(context);
+    jobs = await Provider.of<JobProvider>(context, listen: false)
+        .getJobs(context, nextPage: nextPage);
     print('print jobs');
     print(jobs);
+    EasyLoading.dismiss();
+    setState(() {
+      isLoaded = true;
+    });
+  }
+
+  searchJobs() async {
+    EasyLoading.show(status: 'loading...');
+    var resp = await Provider.of<JobProvider>(context, listen: false)
+        .searchJob(context, search);
+    print('print jobs');
+    print(resp);
+    jobs['recommended'] = resp['jobs'];
+    // jobs['recommended']['docs'] = resp['jobs']['docs'];
+    // jobs['recommended']['hasPrevPage'] = resp['jobs']['hasPrevPage'];
     EasyLoading.dismiss();
     setState(() {
       isLoaded = true;
@@ -53,8 +71,9 @@ class _JobsPageState extends State<JobsPage> {
       return Scaffold(
         appBar: const Appbar(title: "Opportunities"),
         body: SingleChildScrollView(
+          controller: scrollController,
           child: Padding(
-            padding: const EdgeInsets.all(Insets.lg),
+            padding: const EdgeInsets.symmetric(horizontal: Insets.md),
             child: Column(
               children: [
                 Row(
@@ -63,10 +82,15 @@ class _JobsPageState extends State<JobsPage> {
                       child: TextInputField(
                         hintText: "Job title, company",
                         prefix: const Icon(PhosphorIcons.magnifyingGlassBold),
+                        onChanged: (value) => search = value!,
                       ),
                     ),
                     Gap.md,
-                    const Icon(PhosphorIcons.funnel)
+                    const Icon(PhosphorIcons.magnifyingGlassBold).onTap(() {
+                      // print('pro');
+                      // print(search);
+                      searchJobs();
+                    })
                   ],
                 ),
                 Gap.lg,
@@ -84,6 +108,62 @@ class _JobsPageState extends State<JobsPage> {
                     child: JobItem(job: jobs['recommended']['docs'][index]),
                   ),
                   itemCount: jobs['recommended']['docs'].length,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    jobs['recommended']['hasPrevPage']
+                        ? Container(
+                            color: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Insets.md, vertical: 10),
+                            child: Button(
+                              "Prev",
+                              width: 100,
+                              height: 40,
+                              color: AppColors.grey,
+                              onTap: () async => {
+                                EasyLoading.show(status: "Loading"),
+                                await getJobs(
+                                    nextPage: jobs['recommended']['prevPage']),
+                                EasyLoading.dismiss(),
+                                scrollController.animateTo(
+                                    //go to top of scroll
+                                    0, //scroll offset to go
+                                    duration: Duration(
+                                        milliseconds: 500), //duration of scroll
+                                    curve: Curves.fastOutSlowIn //scroll type
+                                    )
+                              },
+                            ),
+                          )
+                        : Container(),
+                    jobs['recommended']['hasNextPage']
+                        ? Container(
+                            color: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Insets.md, vertical: 10),
+                            child: Button(
+                              "Next",
+                              width: 100,
+                              height: 40,
+                              onTap: () async => {
+                                EasyLoading.show(status: "Loading"),
+                                await getJobs(
+                                    nextPage: jobs['recommended']['nextPage']),
+                                EasyLoading.dismiss(),
+                                scrollController.animateTo(
+                                    //go to top of scroll
+                                    0, //scroll offset to go
+                                    duration: Duration(
+                                        milliseconds: 500), //duration of scroll
+                                    curve: Curves.fastOutSlowIn //scroll type
+                                    )
+                              },
+                            ),
+                          )
+                        : Container(),
+                  ],
                 ),
               ],
             ),
@@ -120,18 +200,17 @@ class JobItem extends StatelessWidget {
                   radius: 18,
                   data: CircleAvatar(
                       backgroundColor: Colors.red,
-                      backgroundImage: job['authorImages'] == [] ||
-                              job['authorImages'][0]['secure_url'] == null
+                      backgroundImage: job['jobImages'] == [] ||
+                              job['jobImages'][0]['secure_url'] == null
                           ? AssetImage("user".png) as ImageProvider
-                          : NetworkImage(
-                              job['authorImages'][0]['secure_url']))),
+                          : NetworkImage(job['jobImages'][0]['secure_url']))),
               Gap.sm,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      job['jobField'],
+                      job['name'].toString().titleCaseSingle(),
                       style: context.textTheme.bodyMedium.size(14).bold,
                     ),
                     Gap.xs,
@@ -143,7 +222,7 @@ class JobItem extends StatelessWidget {
                     Text.rich(
                       TextSpan(children: [
                         TextSpan(
-                          text: "New York, USA • ",
+                          text: "${job['location']} • ",
                           style: context.textTheme.bodyMedium
                               .size(10)
                               .changeColor(AppColors.palette[700]!),
@@ -157,7 +236,6 @@ class JobItem extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(PhosphorIcons.dotsThreeVertical)
             ],
           ).onTap(() => context.push(JobPage(job: job))),
           Padding(

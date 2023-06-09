@@ -16,6 +16,19 @@ class FeedsProvider extends ChangeNotifier {
   late Map blogs;
 
   DioClient dioClient = DioClient(Dio());
+
+  Future likeBlog(BuildContext context, String id) async {
+    try {
+      Response response =
+          await dioClient.patch(context, "blog/" + id + "/like", data: {});
+      notifyListeners();
+      return true;
+    } catch (err) {
+      showNotification(context, false, err);
+      notifyListeners();
+    }
+  }
+
   Future getFeeds(BuildContext context) async {
     try {
       Response response = await dioClient.get(context, "blog/lists");

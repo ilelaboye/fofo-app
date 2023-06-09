@@ -289,7 +289,7 @@ class _ProductDescriptionPageState extends State<ProductDescriptionPage> {
                   ),
                   Gap.lg,
                   Button(
-                    "Add This To Bag",
+                    "Add To Cart",
                     onTap: () async {
                       print('adding to c');
                       // print(product['product']);

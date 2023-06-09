@@ -160,7 +160,7 @@ class _BlogsPageState extends State<BlogsPage> {
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: SectionHeader("Recent", seeAll: true),
+              child: SectionHeader("Recent", seeAll: false),
             ),
             Gap.sm,
             SizedBox(
@@ -182,7 +182,7 @@ class _BlogsPageState extends State<BlogsPage> {
             Gap.lg,
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: SectionHeader("Popular", seeAll: true),
+              child: SectionHeader("Popular", seeAll: false),
             ),
             Gap.sm,
             SizedBox(

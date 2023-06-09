@@ -22,13 +22,21 @@ import '../../../core/presentation/app/app_scaffold.dart';
 import '../../../core/widgets/notification.dart';
 
 class MembershipPlanPage extends StatefulWidget {
-  final List<String> perks;
-  final int fee;
+  final String membershipId;
+  final String membershipType;
+  final List<dynamic> perks;
+  final double fee;
+  final double pricePerYear;
+  final double pricePerMonth;
   final String title, desc, benefit;
   final Map user;
   MembershipPlanPage(this.perks,
       {Key? key,
+      required this.membershipId,
+      required this.membershipType,
       this.fee = 0,
+      this.pricePerYear = 0,
+      this.pricePerMonth = 0,
       this.title = "Access",
       this.desc = "",
       this.benefit = '',
@@ -42,7 +50,7 @@ class MembershipPlanPage extends StatefulWidget {
 class _MembershipPlanPageState extends State<MembershipPlanPage> {
   Map<String, dynamic>? paymentIntentData;
   bool yearState = true;
-  int yearAmount = 250;
+  double yearAmount = 250;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +68,9 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        yearState ? "\$250" : "\$25",
+                        yearState
+                            ? "\$${widget.pricePerYear}"
+                            : "\$${widget.pricePerMonth}",
                         style: context.textTheme.headlineLarge
                             .changeColor(AppColors.primary),
                       ),
@@ -82,9 +92,9 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                               setState(() {
                                 yearState = !value;
                                 if (yearState == false) {
-                                  yearAmount = 25;
+                                  yearAmount = widget.pricePerMonth;
                                 } else {
-                                  yearAmount = 250;
+                                  yearAmount = widget.pricePerYear;
                                 }
                                 print(yearState);
                                 print(yearAmount);
@@ -120,7 +130,7 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                       const Gap(4),
                       Expanded(
                         child: Text(
-                          "You save \$50 & you get 2 months subscription free",
+                          "You save \$${(widget.pricePerMonth * 12) - widget.pricePerYear} & you get 2 months subscription free",
                           style: context.textTheme.caption!
                               .changeColor(const Color(0xff40BF95)),
                         ),
@@ -210,9 +220,12 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
                 print(widget.user);
                 print(yearAmount);
                 await makePayment(
-                    amount: yearAmount.toString(),
-                    currency: 'USD',
-                    user: widget.user);
+                  membershipId: widget.membershipId,
+                  membershipType: widget.membershipType,
+                  amount: yearAmount.toString(),
+                  currency: 'USD',
+                  user: widget.user,
+                );
               } else {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -235,21 +248,28 @@ class _MembershipPlanPageState extends State<MembershipPlanPage> {
   }
 
   Future<void> makePayment(
-      {required String amount,
+      {required membershipId,
+      required membershipType,
+      required String amount,
       required String currency,
       required Map user}) async {
     print(amount);
     try {
       EasyLoading.show(status: 'loading...');
       print('pay intro');
+      // var userId = user['userId'];
+      // if (userId == null) {
+      //   userId = user['id'];
+      // }
+      // print(userId);
       DioClient dioClient = DioClient(Dio());
       Response response =
           await dioClient.post(context, "stripe/membership-checkout", data: {
         "membership": {
           'amount': amount,
-          'membershipId': user['userId'],
+          'membershipId': membershipId,
           'mode': yearState ? "yearly" : "monthly",
-          'membershipType': 'Gold'
+          'membershipType': membershipType,
         }
       });
 

@@ -10,9 +10,10 @@ class JobProvider extends ChangeNotifier {
   // GetCourseById? course;
 
   DioClient dioClient = DioClient(Dio());
-  Future getJobs(BuildContext context) async {
+  Future getJobs(BuildContext context, {int nextPage = 1}) async {
     try {
-      Response response = await dioClient.get(context, "jobs/alljobs");
+      Response response =
+          await dioClient.get(context, "jobs/alljobs?page=${nextPage}");
       print('get jobs data');
       print(response.data);
       jobs = response.data;
@@ -35,6 +36,20 @@ class JobProvider extends ChangeNotifier {
       // print(feed);
       notifyListeners();
       return job;
+    } catch (err) {
+      showNotification(context, false, err);
+      notifyListeners();
+    }
+  }
+
+  Future searchJob(BuildContext context, String text) async {
+    try {
+      Response response =
+          await dioClient.post(context, "jobs/search", data: {"name": text});
+
+      print('search job');
+      notifyListeners();
+      return response.data;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();

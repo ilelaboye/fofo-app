@@ -17,6 +17,11 @@ class UserProfile {
   final String? membershipType;
   final bool? isActive;
   final String? phonenumber;
+  final String? location;
+  final String? jobTitle;
+  final String? field;
+  final String? city;
+  final String? state;
   final bool? paid;
 
   const UserProfile(
@@ -32,11 +37,16 @@ class UserProfile {
       this.membershipType,
       this.isActive,
       this.phonenumber,
+      this.location,
+      this.jobTitle,
+      this.field,
+      this.city,
+      this.state,
       this.paid});
 
   @override
   String toString() {
-    return 'UserProfile(fullname: $fullname,email: $email, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles, membershipType: $membershipType, isActive: $isActive,phonenumber: $phonenumber,paid: $paid)';
+    return 'UserProfile(fullname: $fullname,email: $email, about: $about, booksRead: $booksRead, followers: $followers, following: $following, id: $id,profileImage:$profileImage, roles: $roles, membershipType: $membershipType, isActive: $isActive,phonenumber: $phonenumber,paid: $paid,location: $location,jobTitle:$jobTitle,field:$field,city:$city,state:$state)';
   }
 
   factory UserProfile.fromMap(Map<String, dynamic> data) => UserProfile(
@@ -55,7 +65,12 @@ class UserProfile {
           data.containsKey('profileImage') ? data['profileImage'] : null,
       isActive: data['isActive'] as bool?,
       phonenumber: data['phonenumber'] as String?,
-      paid: data['paid'] as bool?);
+      paid: data['paid'] as bool?,
+      location: data['location'] as String?,
+      jobTitle: data['jobTitle'] as String?,
+      field: data['field'] as String?,
+      city: data['city'] as String?,
+      state: data['state'] as String?);
 
   Map<String, dynamic> toMap() => {
         'fullname': fullname,
@@ -70,7 +85,12 @@ class UserProfile {
         'membershipType': membershipType,
         'isActive': isActive,
         'phonenumber': phonenumber,
-        'paid': paid
+        'paid': paid,
+        'location': location,
+        'jobTitle': jobTitle,
+        'field': field,
+        'city': city,
+        'state': state,
       };
 
   /// `dart:convert`

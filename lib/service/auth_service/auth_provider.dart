@@ -96,18 +96,39 @@ class AuthProvider with ChangeNotifier {
     return user == null ? null : UserProfile.fromJson(jsonDecode(user));
   }
 
+  Future<Map> getMembership(BuildContext context) async {
+    try {
+      print('get membership');
+      // EasyLoading.show(status: 'loading...');
+      Response response =
+          await dioClient.get(context, "membership/list-memberships");
+      print('membership resp');
+      print(response.data);
+      EasyLoading.dismiss();
+      notifyListeners();
+      return {'status': true, 'data': response.data};
+    } catch (err) {
+      // EasyLoading.dismiss();
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
+      return {'status': false, 'message': err};
+    }
+  }
+
   Future<UserProfile?> getUserProfile(
       BuildContext context, String _token) async {
     try {
       print('get profile');
-      EasyLoading.show(status: 'loading...');
+      // EasyLoading.show(status: 'loading...');
       Response response = await dioClient.get(context, "profile");
       print('profile resp');
       print(response.data['profile']);
       EasyLoading.dismiss();
-      return UserProfile.fromMap(response.data['profile']);
+      userProfile = UserProfile.fromMap(response.data['profile']);
+      notifyListeners();
+      return userProfile;
     } catch (err) {
-      EasyLoading.dismiss();
+      // EasyLoading.dismiss();
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
       return null;

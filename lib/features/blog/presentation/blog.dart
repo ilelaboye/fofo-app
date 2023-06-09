@@ -52,6 +52,7 @@ class _BlogPageState extends State<BlogPage> {
     setState(() {
       blog.blogComments!.insert(0, index);
     });
+    FocusScope.of(context).unfocus();
     EasyLoading.dismiss();
   }
 

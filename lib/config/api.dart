@@ -45,12 +45,23 @@ class DioClient extends ChangeNotifier {
       print('get error');
       print(e);
       EasyLoading.dismiss();
-      final errorMessage = DioExceptions.fromDioError(e).toString();
+
       if (e.response?.statusCode == 401) {
+        print('llodd');
         logout(context);
+        return e.response!;
+      } else {
+        final errorMessage = DioExceptions.fromDioError(e).toString();
+        showNotification(context, false, errorMessage);
+        throw errorMessage;
       }
-      showNotification(context, false, errorMessage);
-      throw errorMessage;
+
+      // final errorMessage = DioExceptions.fromDioError(e).toString();
+      // if (e.response?.statusCode == 401) {
+      //   logout(context);
+      // }
+      // showNotification(context, false, errorMessage);
+      // throw errorMessage;
     }
   }
 
@@ -94,11 +105,14 @@ class DioClient extends ChangeNotifier {
       print('post error');
       print(e);
 
-      final errorMessage = DioExceptions.fromDioError(e).toString();
       if (e.response?.statusCode == 401) {
+        print('llodd');
         logout(context);
+        return e.response!;
+      } else {
+        final errorMessage = DioExceptions.fromDioError(e).toString();
+        throw errorMessage;
       }
-      throw errorMessage;
     }
   }
 

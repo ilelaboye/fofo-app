@@ -11,15 +11,16 @@ class CoursesProvider extends ChangeNotifier {
   GetCourseById? course;
 
   DioClient dioClient = DioClient(Dio());
-  Future getCourses(BuildContext context) async {
+  Future getCourses(BuildContext context, {int nextPage = 1}) async {
     try {
-      Response response = await dioClient.get(context, "course/list");
+      Response response =
+          await dioClient.get(context, "course/list?page=$nextPage");
       print('get courses data');
 
-      courses = Courses.fromMap(response.data);
-      print(courses);
+      // courses = Courses.fromMap(response.data);
+      // print(courses);
       notifyListeners();
-      return courses;
+      return response.data;
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();
@@ -41,6 +42,21 @@ class CoursesProvider extends ChangeNotifier {
     } catch (err) {
       showNotification(context, false, err);
       notifyListeners();
+    }
+  }
+
+  Future searchCourse(BuildContext context, String text) async {
+    try {
+      Response response = await dioClient
+          .post(context, "course/search", data: {"keyword": text});
+
+      print('search course');
+      notifyListeners();
+      return {"status": true, "data": response.data};
+    } catch (err) {
+      // showNotification(context, false, err);
+      notifyListeners();
+      return {"status": false, "message": err};
     }
   }
 }

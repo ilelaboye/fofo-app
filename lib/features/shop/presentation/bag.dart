@@ -50,6 +50,13 @@ class _BagPageState extends State<BagPage> {
   @override
   Widget build(BuildContext context) {
     final products = Provider.of<ShopProvider>(context).cart;
+    double sum = 0;
+    products.forEach((element) {
+      sum = sum +
+          (element['quantity'] * element['product_variation'][0]['price']);
+    });
+    print('summung');
+    print(sum);
     return Scaffold(
       appBar: const Appbar(
         title: "My Bag",
@@ -82,7 +89,56 @@ class _BagPageState extends State<BagPage> {
                     .map((product) => BagItem(
                           product: product,
                         ))
-                    .toList())
+                    .toList()),
+            Gap(20),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: Insets.md),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200]),
+              child: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('SUB TOTAL'),
+                    Text(
+                      '\$${sum}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    )
+                  ],
+                ),
+                Gap(10),
+                Divider(),
+                Gap(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('SHIPPING'),
+                    Text(
+                      'FREE',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    )
+                  ],
+                ),
+                Gap(10),
+                Divider(),
+                Gap(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('TOTAL'),
+                    Text(
+                      '\$${sum}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    )
+                  ],
+                ),
+              ]),
+            ),
           ],
         ),
       )),
@@ -125,7 +181,7 @@ class _BagItemState extends State<BagItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "\$${widget.product['variation']['price']}",
+                  "\$${widget.product['variation']['price'] * widget.product['quantity']}",
                   style: context.textTheme.bodyMedium
                       .changeColor(AppColors.primary)
                       .size(22)

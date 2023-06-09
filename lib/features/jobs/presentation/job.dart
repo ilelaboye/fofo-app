@@ -45,7 +45,7 @@ class JobPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        job['jobField'],
+                        job['jobField'].toString().titleCaseSingle(),
                         style: context.textTheme.bodyMedium.size(16).bold,
                       ),
                       Gap.xs,
@@ -57,7 +57,7 @@ class JobPage extends StatelessWidget {
                       Text.rich(
                         TextSpan(children: [
                           TextSpan(
-                            text: "New York, USA • ",
+                            text: "${job['location']} • ",
                             style: context.textTheme.bodyMedium
                                 .size(12)
                                 .changeColor(AppColors.palette[700]!),

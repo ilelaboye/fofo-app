@@ -49,7 +49,7 @@ class _PodcastsPageState extends State<PodcastsPage> {
       return Loader();
     } else {
       return Scaffold(
-        appBar: const Appbar(title: "Podcast"),
+        appBar: const Appbar(title: "Podcasts"),
         // bottomSheet: Container(
         //   height: 100,
         //   decoration: BoxDecoration(

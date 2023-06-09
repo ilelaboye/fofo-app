@@ -41,127 +41,129 @@ class _ShopCheckoutPageState extends State<ShopCheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Appbar(title: "Checkout"),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.min,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Gap.lg,
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: AuthHeading("Shipping address",
-                  "Communities are groups of people that connect for work, projects, or common interests."),
-            ),
-            Gap.lg,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Select country'),
-                  DropDownCategory(
-                      selectedItem: selectedItem,
-                      onSelectItem: (item) => {
-                            setState(() => {selectedItem = item!})
-                          }),
-                ],
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.min,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Gap.lg,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: AuthHeading("Shipping address",
+                    "Communities are groups of people that connect for work, projects, or common interests."),
               ),
-            ),
-            Gap.sm,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: Row(
-                children: [
-                  const Icon(
-                    PhosphorIcons.info,
-                    size: 17,
-                  ),
-                  Gap.sm,
-                  Expanded(
-                    child: Text(
-                      "Delivery is limited to few selected countries for now.",
-                      style: context.textTheme.caption,
+              Gap.lg,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Select country'),
+                    DropDownCategory(
+                        selectedItem: selectedItem,
+                        onSelectItem: (item) => {
+                              setState(() => {selectedItem = item!})
+                            }),
+                  ],
+                ),
+              ),
+              Gap.sm,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: Row(
+                  children: [
+                    const Icon(
+                      PhosphorIcons.info,
+                      size: 17,
                     ),
-                  )
-                ],
+                    Gap.sm,
+                    Expanded(
+                      child: Text(
+                        "Delivery is limited to few selected countries for now.",
+                        style: context.textTheme.caption,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            Gap.md,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextInputField(
-                    labelText: "City",
-                    initialValue: "",
-                    hintText: "",
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        return null;
-                      } else {
-                        return "City is required";
-                      }
-                    },
-                    onSaved: (value) => city = value!,
-                  ),
-                  Gap.md,
-                  TextInputField(
-                    labelText: "Address",
-                    initialValue: "",
-                    hintText: "",
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        return null;
-                      } else {
-                        return "Address is required";
-                      }
-                    },
-                    onSaved: (value) => address = value!,
-                  ),
-                  Gap.md,
-                  TextInputField(
-                    labelText: "Postal code",
-                    initialValue: "",
-                    hintText: "",
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        return null;
-                      } else {
-                        return "Postal code is required";
-                      }
-                    },
-                    onSaved: (value) => postalCode = value!,
-                  ),
-                ],
+              Gap.md,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextInputField(
+                      labelText: "City",
+                      initialValue: "",
+                      hintText: "",
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "City is required";
+                        }
+                      },
+                      onSaved: (value) => city = value!,
+                    ),
+                    Gap.md,
+                    TextInputField(
+                      labelText: "Address",
+                      initialValue: "",
+                      hintText: "",
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Address is required";
+                        }
+                      },
+                      onSaved: (value) => address = value!,
+                    ),
+                    Gap.md,
+                    TextInputField(
+                      labelText: "Postal code",
+                      initialValue: "",
+                      hintText: "",
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Postal code is required";
+                        }
+                      },
+                      onSaved: (value) => postalCode = value!,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Gap.lg,
-            // const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-              child: Button(
-                "Proceed to Payment",
-                onTap: () async {
-                  final form = _formKey.currentState!;
-                  if (form.validate()) {
-                    form.save();
-                    await makePayment(context,
-                        address: address,
-                        country: selectedItem,
-                        postalCode: postalCode,
-                        city: city);
-                  } else {
-                    showNotification(context, false, "Invalid form");
-                  }
-                  // context.push(const CheckoutDeliveryPage());
-                },
+              Gap.lg,
+              // const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+                child: Button(
+                  "Proceed to Payment",
+                  onTap: () async {
+                    final form = _formKey.currentState!;
+                    if (form.validate()) {
+                      form.save();
+                      await makePayment(context,
+                          address: address,
+                          country: selectedItem,
+                          postalCode: postalCode,
+                          city: city);
+                    } else {
+                      showNotification(context, false, "Invalid form");
+                    }
+                    // context.push(const CheckoutDeliveryPage());
+                  },
+                ),
               ),
-            ),
-            // const Gap(50)
-          ],
+              // const Gap(50)
+            ],
+          ),
         ),
       ),
     );
@@ -550,7 +552,7 @@ Future<void> makePayment(BuildContext context,
         googlePay: true,
         testEnv: true,
         merchantCountryCode: 'US',
-        merchantDisplayName: 'ThremeBrailer',
+        merchantDisplayName: 'Trail Blazer',
         customerId: response.data!['customerId'],
         paymentIntentClientSecret: response.data['paymentIntent'],
         customerEphemeralKeySecret: response.data['ephemeralKey'],

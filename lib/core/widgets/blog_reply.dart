@@ -23,9 +23,11 @@ class ReplyCard extends StatelessWidget {
             radius: 20,
             data: CircleAvatar(
                 backgroundColor: Colors.red,
-                backgroundImage: comment.commentedBy!.profileImage == null
-                    ? AssetImage("user".png) as ImageProvider
-                    : NetworkImage(comment.commentedBy!.profileImage ?? "")),
+                backgroundImage: comment.commentedBy != null
+                    ? comment.commentedBy!.profileImage == null
+                        ? AssetImage("user".png) as ImageProvider
+                        : NetworkImage(comment.commentedBy!.profileImage ?? "")
+                    : AssetImage("user".png) as ImageProvider),
           ),
           Gap.sm,
           Expanded(
@@ -33,7 +35,9 @@ class ReplyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  comment.commentedBy!.fullname.toString(),
+                  comment.commentedBy != null
+                      ? comment.commentedBy!.fullname.toString()
+                      : '',
                   style: context.textTheme.bodyMedium.size(14),
                 ),
                 Gap.xs,

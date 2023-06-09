@@ -9,6 +9,8 @@ import 'package:fofo_app/features/podcast/presentation/podcast.dart';
 import 'package:fofo_app/models/podcast/podcast.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../../core/widgets/notification.dart';
+
 class PodcastPlayableItem extends StatelessWidget {
   final bool canPlay;
   final Podcast podcast;
@@ -19,7 +21,11 @@ class PodcastPlayableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _launchURL(context, podcast.link),
+      onTap: () => {
+        podcast.link == null
+            ? showNotification(context, false, "Invalid host data")
+            : _launchURL(context, podcast.link)
+      },
       // onTap: () => context.push(const PodcastPlayerPage()),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: Insets.sm),
