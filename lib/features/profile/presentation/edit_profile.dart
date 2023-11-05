@@ -147,6 +147,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         showNotification(
                             context, true, "Profile updated successfully");
                       }
+                      // else{
+                      //   showNotification(
+                      //       context, false, "Profile updated successfully");
+                      // }
 
                       // context.pop()
                     }),

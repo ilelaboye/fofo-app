@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -175,8 +177,12 @@ class DioClient extends ChangeNotifier {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       if (e.response?.statusCode == 401) {
         logout(context);
+        return e.response!;
+      } else {
+        final errorMessage = DioExceptions.fromDioError(e).toString();
+        throw errorMessage;
       }
-      throw errorMessage;
+      // throw errorMessage;
     }
   }
 
@@ -263,19 +269,29 @@ class DioExceptions implements Exception {
     print(error);
     switch (statusCode) {
       case 400:
-        return 'Bad request';
+        return error['message'];
       case 401:
-        return error['error']['message'];
+        return error['message'];
       case 403:
-        return 'Forbidden';
+        return error['message'];
       case 404:
-        return error['error'];
+        return error['message'];
       case 409:
-        return error['error']['message'];
+        return error['message'];
       case 422:
         return error['error'];
       case 500:
-        return 'Internal server error';
+        print('hee 500');
+        print(error.runtimeType);
+        print(jsonDecode(error));
+        var error2 = jsonDecode(error);
+        print(error2['message']);
+        if (error2.containsKey('message')) {
+          return error2['message'];
+        } else {
+          return "Error, Please try again";
+        }
+
       case 502:
         return 'Bad gateway';
       default:
